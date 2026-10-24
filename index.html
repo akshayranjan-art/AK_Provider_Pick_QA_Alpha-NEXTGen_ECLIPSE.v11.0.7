@@ -350,6 +350,24 @@ table.g thead th.n .thw{justify-content:flex-end;padding-right:10px}
 .bbig,.bsm{white-space:nowrap}.top .who{flex-wrap:nowrap}.top .uchip{padding:3px 10px 3px 3px}.top .uchip b{font-size:11.5px}
 .fpop{animation:none}
 .tools{grid-template-columns:minmax(0,.62fr) minmax(0,2fr)}
+a.cap{text-decoration:none;color:inherit}a.cap.gold{color:#fff}
+.topstrip{flex:none;display:flex;gap:7px;min-width:0}
+.hb{width:10px;height:10px;border-radius:50%;flex:none;background:#f7a3a6;box-shadow:0 0 0 2px rgba(244,100,106,.25),0 0 8px rgba(244,100,106,.55);transition:.3s}
+.hb.on{background:#3ee68b;box-shadow:0 0 0 2px rgba(47,210,122,.25),0 0 10px #2fd27a}
+.hb.part{background:#3ee68b;box-shadow:0 0 0 2px rgba(246,173,60,.55),0 0 10px #2fd27a}
+.hb.flash{animation:fl .9s ease}
+table.g thead th .thw{padding-left:8px}
+.dumpzone{flex:1;display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:5px 8px;min-width:0}
+.dumpzone .tt{font-size:12.5px;font-weight:800;white-space:nowrap;padding:0 4px}
+.dumpzone .dumpbox{height:30px;padding:5px 14px}
+.minik{flex:none;display:flex;gap:5px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:5px 8px}
+.mk{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;background:var(--panel2);border:1px solid var(--line);white-space:nowrap}
+.mk:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--kc)}
+.mk small{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:750}.mk b{font:700 13px var(--f-num)}
+.pickline{flex:none;flex-wrap:nowrap;overflow:hidden;padding:5px 8px}
+.pickline .hint{flex:1 1 auto;flex-basis:auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 0 4px}
+.pager{gap:6px;padding:5px 10px;border-top:1px solid var(--line)}
+@media (max-width:1300px){.pickline{flex-wrap:wrap}.pickline .hint{flex-basis:100%}.topstrip{flex-wrap:wrap}.minik{flex:1}}
 @media (max-width:1700px){#expTxt{display:none}.ptitle small{display:none}}
 @media (max-width:1350px){.mrule small{display:none}}
 @media (max-width:1200px){.tools{grid-template-columns:1fr}}
@@ -373,6 +391,7 @@ table.g thead th.n .thw{justify-content:flex-end;padding-right:10px}
     <div class="ptitle" id="ptitle"></div>
     <div class="sp"></div>
     <div class="who">
+      <span class="chip red" id="folderWarn" hidden>⚠ Connect folder first</span>
       <button class="cap sm ghost" id="btnFolder"><span class="sdot" id="syncDot"></span><span id="folderTxt">Connect data</span></button>
       <span class="chip hide-m" id="expTxt"></span>
       <button class="cap sm gold" id="btnBack" hidden>↩ Back to Admin</button>
@@ -418,7 +437,7 @@ table.g thead th.n .thw{justify-content:flex-end;padding-right:10px}
 /* ======================= ADMIN SETTINGS (edit here) ======================= */
 const APP_NAME    = "Provider Pick QA";
 const APP_VER     = "V11.0.7";
-const BUILD       = "2";                       // goes up with every new build
+const BUILD       = "3";                       // goes up with every new build
 const APP_EXPIRY  = "2027-03-31";              // tool stops after this date (master password can extend)
 const ADMIN_MSID  = "ARANJA14";                // built-in Admin (logs in with the master password)
 const ADMIN_MC    = "LHTU05CG2122RJJ";         // Admin PC (2RJJ)
@@ -483,7 +502,7 @@ const FEAT=[ // key, name, short, group, [Manager, SME, Data Entry, Employee]
 const GROUPS=["Actions","Screen"];
 const DEFPERM=Object.fromEntries(ROLE3.map((r,i)=>[r,Object.fromEntries(FEAT.map(f=>[f[0],f[4][i]]))]));
 const DEFSCOPE={mgr:"all",sme:"all",entry:"all",employee:"own"};
-const PCT0=[5,10,15,20,25,30,40,50];
+const PCT0=[5];
 
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -534,14 +553,14 @@ const IDB={db:null,
 };
 let S=null,saveT=null;
 const fresh=()=>({v:2,cfg:{users:[],perms:{},scope:{},fon:{},procs:[],notice:{on:false,text:"",type:"info",speed:25},exp:null,folder:DEF_FOLDER,pcts:PCT0.slice(),minOne:true,msg:{},
-  idleMin:15,askEvery:true,wm:true,noLocal:["entry","employee"],adminPcOnly:false,maxTry:5,alertMail:""},days:{},auth:{},log:[],picks:{}});
+  idleMin:0,askEvery:false,wm:true,noLocal:["entry","employee"],adminPcOnly:false,maxTry:5,alertMails:["akshay.ranjan@uhc.com","",""],alertAuto:true,alertOther:false,helpPop:true},days:{},auth:{},log:[],picks:{}});
 const noLocal=()=>me.role!=="admin"&&(S.cfg.noLocal||["entry","employee"]).includes(me.role);
 function save(now){clearTimeout(saveT);const go=()=>IDB.put("state",noLocal()?{...S,days:{}}:S);if(now)return go();saveT=setTimeout(go,400);return Promise.resolve()}
-const SHARED=["users","perms","scope","fon","procs","notice","exp","mph","folder","pcts","minOne","msg","seeded","idleMin","askEvery","wm","noLocal","adminPcOnly","maxTry","v2"];
+const SHARED=["users","perms","scope","fon","procs","notice","exp","mph","folder","pcts","minOne","msg","seeded","idleMin","askEvery","wm","noLocal","adminPcOnly","maxTry","v2","alertMails","alertAuto","alertOther","helpPop","v3"];
 
 /* ---------- who am I ---------- */
 let me={pc:"",role:"admin",name:"",team:"",code:""};
-const view={proc:null,from:"",to:"",rows:[],page:0,ps:100,f:{},q:"",sort:null,onlyPk:false,mode:"date",pct:10,pdate:"",puser:"",pick:null,as:null};
+const view={proc:null,from:"",to:"",rows:[],page:0,ps:100,f:{},q:"",sort:null,onlyPk:false,mode:"date",pct:5,pdate:"",puser:"",pick:null,as:null};
 const role=()=>view.as?view.as.role:me.role;
 const ident=()=>view.as||me;
 const userOf=m=>(S.cfg.users||[]).find(u=>u.pc===m);
@@ -586,6 +605,15 @@ async function fsInit(){
   if(!FS.handle)return;
   try{if(await FS.handle.queryPermission({mode:"readwrite"})==="granted"){FS.dir=FS.handle;await fsReadConfig(true);await fsScan()}}catch(e){}
 }
+/* folder remembered but the browser wants a click: ask on the very first click anywhere */
+async function autoAllow(){
+  if(FS.dir||!FS.handle||autoAllow.busy)return;autoAllow.busy=true;
+  try{if(await FS.handle.requestPermission({mode:"readwrite"})==="granted"){FS.dir=FS.handle;await fsReadConfig(true);await fsScan();toast("✓ Data folder connected");
+    if(!$("#gate").hidden&&typeof gate==="function"){const m=$("#gM")&&$("#gM").value;gate();if(m&&$("#gM"))$("#gM").value=m}
+    else if(!$("#app").hidden){if(typeof setTop==="function")setTop();if(typeof renderRail==="function")renderRail();if(view.proc&&typeof loadRange==="function")await loadRange()}}}catch(e){}
+  autoAllow.busy=false;paintSync();
+}
+document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest("#gConn,#btnFolder,#fsC,#fsA"))return;autoAllow()},true);
 async function folderOK(h,adm){
   const want=String(S.cfg.folder||DEF_FOLDER).trim(),nameOk=h.name.trim().toLowerCase()===want.toLowerCase();let has=false;
   try{await h.getFileHandle("_ppqa.eclipse");has=true}catch(e){}
@@ -637,6 +665,8 @@ async function fsWriteText(dirPath,fname,text){
   if(!FS.dir)return false;
   try{if(!/^PPQ1:/.test(text))text=await encT(text);const sd=await fsSub(dirPath,true);const fh=await sd.getFileHandle(fname,{create:true});const w=await fh.createWritable();await w.write(text);await w.close();return true}catch(e){return false}
 }
+/* plain (not locked) file: only for the mail box that Power Automate reads */
+async function fsWritePlain(dirPath,fname,text){if(!FS.dir)return false;try{const sd=await fsSub(dirPath,true);const fh=await sd.getFileHandle(fname,{create:true});const w=await fh.createWritable();await w.write(text);await w.close();return true}catch(e){return false}}
 async function fsReadText(dirPath,fname){if(!FS.dir)return null;try{const sd=await fsSub(dirPath,false);const fh=await sd.getFileHandle(fname);return await unlock(await (await fh.getFile()).text())}catch(e){return null}}
 async function fsList(dirPath){const out=[];if(!FS.dir)return out;try{const sd=await fsSub(dirPath,false);for await(const [n,h] of sd.entries())if(h.kind==="file")out.push(n)}catch(e){}return out}
 async function fsRemove(dirPath,fname){if(!FS.dir)return false;try{const sd=await fsSub(dirPath,false);await sd.removeEntry(fname);return true}catch(e){return false}}
@@ -662,6 +692,7 @@ function paintSync(){
   const d=$("#syncDot"),t=$("#folderTxt");if(!d)return;
   d.className="sdot "+(FS.dir?(FS.err?"bad":"ok"):FS.handle?"warn":"");
   t.textContent=FS.dir?FS.dir.name:FS.handle?"Allow folder":"Connect data";
+  const w=$("#folderWarn");if(w)w.hidden=!!FS.dir||$("#btnFolder").hidden;
 }
 
 /* ---------- history log ---------- */
@@ -706,6 +737,23 @@ async function authGet(m){let a=null;S.auth=S.auth||{};
 async function authPut(m,a){S.auth=S.auth||{};S.auth[m]=a;await save(true);if(FS.dir&&!(await fsWriteText("_auth",m+".eclipse",JSON.stringify(a))))toast("Saved on this PC only. Allow write access to the data folder.")}
 /* blocked / suspicious login → history log + alert file in the data folder */
 async function alertLog(m,t){const at=Date.now();S.log=(S.log||[]).concat({at,pc:m,a:"blocked",p:"",n:t}).slice(-600);save();if(FS.dir)await fsWriteText("_system","alert_"+at+"_"+m.replace(/[^A-Z0-9]/gi,"")+".json",JSON.stringify({at,msid:m,t,did:DID().slice(0,8)}))}
+/* friendly help mail: auto (data folder → Power Automate) + "Need assistance?" popup */
+const mailsTo=()=>(S.cfg.alertMails||[]).map(x=>String(x||"").trim()).filter(x=>/@/.test(x));
+function helpMail(m,why){const at=new Date().toLocaleString("en-IN");
+  return{to:mailsTo().join(";"),subject:"Provider Pick QA – "+m+" may need sign-in help",
+    body:"Hello Admin team,\n\n"+m+" had some trouble signing in to Provider Pick QA and may need a little help.\n\nWhat happened: "+why+"\nWhen: "+at+"\nBrowser id: "+DID().slice(0,8)+"\n\nPlease reach out to them when you get a moment. 🙂\n\n— Alpha NextGen · Provider Pick QA · Eclipse"}}
+async function autoMail(m,why){
+  if(S.cfg.alertAuto===false||!mailsTo().length||!FS.dir)return false;
+  const o={...helpMail(m,why),msid:m,at:new Date().toISOString(),app:"Provider Pick QA"};
+  return fsWritePlain("_mailbox","help_"+Date.now()+"_"+m.replace(/[^A-Z0-9]/gi,"")+".json",JSON.stringify(o,null,1));
+}
+function helpPopup(m,why){
+  if(S.cfg.helpPop===false)return;const h=helpMail(m,why),mt=mailsTo();
+  modal(`<div style="text-align:center;padding:6px 4px"><div style="font-size:44px">🙂</div><h3 style="margin:6px 0">Need assistance?</h3>
+   <p class="muted" style="margin:0 auto;max-width:420px;line-height:1.55">Looks like signing in is a bit tricky right now — no worries! ${S.cfg.alertAuto!==false&&FS.dir&&mt.length?"We've already let the Admin team know, and they'll help you soon.":"The Admin team can help you."} You can try again in 15 minutes.</p></div>
+   <div class="mrow" style="justify-content:center">${mt.length?`<a class="cap gold" id="hMail" href="mailto:${h.to}?subject=${encodeURIComponent(h.subject)}&body=${encodeURIComponent(h.body)}">✉️ Ask Admin for help</a>`:""}<button class="cap" data-close>Okay, I'll try later</button></div>`);
+  const a=$("#hMail");if(a)a.onclick=()=>setTimeout(closeModal,300);
+}
 /* wrong-password lockout on this browser */
 const TRY={get(m){return (LS.get("tries",{})[m])||{n:0,until:0}},set(m,v){const a=LS.get("tries",{});if(v)a[m]=v;else delete a[m];LS.set("tries",a)}};
 /* session: ask password every time the tool opens (default) or remember on this PC */
@@ -743,8 +791,11 @@ function doneLogin(m){TRY.set(m,null);LS.set("lastmsid",m);LS.set("msid",m);SESS
 async function gateGo(setup){
   const err=t=>{$("#gErr").innerHTML=t},m=$("#gM").value.trim().toUpperCase().replace(/\s+/g,""),pw=$("#gPw").value;
   if(m.length<2)return err("Enter your MSID.");
-  const tr=TRY.get(m);if(tr.until>Date.now())return err("<b>Too many wrong passwords.</b> Try again after "+new Date(tr.until).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})+".");
-  const bad=async(t,why)=>{const x=TRY.get(m);x.n=(x.n||0)+1;const max=+S.cfg.maxTry||5;if(x.n>=max){x.until=Date.now()+15*6e4;x.n=0;alertLog(m,"Locked for 15 min after "+max+" wrong passwords")}else if(why)alertLog(m,why);TRY.set(m,x);err(t)};
+  const tr=TRY.get(m);if(tr.until>Date.now()){err("🙂 Taking a short break — please try again after "+new Date(tr.until).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})+".");return helpPopup(m,"Sign-in paused after several wrong passwords")}
+  const bad=async(t,why)=>{const x=TRY.get(m);x.n=(x.n||0)+1;const max=+S.cfg.maxTry||5;
+    if(x.n>=max){x.until=Date.now()+15*6e4;x.n=0;TRY.set(m,x);const w=max+" wrong passwords in a row";alertLog(m,"Paused for 15 min after "+w);await autoMail(m,w+" (sign-in paused for 15 minutes)");
+      err("🙂 Taking a short break — try again in 15 minutes.");return helpPopup(m,w)}
+    if(why)alertLog(m,why);TRY.set(m,x);err(t+(x.n>=max-2?` <span style="color:#9fb0d6">(${max-x.n} tr${max-x.n===1?"y":"ies"} left)</span>`:""))};
   if(m===ADMIN_MSID){if(!(await isMaster(pw)))return bad("Password is wrong.","Wrong Admin password");return doneLogin(m)}
   const u=userOf(m);
   if(!u){if(FS.dir)alertLog(m,"Unregistered MSID tried to sign in");return err(!FS.dir?"Connect the data server first, then sign in.":"<b>Access Denied.</b> MSID "+esc(m)+" is not registered. Please contact Administration.")}
@@ -763,7 +814,7 @@ async function gateGo(setup){
   const a=await authGet(m);
   if(!a)return err(FS.dir?"No password yet. Tap “First time or forgot password?” to set one.":"Connect the data server first, then sign in.");
   if(a.h!==await sha(m+"|"+pw))return bad("Password is wrong.","Wrong password");
-  if(a.did!==DID()){alertLog(m,"Sign in from a different PC / browser (blocked)");return err("<b>This MSID is linked to another PC.</b> Nobody else can use it. Use “First time or forgot password?” with your device name to move it.")}
+  if(a.did!==DID()){alertLog(m,"Sign in from a different PC / browser (blocked)");if(S.cfg.alertOther)autoMail(m,"Someone tried to use this MSID from a different PC");return err("<b>This MSID is linked to another PC.</b> Nobody else can use it. Use “First time or forgot password?” with your device name to move it.")}
   doneLogin(m);
 }
 function logout(){SESS.set(false);view.as=null;view.rows=[];view.pick=null;Object.keys(FRESH).forEach(k=>delete FRESH[k]);$("#adminPg").hidden=true;document.body.style.overflow="";gate()}
@@ -799,7 +850,7 @@ function setTop(){
   $("#ava").textContent=((view.as?id.name:me.name)||me.pc||"U").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
   $("#btnAdmin").hidden=!isOwner()||!!view.as;
   $("#btnBack").hidden=!view.as;
-  $("#btnFolder").hidden=!can("folder");$("#btnTheme").hidden=!can("theme");$("#btnHelp").hidden=!can("help");
+  $("#btnFolder").hidden=!can("folder");paintSync();$("#btnTheme").hidden=!can("theme");$("#btnHelp").hidden=!can("help");
   const left=daysLeft(expiry());$("#expTxt").textContent="Valid till "+us(expiry());$("#expTxt").className="chip hide-m "+(left<15?"red":"");
   paintSync();renderNotice();
 }
@@ -920,25 +971,22 @@ function renderProc(){
     <small>${p.cols.length} columns · ${scope()==="own"?"your own claims":"everyone's claims"}</small>`;
   if(p.status==="soon"&&role()!=="admin"){M.innerHTML=`<div class="card soonbox"><div class="big">⏳</div><h2>${esc(p.label)} is coming soon</h2><p class="muted">Admin will switch it on.</p></div>`;renderActs();return}
   M.innerHTML=`
-  <div class="strip" id="kpis" ${can("kpis")?"":"hidden"}></div>
-  <div class="lightbar" id="lightCard" ${can("lights")?"":"hidden"}><span title="Green = data · light red = empty">💡</span><div class="lights" id="lights"></div><span class="chip" id="lightSum"></span></div>
-  <div class="tools">
-    <div class="tool" id="dumpCard">
-      <span class="tt">📥 Dump</span>
-      ${can("dump")?`<textarea class="dumpbox" id="paste" placeholder="Click & Ctrl+V · any process · or drop Excel" spellcheck="false" rows="1"></textarea>
-      <button class="cap sm gold" id="btnLoad">⚡ Load</button>
-      <label class="cap sm">📄 Upload<input type="file" id="file" accept=".xlsx,.xlsm,.xls,.csv" hidden></label>`:`<span class="muted" style="font-size:12px">View only · data is loaded by Admin / SME</span>`}
+  <div class="topstrip">
+    <div class="dumpzone" id="dumpCard"><span class="tt">📥 Dump</span>
+      ${can("dump")?`<textarea class="dumpbox" id="paste" placeholder="Click here & Ctrl+V — paste any process with headings · or drop an Excel file" spellcheck="false" rows="1"></textarea>
+      <button class="cap xs gold" id="btnLoad">⚡ Load</button><label class="cap xs">📄 Upload<input type="file" id="file" accept=".xlsx,.xlsm,.xls,.csv" hidden></label>`:`<span class="muted" style="font-size:12px;flex:1">View only · data is loaded by Admin / SME</span>`}
     </div>
-    <div class="tool" id="pickCard"></div>
+    <div class="minik" id="kpis" ${can("kpis")?"":"hidden"}></div>
   </div>
+  <div class="tool pickline" id="pickCard"></div>
   <div class="rbar" id="rbar" ${can("range")?"":"hidden"}></div>
   <div class="gridcard">
-    <div class="ghead"><h3>📋 Data</h3><span class="chip" id="gCount"></span><span class="chip violet" id="gNew" hidden></span><span class="chip em" id="gPk" hidden></span>
-      <label class="tg sm" id="gOnly" hidden><input type="checkbox" id="gOnlyC"><span class="sw"></span>Only picked</label><span class="sp"></span>
-      ${can("filters")?`<span class="chip gold" id="gFl" hidden></span><input id="gq" placeholder="Search anything…" style="max-width:240px;border-radius:999px" value="${esc(view.q)}"><button class="cap xs ghost" id="gReset">Reset filters</button>`:""}
-    </div>
     <div class="gbox" id="gbox"></div>
-    <div class="pager" id="pager"></div>
+    <div class="pager"><span class="chip" id="gCount"></span><span class="chip em" id="gLt" ${can("lights")?"":"hidden"}></span><span class="chip violet" id="gNew" hidden></span><span class="chip em" id="gPk" hidden></span>
+      <label class="tg sm" id="gOnly" hidden><input type="checkbox" id="gOnlyC"><span class="sw"></span>Only picked</label>
+      <span id="pager" style="display:contents"></span><span class="sp"></span>
+      ${can("filters")?`<span class="chip gold" id="gFl" hidden></span><input id="gq" placeholder="🔎 Search anything…" style="max-width:220px;border-radius:999px;padding:3px 12px;font-size:12px" value="${esc(view.q)}"><button class="cap xs ghost" id="gReset">Reset filters</button>`:""}
+    </div>
   </div>`;
   wireProc();renderActs();
 }
@@ -970,23 +1018,21 @@ function renderKpis(){
   el.innerHTML=[["Rows",nf(rows.length),view.from?(view.from===view.to?us(view.from):us(view.from)+" → "+us(view.to)):"no date loaded","var(--gold)"],
     ["Dates",nf(dates.size),"by "+(p.cols[dIdx(p)]||"—"),"var(--violet)"],["Users",nf(users.size),"by "+(p.cols[uIdx(p)]||"—"),"var(--teal)"],
     ["QA picked",nf(pk),view.pick?view.pick.pct+"% · "+(view.pick.mode==="date"?"per date":"per user"):"run a pick","var(--em)"]]
-    .map(([a,b,c,k])=>`<div class="s" style="--kc:${k}"><small>${a}</small><b>${b}</b><em>${esc(c)}</em></div>`).join("");
+    .map(([a,b,c,k])=>`<span class="mk" style="--kc:${k}" title="${esc(c)}"><small>${a}</small><b>${b}</b></span>`).join("");
 }
+/* the green / light-red bulb now sits inside each grid heading */
 function renderLights(){
-  const p=P(),el=$("#lights");if(!p||!el)return;const rows=allRows(),n=rows.length;
-  if(!p.cols.length){el.innerHTML=`<span class="muted" style="font-size:12px">No headings yet · dump any data with headings and they appear here</span>`;$("#lightSum").textContent="0 columns";return}
-  const fill=p.cols.map((c,i)=>rows.reduce((a,r)=>a+(String(r.v[i]??"").trim()?1:0),0));
-  el.innerHTML=p.cols.map((c,i)=>{const f=fill[i],cls=f===0?"off":f===n?"on":"on part",key=i===dIdx(p)||i===uIdx(p);
-    return `<span class="lt-cap ${cls} ${key?"key":""}" title="${esc(c)} · ${n?Math.round(f/n*100):0}% filled"><i>${colL(i)}</i><span class="bulb"></span>${esc(c)}</span>`}).join("");
-  const on=fill.filter(x=>x>0).length;$("#lightSum").textContent=`${on}/${p.cols.length} green`;
+  const p=P();if(!p)return;const rows=allRows(),n=rows.length;
+  view.fill=p.cols.map((c,i)=>rows.reduce((a,r)=>a+(String(r.v[i]??"").trim()?1:0),0));view.fillN=n;
 }
-function flashLights(){$$("#lights .lt-cap.on").forEach((e,i)=>setTimeout(()=>{e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash")},i*20))}
+const bulbOf=i=>{if(!can("lights"))return "";const f=(view.fill||[])[i]||0,n=view.fillN||0;return `<span class="hb ${f===0?"off":f===n?"on":"part"}" title="${f===0?"No data":Math.round(f/n*100)+"% filled"}"></span>`};
+function flashLights(){$$("#gbox .hb.on,#gbox .hb.part").forEach((e,i)=>setTimeout(()=>{e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash")},i*20))}
 function renderRange(){
   const p=P(),el=$("#rbar");if(!p||!el)return;const ds=savedDates(p.k);
   el.innerHTML=`<b style="font-size:12.5px">📅</b>
     <input type="date" id="rFrom" value="${view.from}"><span class="muted" style="font-size:12px">to</span><input type="date" id="rTo" value="${view.to}">
     <button class="cap xs" data-q="last">Latest</button><button class="cap xs" data-q="7">7 days</button><button class="cap xs" data-q="month">This month</button><button class="cap xs" data-q="all">All</button>
-    ${can("deldate")&&ds.length?`<button class="cap xs ghost" id="rManage">🗂 Saved dates and delete </button>`:""}
+    ${can("deldate")&&ds.length?`<button class="cap xs ghost" id="rManage">🗂 Saved dates</button>`:""}
     <span class="sp"></span>
     <div class="dchips">${ds.length?ds.slice(0,40).map(d=>`<span class="dc ${d>=view.from&&d<=view.to?"in":""}" data-d="${d}" title="${fmtLong(d)}">${us(d).slice(0,5)}</span>`).join(""):`<span class="muted" style="font-size:12px">No saved dates yet${FS.dir?"":" · server not connected"}</span>`}</div>`;
   const go=async(f,t)=>{view.from=f;view.to=t;view.cleared=false;view.pick=null;view.onlyPk=false;await loadRange()};
@@ -1017,17 +1063,17 @@ function renderGrid(){
   const slice=rows.slice(view.page*view.ps,(view.page+1)*view.ps),pk=view.pick?view.pick.ids:new Set();
   $("#gCount").textContent=rows.length===tot?nf(tot)+" rows":nf(rows.length)+" of "+nf(tot)+" rows";
   const nf2=Object.keys(view.f).length,fl=$("#gFl");if(fl){fl.hidden=!nf2;fl.textContent=nf2+" filter"+(nf2>1?"s":"")+" on"}
+  const lt=$("#gLt");if(lt&&view.fill){const on=view.fill.filter(x=>x>0).length;lt.textContent="💡 "+on+"/"+p.cols.length+" green";lt.className="chip "+(on===p.cols.length?"em":on?"gold":"red")}
   const gp=$("#gPk");gp.hidden=!view.pick;if(view.pick)gp.textContent="✓ "+nf(pk.size)+" picked";
   $("#gOnly").hidden=!view.pick;$("#gOnlyC").checked=view.onlyPk;$("#gOnlyC").onchange=e=>{view.onlyPk=e.target.checked;view.page=0;renderGrid()};
   if(!tot||!p.cols.length){box.innerHTML=`<div class="empty-state"><div class="big">🗃️</div><b style="color:var(--ink)">No data on screen</b><br>${can("dump")?"Paste or upload in the Dump box (any process), or pick a saved date.":"Pick a saved date above."}</div>`;$("#pager").innerHTML="";return}
   const dc=dIdx(p),uc=uIdx(p),canX=can("delrow")||can("dump");
   const numLike=i=>/tin|mpin|fln|id|zip|claim|audit|ufe|pid|number|phone|priority|office|sequence|suffix|prefix|dollar|review/i.test(p.cols[i]);
   const flt=can("filters");
-  box.innerHTML=`<table class="g"><thead><tr><th class="n"><div class="thw">#</div></th>${p.cols.map((c,i)=>`<th class="${i===dc||i===uc?"key":""}"><div class="thw"><span class="tl"><span class="cl">${colL(i)}${view.sort&&view.sort.i===i?(view.sort.dir>0?" ▲":" ▼"):""}</span>${esc(c)}</span>${flt?`<button class="hdd ${view.f[i]?"on":""}" data-hd="${i}" title="Filter / sort ${esc(c)}">▾</button>`:""}</div></th>`).join("")}${canX?"<th><div class='thw'></div></th>":""}</tr></thead>
+  box.innerHTML=`<table class="g"><thead><tr><th class="n"><div class="thw">#</div></th>${p.cols.map((c,i)=>`<th class="${i===dc||i===uc?"key":""}"><div class="thw">${bulbOf(i)}<span class="tl"><span class="cl">${colL(i)}${view.sort&&view.sort.i===i?(view.sort.dir>0?" ▲":" ▼"):""}</span>${esc(c)}</span>${flt?`<button class="hdd ${view.f[i]?"on":""}" data-hd="${i}" title="Filter / sort ${esc(c)}">▾</button>`:""}</div></th>`).join("")}${canX?"<th><div class='thw'></div></th>":""}</tr></thead>
     <tbody>${slice.map((r,j)=>`<tr class="${pk.has(r.id)?"pk":""} ${r.s==="new"?"new":""}"><td class="n">${pk.has(r.id)?"✓ ":""}${view.page*view.ps+j+1}</td>${p.cols.map((c,i)=>{const s=String(r.v[i]??"");return `<td class="${s?"":"empty"} ${numLike(i)?"num":""}" title="${esc(s)}">${s?esc(s):"·"}</td>`}).join("")}${canX?`<td>${r.s==="new"||can("delrow")?`<button class="xrow" data-x="${r.id}" title="Remove row">✕</button>`:""}</td>`:""}</tr>`).join("")}</tbody></table>`;
-  $("#pager").innerHTML=`<span>Page ${view.page+1} of ${pages}</span><button class="cap xs" id="pgP" ${view.page?"":"disabled"}>‹ Prev</button><button class="cap xs" id="pgN" ${view.page<pages-1?"":"disabled"}>Next ›</button>
-    <select id="pgS" style="padding:2px 8px;border-radius:999px;font-size:12px">${[50,100,250,500,1000].map(n=>`<option ${n===view.ps?"selected":""}>${n}</option>`).join("")}</select><span>rows per page</span><span class="sp"></span>
-    <span><span class="sdot ok" style="vertical-align:0"></span> green = picked for QA · <span style="color:var(--violet)">▍</span> new, not saved</span>`;
+  $("#pager").innerHTML=`<span>Page ${view.page+1}/${pages}</span><button class="cap xs" id="pgP" ${view.page?"":"disabled"}>‹</button><button class="cap xs" id="pgN" ${view.page<pages-1?"":"disabled"}>›</button>
+    <select id="pgS" style="padding:2px 8px;border-radius:999px;font-size:12px" title="Rows per page">${[50,100,250,500,1000].map(n=>`<option ${n===view.ps?"selected":""}>${n}</option>`).join("")}</select>`;
   $("#pgP").onclick=()=>{view.page--;renderGrid();box.scrollTop=0};$("#pgN").onclick=()=>{view.page++;renderGrid();box.scrollTop=0};$("#pgS").onchange=e=>{view.ps=+e.target.value;view.page=0;renderGrid()};
   box.querySelectorAll("[data-hd]").forEach(b=>b.onclick=e=>{e.stopPropagation();openFilter(+b.dataset.hd,b)});
   box.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>removeRow(+b.dataset.x));
@@ -1275,7 +1321,7 @@ function renderPick(){
    <select id="pUser"><option value="">All users (${users.length})</option>${users.map(([k,n])=>`<option value="${esc(k)}" ${view.puser===k?"selected":""}>${esc(n)}</option>`).join("")}</select>
    <button class="cap sm em" id="pGo" ${pool.length&&uIdx(p)>=0?"":"disabled"}>🎯 Pick</button>
    ${view.pick?`<button class="cap sm gold" id="pRes">✅ Result (${nf(view.pick.ids.size)})</button><button class="cap xs" id="pAgain" title="New random pick">🔀</button><button class="cap xs ghost" id="pClr" title="Clear pick">✕</button>`:""}${hist}
-   <div class="hint">${uIdx(p)<0?"<span style='color:var(--danger)'>Choose the user heading first.</span>":pool.length?`≈ <b>${nf(est)}</b> of <b>${nf(pool.length)}</b> claims · ${view.mode==="date"?"each user on each date gets "+view.pct+"%":"each user gets "+view.pct+"% of all their claims"} · claims picked before are never picked again${Object.keys(view.f).length||view.q?" · <span style='color:var(--amber)'>filters apply</span>":""}`:"Load data first (dump or a saved date)."}</div>`;
+   <div class="hint" title="Claims saved in a pick are never picked again">${uIdx(p)<0?"<span style='color:var(--danger)'>Choose the user heading first.</span>":pool.length?`≈ <b>${nf(est)}</b> of <b>${nf(pool.length)}</b> claims · ${view.mode==="date"?"each user on each date gets "+view.pct+"%":"each user gets "+view.pct+"% of all their claims"} · never repeats${Object.keys(view.f).length||view.q?" · <span style='color:var(--amber)'>filters apply</span>":""}`:"Load data first (dump or a saved date)."}</div>`;
   $$("#pMode [data-m]").forEach(b=>b.onclick=()=>{view.mode=b.dataset.m;renderPick()});
   $$("#pPct [data-p]").forEach(b=>b.onclick=()=>{view.pct=+b.dataset.p;renderPick()});
   $("#pCus").onchange=e=>{const v=+e.target.value;if(v>0&&v<=100){view.pct=v;renderPick()}};
@@ -1634,7 +1680,23 @@ function adminPage3(){
     <p class="ahelp" style="margin-top:10px"><b>No data copy on the PC</b> (they only see what is on the data server):</p>
     <div class="chips">${ROLE3.map(r=>`<label class="tg"><input type="checkbox" data-nl="${r}" ${(AD.noLocal||[]).includes(r)?"checked":""}><span class="sw"></span>${ROLEN(r)}</label>`).join("")}</div>
     <p class="ahelp" style="margin-top:10px">This PC: <b>${LS.get("adminpc",false)?"Admin PC ✓":"not marked as Admin PC"}</b>. Always on: one MSID = one PC, device-name check for new passwords, locked files, F12 / right-click blocked, tool expiry.</p>
-    <div class="frow">${LS.get("adminpc",false)?`<button class="cap sm" id="apForget">Forget this PC as Admin PC</button>`:`<button class="cap sm gold" id="apSet">Make this PC the Admin PC</button>`}<button class="cap sm" id="alOpen">🚨 Login alerts</button></div></section>
+    <div class="frow" style="margin-top:14px"><b style="font-size:13px">✉️ Help mail</b></div>
+    <p class="ahelp">When someone types ${+AD.maxTry||5} wrong passwords, a friendly “needs sign-in help” mail goes to these addresses. The user sees a kind “Need assistance?” message — no warning.</p>
+    <div class="frow">${[0,1,2].map(i=>`<label class="fl" style="flex:1;min-width:220px">Email ${i+1}<input data-k="alertMails.${i}" value="${esc((AD.alertMails||[])[i]||"")}" placeholder="name@uhc.com"></label>`).join("")}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:4px 18px">
+      ${tgl("alertAuto",AD.alertAuto!==false,"Auto mail (needs the Power Automate flow below)")}
+      ${tgl("helpPop",AD.helpPop!==false,"Show the friendly “Need assistance?” popup")}
+      ${tgl("alertOther",!!AD.alertOther,"Also mail when someone tries an MSID from another PC")}
+    </div>
+    <details style="margin-top:10px"><summary style="cursor:pointer;font-weight:700;font-size:12.5px">⚙️ One-time setup: Power Automate flow (sends the mail automatically)</summary>
+     <ol class="ahelp" style="line-height:1.7;margin-top:8px">
+      <li>Open <b>make.powerautomate.com</b> → <b>Create</b> → <b>Automated cloud flow</b>.</li>
+      <li>Trigger: <b>SharePoint – When a file is created in a folder</b> (OneDrive folder: <b>OneDrive for Business – When a file is created</b>). Folder: <code>${esc(AD.folder||DEF_FOLDER)}/_mailbox</code>.</li>
+      <li>Add <b>Parse JSON</b> → Content: <i>File Content</i> → schema from sample: <code>{"to":"","subject":"","body":"","msid":"","at":""}</code>.</li>
+      <li>Add <b>Office 365 Outlook – Send an email (V2)</b> → To: <i>to</i> · Subject: <i>subject</i> · Body: <i>body</i>.</li>
+      <li>Add <b>Delete file</b> (same file) so the mail box stays clean. Save, then click <b>Send test mail</b> below.</li>
+     </ol></details>
+    <div class="frow">${LS.get("adminpc",false)?`<button class="cap sm" id="apForget">Forget this PC as Admin PC</button>`:`<button class="cap sm gold" id="apSet">Make this PC the Admin PC</button>`}<button class="cap sm" id="alOpen">🚨 Login alerts</button><button class="cap sm" id="mailTest">✉️ Send test mail</button></div></section>
 
   <section class="acard"><h4>⚠️ Clean up this PC</h4><p class="ahelp">Removes saved dates from <b>this browser</b> only. The data folder is not touched.</p><div class="frow"><button class="cap sm danger" id="wipe">Clear this PC's copy</button></div></section>`;
 }
@@ -1655,6 +1717,7 @@ function wireAdmin3(){
   on("#lgOpen",async()=>{const L=(await readLog()).slice(0,500);const AN={login:"Login",save:"Save data (add new)",replace:"Save data (replace date)",pick:"Save pick",delpick:"Delete pick",delrow:"Remove row",deldate:"Delete date",settings:"Settings",blocked:"🚨 Blocked login",moved:"Login moved to new PC"};
     modal(`<h3>📜 History log</h3>${L.length?`<div class="scroll"><table class="tbl"><thead><tr><th>When</th><th>MSID</th><th>Action</th><th>Process</th><th>Note</th></tr></thead><tbody>${L.map(e=>`<tr><td>${new Date(e.at).toLocaleString("en-IN")}</td><td class="mono">${esc(e.pc)}</td><td>${esc(AN[e.a]||e.a)}</td><td>${esc(e.p||"")}</td><td style="white-space:normal">${esc(e.n||"")}</td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">Nothing logged yet.</p>`}<div class="mrow"><button class="cap" data-close>Close</button></div>`,true)});
   $("#adminPg").querySelectorAll("[data-nl]").forEach(c=>c.onchange=()=>{const a=new Set(AD.noLocal||[]);c.checked?a.add(c.dataset.nl):a.delete(c.dataset.nl);AD.noLocal=[...a];adChanged()});
+  on("#mailTest",async()=>{if(!FS.dir){toast("Connect the data folder first");return}const keep=S.cfg.alertMails;S.cfg.alertMails=AD.alertMails;const ok=await autoMail("TEST","This is a test from Admin — the help mail works 🎉");S.cfg.alertMails=keep;toast(ok?"Test mail placed in _mailbox · Power Automate sends it in a minute":"Add an email and switch Auto mail on")});
   on("#apSet",()=>{LS.set("adminpc",true);toast("This PC is now the Admin PC");openAdmin(3)});
   on("#apForget",()=>{LS.set("adminpc",false);toast("This PC is no longer the Admin PC");openAdmin(3)});
   on("#alOpen",async()=>{const L=(await readLog()).filter(e=>e.a==="blocked");const files=(await fsList("_system")).filter(n=>/^alert_/.test(n));
@@ -1674,7 +1737,7 @@ function fixCfg(){
   if(!c.procs.some(p=>p.dyn))c.procs.push(clone(PROC0.find(p=>p.dyn)));
   c.procs.forEach(p=>{const d=PROC0.find(x=>x.k===p.k)||{};p.roles=Object.assign({mgr:1,sme:1,entry:1,employee:1},p.roles||{});p.label=p.label||d.label||p.k;p.status=p.status||"live";
     if(d.dyn){p.dyn=true;p.cols=Array.isArray(p.cols)?p.cols:[];p.dh=p.dh||"";p.uh=p.uh||""}else{p.cols=Array.isArray(p.cols)&&p.cols.length?p.cols:(d.cols||[]);p.dc=p.dc||d.dc||"A";p.uc=p.uc||d.uc||"B"}p.ic=p.ic||d.ic||p.k.slice(0,2).toUpperCase()});
-  if(c.idleMin===undefined)c.idleMin=15;if(c.askEvery===undefined)c.askEvery=true;if(c.wm===undefined)c.wm=true;if(!Array.isArray(c.noLocal))c.noLocal=["entry","employee"];if(!c.maxTry)c.maxTry=5;
+  if(c.idleMin===undefined)c.idleMin=15;if(c.askEvery===undefined)c.askEvery=true;if(c.wm===undefined)c.wm=true;if(!Array.isArray(c.noLocal))c.noLocal=["entry","employee"];if(!c.maxTry)c.maxTry=5;if(!Array.isArray(c.alertMails))c.alertMails=["akshay.ranjan@uhc.com","",""];while(c.alertMails.length<3)c.alertMails.push("");if(c.alertAuto===undefined)c.alertAuto=true;if(!c.v3){c.idleMin=0;c.askEvery=false;c.pcts=[5];c.v3=1}if(c.helpPop===undefined)c.helpPop=true;
   c.notice=c.notice||{on:false,text:"",type:"info",speed:25};c.folder=c.folder||DEF_FOLDER;
   c.pcts=Array.isArray(c.pcts)&&c.pcts.length?c.pcts:PCT0.slice();if(c.minOne===undefined)c.minOne=true;
   if(!c.seeded){ROSTER.forEach(([m,code,mc])=>{if(!c.users.some(u=>u.pc===m))c.users.push({pc:m,role:"employee",name:"",team:"",code,mc})});c.seeded=1}
