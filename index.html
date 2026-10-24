@@ -1,277 +1,1694 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>NEO Process Console</title>
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Provider Pick QA · Alpha NextGen Eclipse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <style>
-:root{--bg:#070b19;--bg2:#101733;--card:rgba(255,255,255,.055);--bd:rgba(255,255,255,.13);--tx:#e9edff;--mu:#8f9acb;--a:#00e5ff;--b:#8a5cff;--c:#ff3d9a;--ok:#39ff88;--wr:#ffb020;--cell:#0c1230;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#eef1ff;--bg2:#fff;--card:rgba(255,255,255,.75);--bd:rgba(40,50,120,.2);--tx:#141a3a;--mu:#5a638f;--cell:#fff}}
-:root[data-theme="dark"]{--bg:#070b19;--bg2:#101733;--card:rgba(255,255,255,.055);--bd:rgba(255,255,255,.13);--tx:#e9edff;--mu:#8f9acb;--cell:#0c1230}
-:root[data-theme="light"]{--bg:#eef1ff;--bg2:#fff;--card:rgba(255,255,255,.75);--bd:rgba(40,50,120,.2);--tx:#141a3a;--mu:#5a638f;--cell:#fff}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:radial-gradient(1100px 560px at 8% -10%,var(--b)38,transparent),radial-gradient(900px 480px at 100% 0,var(--a)22,transparent),var(--bg);color:var(--tx);font:14px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
-.wrap{padding:16px;max-width:1700px;margin:auto}
-.glass{background:var(--card);border:1px solid var(--bd);border-radius:18px;backdrop-filter:blur(14px);box-shadow:0 10px 30px #0004}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.logo{display:flex;gap:12px;align-items:center}
-.lg{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--a),var(--b),var(--c));display:grid;place-items:center;font-size:22px;box-shadow:0 0 22px var(--b)99}
-h1{margin:0;font-size:22px;letter-spacing:1px;background:linear-gradient(90deg,var(--a),var(--b),var(--c));-webkit-background-clip:text;background-clip:text;color:transparent}
-.sub{color:var(--mu);font-size:12px;letter-spacing:.5px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
-.k{padding:12px 14px;position:relative;overflow:hidden}
-.k:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--kc,var(--a))}
-.k b{font-size:26px;display:block;line-height:1.1}.k span{color:var(--mu);font-size:11px;text-transform:uppercase;letter-spacing:.8px}
-button{font:inherit;color:var(--tx);cursor:pointer;border:1px solid var(--bd);background:var(--card);padding:8px 14px;border-radius:999px;transition:.2s}
-button:hover{transform:translateY(-2px);box-shadow:0 6px 18px #0006;border-color:var(--a)}
-.nav{display:flex;gap:8px;flex-wrap:wrap;padding:10px;margin-bottom:12px}
-.pb{display:flex;align-items:center;gap:8px;font-weight:600}
-.pb i{font-style:normal;font-size:11px;background:#0003;border-radius:99px;padding:1px 7px;color:var(--mu)}
-.pb.on{background:linear-gradient(135deg,var(--b),var(--a));color:#fff;border-color:transparent;box-shadow:0 0 18px var(--a)88}.pb.on i{color:#fff}
-.bulb{width:10px;height:10px;border-radius:50%;background:#555a78;display:inline-block;transition:.3s;flex:none}
-.bulb.lit{background:var(--ok);box-shadow:0 0 8px 2px var(--ok),0 0 16px var(--ok)}
-.dump{padding:14px;margin-bottom:12px;display:grid;grid-template-columns:1fr auto;gap:12px}
-@media(max-width:800px){.dump{grid-template-columns:1fr}}
-.dump h3,.sec{margin:0 0 6px;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--a)}
-textarea{width:100%;height:120px;resize:vertical;background:var(--cell);color:var(--tx);border:1.5px dashed var(--a);border-radius:14px;padding:10px;font:12px ui-monospace,Consolas,monospace;white-space:pre}
-textarea:focus{outline:none;border-style:solid;box-shadow:0 0 0 3px var(--a)33}
-.side{display:flex;flex-direction:column;gap:8px;min-width:220px}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.g1{background:linear-gradient(135deg,var(--c),#ff8a3d);color:#fff;border:0}
-.g2{background:linear-gradient(135deg,var(--a),#3d7bff);color:#fff;border:0}
-.g3{background:linear-gradient(135deg,var(--ok),#00b3a4);color:#032;border:0;font-weight:700}
-.g4{background:linear-gradient(135deg,#ff4d4d,#a30000);color:#fff;border:0}
-.g5{background:linear-gradient(135deg,var(--b),var(--c));color:#fff;border:0}
-.g6{background:linear-gradient(135deg,var(--wr),#ff6a00);color:#2a1300;border:0;font-weight:600}
-.act{padding:10px;margin-bottom:10px}
-input,select{background:var(--cell);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:7px 10px;font:inherit;min-width:130px}
-input:focus,select:focus{outline:2px solid var(--a)}
-.fl{display:flex;gap:10px;flex-wrap:wrap;padding:10px;margin-bottom:10px;align-items:flex-end}
-.fl label{color:var(--mu);font-size:11px;display:flex;flex-direction:column;gap:3px;text-transform:uppercase;letter-spacing:.6px}
-.sc{overflow:auto;max-height:62vh;border-radius:16px}
-table{border-collapse:collapse;width:max-content;min-width:100%;background:var(--cell)}
-th,td{border:1px solid var(--bd);padding:0;min-width:130px;height:30px}
-th{position:sticky;top:0;background:linear-gradient(180deg,var(--bg2),var(--cell));z-index:2;text-align:left}
-th .h{padding:4px 8px 7px;outline:none;font-weight:700;color:var(--a);display:block;font-size:12px}
-th .bl{padding:6px 8px 0;display:flex;align-items:center;gap:6px;color:var(--mu);font-size:10px}
-td.rn,th.rn{min-width:48px;width:48px;text-align:center;color:var(--mu);font-size:11px;position:sticky;left:0;background:var(--bg2);z-index:1}th.rn{z-index:3}
-td[contenteditable]{padding:5px 8px;outline:none;white-space:nowrap}
-td[contenteditable]:focus{background:var(--a)22;box-shadow:inset 0 0 0 2px var(--a)}
-tbody tr:nth-child(even) td[contenteditable]{background:#ffffff08}
-tr:hover td[contenteditable]{background:var(--b)16}
-td.dup{background:#ff3d9a55!important;color:var(--tx);font-weight:600}
-.hint{color:var(--mu);font-size:12px;margin:8px 2px}
-#res{margin-top:12px;padding:14px;display:none}
-.bar{display:grid;grid-template-columns:200px 1fr 90px;gap:10px;align-items:center;margin:5px 0;font-size:12px}
-.bar div{height:12px;border-radius:99px;background:#ffffff14;overflow:hidden}.bar u{display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--b),var(--c));border-radius:99px}
-.ids{font-size:11px;color:var(--mu);margin:0 0 8px;word-break:break-word}
-#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(90px);background:linear-gradient(135deg,var(--b),var(--a));color:#fff;padding:10px 20px;border-radius:999px;transition:.3s;z-index:9;pointer-events:none;box-shadow:0 8px 24px #0008}
-#toast.s{transform:translateX(-50%) translateY(0)}
-.cap{display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;border:1px solid var(--bd);font-size:12px;color:var(--mu);background:var(--card)}
-.cf{width:calc(100% - 12px);margin:0 6px 6px;min-width:0;padding:3px 7px;font-size:11px;border-radius:8px}
-td.as{color:var(--ok);font-weight:600}
-.chips button{padding:5px 11px;font-size:12px}.chips{display:inline-flex;gap:6px}
-.sec{margin-bottom:8px}
-.fld{display:flex;flex-direction:column;gap:5px;color:var(--mu);font-size:11px;text-transform:uppercase;letter-spacing:.7px}
-.fld input,.fld select{min-width:0;width:100%}#pct{font-size:18px;font-weight:700}
-.dgrid{display:grid;grid-template-columns:110px auto 1fr 1fr auto;gap:12px;align-items:end}
-@media(max-width:1000px){.dgrid{grid-template-columns:1fr 1fr}}
-.seg{display:inline-flex;border:1px solid var(--bd);border-radius:999px;padding:3px;gap:2px;background:var(--cell)}
-.seg button{border:0;background:transparent;padding:7px 16px;text-transform:none;letter-spacing:0}.seg button:hover{transform:none;box-shadow:none}
-.seg button.on{background:linear-gradient(135deg,var(--b),var(--a));color:#fff}
-.pb.up{opacity:.6;border-style:dashed}
-#dump{height:44px}.dump{padding:10px 14px}.dump h3{margin-bottom:4px}
-.two{display:flex;gap:6px}.two select:first-child{flex:0 0 42%}
-</style></head><body><div class="wrap">
-<div class="top"><div class="logo"><div class="lg">⚡</div><div><h1>NEO PROCESS CONSOLE</h1><div class="sub">CLAIMS WORKBENCH • EXECUTIVE EDITION</div></div></div>
-<div class="row"><span class="cap" id="lic"></span><span class="cap" id="svst">💾 —</span><button class="g3" id="bSave">💾 Save</button><button id="bTheme">🌗 Theme</button><button class="g4" id="eraseAll">🧹 Clear All</button></div></div>
+:root{
+  --f-body:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;--f-num:"JetBrains Mono",Consolas,monospace;
+  --bg:#060a14;--bg2:#0a1122;--panel:#0f172b;--panel2:#131d35;--glass:rgba(15,23,43,.72);--cell:#0c1426;
+  --line:rgba(148,163,209,.14);--line2:rgba(148,163,209,.26);--ink:#eaf0fb;--muted:#8d99b8;--dim:#5d6886;
+  --gold:#e6bb62;--gold2:#f7dc98;--gold-soft:rgba(230,187,98,.13);
+  --em:#2fd27a;--em-soft:rgba(47,210,122,.13);--teal:#34d1c4;--violet:#9686ff;--violet-soft:rgba(150,134,255,.14);
+  --danger:#f4646a;--danger-soft:rgba(244,100,106,.13);--amber:#f6ad3c;
+  --hdr:#16223f;--shadow:0 18px 50px rgba(0,0,0,.45);--ring:0 0 0 3px rgba(230,187,98,.28);
+}
+:root[data-theme="light"]{
+  --bg:#eef1f8;--bg2:#e6eaf4;--panel:#ffffff;--panel2:#f7f9fd;--glass:rgba(255,255,255,.82);--cell:#ffffff;
+  --line:#dfe4ef;--line2:#cbd3e4;--ink:#0e1730;--muted:#5a6684;--dim:#8a94ad;
+  --gold:#b07d1f;--gold2:#8a5f0f;--gold-soft:rgba(176,125,31,.1);
+  --em:#13a35a;--em-soft:rgba(19,163,90,.1);--teal:#0f9d92;--violet:#5b4bd8;--violet-soft:rgba(91,75,216,.09);
+  --danger:#d43c44;--danger-soft:rgba(212,60,68,.09);--amber:#c9790c;
+  --hdr:#14213f;--shadow:0 14px 40px rgba(20,33,63,.12);--ring:0 0 0 3px rgba(176,125,31,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:500 14px/1.45 var(--f-body);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;background:
+  radial-gradient(1200px 600px at 85% -10%,rgba(150,134,255,.10),transparent 60%),
+  radial-gradient(900px 500px at -10% 10%,rgba(230,187,98,.07),transparent 60%),var(--bg);background-attachment:fixed}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{background:var(--panel2);border:1px solid var(--line2);border-radius:12px;padding:8px 12px;outline:none;transition:.15s}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:var(--ring)}
+textarea{resize:vertical}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line2);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+.mono{font-family:var(--f-num)}
+.muted{color:var(--muted)}
 
-<div class="kpis" id="kpis"></div>
-<div class="nav glass" id="nav"></div>
+/* ---------- capsule buttons ---------- */
+.cap{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:999px;padding:9px 18px;border:1px solid var(--line2);
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0)),var(--panel2);font-weight:650;font-size:13px;letter-spacing:.01em;cursor:pointer;
+  transition:transform .15s,box-shadow .2s,border-color .2s,background .2s;white-space:nowrap;user-select:none;position:relative}
+.cap:hover{transform:translateY(-1px);border-color:var(--gold);box-shadow:0 8px 22px rgba(0,0,0,.22)}
+.cap:active{transform:translateY(0)}
+.cap:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.cap.sm{padding:6px 13px;font-size:12px}.cap.xs{padding:3px 10px;font-size:11px}
+.cap.gold{background:linear-gradient(135deg,var(--gold2),var(--gold) 55%,#c48f2c);color:#1b1306;border-color:transparent;box-shadow:0 6px 18px rgba(230,187,98,.28)}
+:root[data-theme="light"] .cap.gold{color:#fff;background:linear-gradient(135deg,#d3a240,#b07d1f 60%,#8a5f0f)}
+.cap.em{background:linear-gradient(135deg,#4be59a,#1fb866);color:#04210f;border-color:transparent;box-shadow:0 6px 18px rgba(47,210,122,.25)}
+.cap.violet{background:linear-gradient(135deg,#b2a6ff,#7c6cf0);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(150,134,255,.25)}
+.cap.danger{color:var(--danger);border-color:rgba(244,100,106,.45);background:var(--danger-soft)}
+.cap.ghost{background:transparent}
+.cap.on{border-color:var(--gold);background:var(--gold-soft);color:var(--gold2)}
+:root[data-theme="light"] .cap.on{color:var(--gold2)}
+.cap .ic{font-size:14px;line-height:1}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px;font-size:11.5px;font-weight:650;border:1px solid var(--line2);background:var(--panel2);color:var(--muted)}
+.chip.gold{color:var(--gold2);border-color:rgba(230,187,98,.4);background:var(--gold-soft)}
+:root[data-theme="light"] .chip.gold{color:var(--gold2)}
+.chip.em{color:var(--em);border-color:rgba(47,210,122,.4);background:var(--em-soft)}
+.chip.violet{color:var(--violet);border-color:rgba(150,134,255,.4);background:var(--violet-soft)}
+.chip.red{color:var(--danger);border-color:rgba(244,100,106,.4);background:var(--danger-soft)}
 
-<div class="dump glass">
-<div><h3>📥 Paste Excel Data</h3><textarea id="dump" spellcheck="false" placeholder="Paste here"></textarea></div>
-<div class="side"><button class="g2" id="bLoad">🚀 Load to Sheet</button><button id="bDclr">✖ Clear</button><div class="sub" id="dinfo"></div></div>
-</div>
-<div class="act glass"><div class="sec">🎯 Distribution</div>
-<div class="dgrid">
-<label class="fld">Percent %<input id="pct" type="number" value="5" min="0.1" max="100" step="0.5"></label>
-<div class="fld">Percent of<div class="seg" id="seg"><button data-b="total" class="on">Total</button><button data-b="own">Own claims</button></div></div>
-<div class="fld">Date<div class="two"><select id="dcol"></select><select id="dval"></select></div></div>
-<div class="fld">Name<div class="two"><select id="ncol"></select><select id="nval"></select></div></div>
-<div class="fld">&nbsp;<div class="row"><button class="g3" id="bRes">📊 Result</button><button class="g2" id="bExpR">📑 Export</button><button id="bEm">📇 Emails</button><button class="g1" id="bUnas">♻ Clear</button></div></div>
-</div><div class="sub" id="pv" style="margin-top:8px"></div>
-<div id="empBox" style="display:none;margin-top:10px"><div class="sub" style="margin-bottom:6px">Employee Name [Tab] Email, one per line</div><textarea id="emTa" style="height:90px" placeholder="Aarav Sharma&#9;aarav@company.com"></textarea><div class="row" style="margin-top:6px"><button class="g3" id="emSave">💾 Save Emails</button><span class="sub" id="emInfo"></span></div></div></div>
-<div id="res" class="glass"></div>
-<div class="fl glass">
-<label><span id="l0">Employee Name</span><select id="f0"></select></label>
-<label><span id="l1">Claim ID</span><input id="f1" placeholder="search claim..."></label>
-<label><span id="l8">Percentage</span><select id="f8"></select></label>
-<label><span>Duplicate on</span><select id="dk"></select></label><button id="fReset">↺ Reset Filter</button><button id="bClrS">🧹 Clear Sheet</button><span class="sub" id="fcnt"></span>
-</div>
-<div class="sc glass"><table id="tb"></table></div><div id="dls"></div>
+/* ---------- brand ---------- */
+.mark{width:38px;height:38px;flex:none}
+.brand{display:flex;align-items:center;gap:12px;cursor:default;user-select:none}
+.bstack{display:flex;flex-direction:column;line-height:1.05}
+.bsm{font-size:9.5px;letter-spacing:.32em;font-weight:800;color:var(--gold);text-transform:uppercase}
+.bbig{font-size:19px;font-weight:800;letter-spacing:-.01em;background:linear-gradient(90deg,var(--ink),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+:root[data-theme="light"] .bbig{background:linear-gradient(90deg,#0e1730,#8a5f0f);-webkit-background-clip:text;background-clip:text}
+.ver{font:600 10.5px var(--f-num);color:var(--muted);border:1px solid var(--line2);border-radius:999px;padding:3px 9px;white-space:nowrap}
 
-</div><div id="toast"></div>
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;padding:12px 22px;background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.top .sp{flex:1}
+.who{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.uchip{display:flex;align-items:center;gap:9px;padding:4px 12px 4px 4px;border-radius:999px;border:1px solid var(--line2);background:var(--panel2)}
+.ava{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:11px;color:#1b1306;background:linear-gradient(135deg,var(--gold2),var(--gold))}
+.uchip b{font-size:12px;display:block;line-height:1.1}.uchip small{font-size:10px;color:var(--muted)}
+.sdot{width:9px;height:9px;border-radius:50%;background:var(--dim);display:inline-block}
+.sdot.ok{background:var(--em);box-shadow:0 0 10px var(--em)}.sdot.warn{background:var(--amber);box-shadow:0 0 10px var(--amber)}.sdot.bad{background:var(--danger)}
+
+/* ---------- notice ---------- */
+.notice{display:flex;align-items:center;gap:10px;padding:7px 22px;background:linear-gradient(90deg,var(--violet-soft),transparent);border-bottom:1px solid var(--line);overflow:hidden;font-size:13px}
+.notice.urgent{background:linear-gradient(90deg,var(--danger-soft),transparent)}
+.ntag{font-size:10px;font-weight:800;letter-spacing:.14em;padding:2px 9px;border-radius:999px;background:var(--violet);color:#fff;flex:none}
+.notice.urgent .ntag{background:var(--danger)}
+.ntrack{overflow:hidden;flex:1;white-space:nowrap}.nmove{display:inline-block;padding-left:100%;animation:nm 25s linear infinite}
+@keyframes nm{to{transform:translateX(-100%)}}
+
+/* ---------- process rail ---------- */
+.rail{display:flex;gap:10px;padding:16px 22px 4px;overflow-x:auto}
+.pbtn{display:flex;align-items:center;gap:10px;border-radius:999px;padding:8px 18px 8px 8px;border:1px solid var(--line2);background:var(--panel);cursor:pointer;transition:.2s;min-width:max-content}
+.pbtn:hover{border-color:var(--gold);transform:translateY(-1px)}
+.pbtn .pi{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;background:var(--panel2);border:1px solid var(--line2);color:var(--muted)}
+.pbtn b{display:block;font-size:13.5px;line-height:1.1}.pbtn small{font-size:10.5px;color:var(--muted)}
+.pbtn.on{background:linear-gradient(135deg,rgba(230,187,98,.18),rgba(150,134,255,.12));border-color:var(--gold);box-shadow:0 10px 28px rgba(0,0,0,.25)}
+.pbtn.on .pi{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1b1306;border-color:transparent}
+.pbtn.soon{opacity:.55}
+.pbtn .pl{width:8px;height:8px;border-radius:50%;background:var(--dim);margin-left:4px}.pbtn .pl.on{background:var(--em);box-shadow:0 0 9px var(--em)}
+
+/* ---------- layout ---------- */
+.wrap{padding:14px 22px 60px;max-width:1720px;margin:0 auto}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 4px;font-size:15px;font-weight:750;display:flex;align-items:center;gap:8px}
+.card .sub{color:var(--muted);font-size:12.5px;margin:0 0 12px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:6px 0 14px}
+.hero h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em}
+.hero h1 span{color:var(--gold)}
+.hero p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.rules{display:flex;gap:8px;flex-wrap:wrap}
+.rule{display:flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--panel);border-radius:14px;padding:7px 12px;font-size:12px}
+.rule .lt{font:700 12px var(--f-num);width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--gold-soft);color:var(--gold2)}
+:root[data-theme="light"] .rule .lt{color:var(--gold2)}
+.rule small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
+.kpi{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.kpi:after{content:"";position:absolute;right:-30px;top:-30px;width:100px;height:100px;border-radius:50%;background:var(--kc,var(--gold));opacity:.08}
+.kpi small{font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.kpi b{display:block;font:700 26px var(--f-num);margin-top:4px;letter-spacing:-.02em}
+.kpi em{font-style:normal;font-size:11.5px;color:var(--muted)}
+
+/* column lights */
+.lights{display:flex;flex-wrap:wrap;gap:6px}
+.lt-cap{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:5px 11px 5px 6px;font-size:11.5px;font-weight:650;border:1px solid var(--line2);background:var(--panel2);color:var(--muted);transition:.3s}
+.lt-cap i{font:700 9.5px var(--f-num);font-style:normal;min-width:20px;height:18px;border-radius:9px;display:grid;place-items:center;background:var(--bg2);color:var(--dim);padding:0 4px}
+.lt-cap .bulb{width:9px;height:9px;border-radius:50%;background:var(--dim);transition:.3s}
+.lt-cap.on{color:var(--ink);border-color:rgba(47,210,122,.45);background:var(--em-soft)}
+.lt-cap.on .bulb{background:var(--em);box-shadow:0 0 6px var(--em),0 0 14px var(--em)}
+.lt-cap.part .bulb{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.lt-cap.key{outline:1.5px dashed var(--gold);outline-offset:1px}
+.lt-cap.flash{animation:fl .9s ease}
+@keyframes fl{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+.cols2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px;margin:14px 0}
+@media (max-width:1100px){.cols2{grid-template-columns:1fr}}
+.drop{border:1.5px dashed var(--line2);border-radius:16px;padding:12px;background:var(--bg2);transition:.2s;position:relative}
+.drop.over{border-color:var(--em);background:var(--em-soft)}
+.drop textarea{width:100%;min-height:92px;border:0;background:transparent;padding:4px;font:12px var(--f-num);box-shadow:none!important}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row.end{justify-content:flex-end}
+.lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700;margin:12px 0 6px;display:block}
+.seg{display:inline-flex;padding:4px;border-radius:999px;background:var(--bg2);border:1px solid var(--line2);gap:4px}
+.seg button{border:0;background:transparent;border-radius:999px;padding:7px 16px;font-weight:700;font-size:12.5px;cursor:pointer;color:var(--muted)}
+.seg button.on{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1b1306;box-shadow:0 4px 14px rgba(230,187,98,.3)}
+:root[data-theme="light"] .seg button.on{color:#fff;background:linear-gradient(135deg,#d3a240,#b07d1f)}
+.pct{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pct button{border-radius:999px;border:1px solid var(--line2);background:var(--panel2);padding:6px 13px;font:700 12px var(--f-num);cursor:pointer;transition:.15s}
+.pct button:hover{border-color:var(--gold)}
+.pct button.on{background:var(--em-soft);border-color:var(--em);color:var(--em);box-shadow:0 0 0 3px rgba(47,210,122,.12)}
+.pct input{width:110px;text-align:center;border-radius:999px;font-family:var(--f-num)}
+.hint{font-size:12px;color:var(--muted);margin-top:8px}
+.hint b{color:var(--ink)}
+
+/* range bar */
+.rbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:10px 14px;margin-bottom:12px}
+.rbar input[type=date]{padding:6px 10px;border-radius:999px}
+.rbar .sp{flex:1}
+.dchips{display:flex;gap:5px;flex-wrap:wrap;max-height:62px;overflow:auto}
+.dc{font:600 11px var(--f-num);border-radius:999px;border:1px solid var(--line2);padding:3px 9px;background:var(--panel2);cursor:pointer;color:var(--muted)}
+.dc.in{color:var(--em);border-color:rgba(47,210,122,.45);background:var(--em-soft)}
+
+/* grid */
+.gridcard{background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.ghead{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.ghead h3{margin:0;font-size:14.5px}
+.ghead .sp{flex:1}
+.gbox{overflow:auto;max-height:62vh}
+table.g{border-collapse:separate;border-spacing:0;font-size:12.5px;min-width:100%}
+table.g th,table.g td{padding:7px 12px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:left;max-width:360px;overflow:hidden;text-overflow:ellipsis}
+table.g thead th{position:sticky;top:0;z-index:3;background:var(--hdr);color:#eef2fb;font-size:11.5px;font-weight:700;letter-spacing:.02em;border-bottom:0}
+table.g thead th .cl{display:block;font:600 9.5px var(--f-num);color:#9fb0d6;letter-spacing:.06em}
+table.g thead th.key{box-shadow:inset 0 -3px 0 var(--gold)}
+table.g thead tr.flt th{top:42px;background:var(--panel2);padding:5px 6px;border-bottom:1px solid var(--line)}
+table.g thead tr.flt input{width:100%;min-width:70px;padding:4px 8px;font-size:11.5px;border-radius:8px}
+table.g td.n,table.g th.n{position:sticky;left:0;z-index:2;background:var(--panel);color:var(--dim);font:600 11px var(--f-num);text-align:right;min-width:52px}
+table.g thead th.n{z-index:4;background:var(--hdr)}
+table.g thead tr.flt th.n{background:var(--panel2)}
+table.g tbody tr:hover td{background:var(--gold-soft)}
+table.g tbody tr.pk td{background:var(--em-soft)}
+table.g tbody tr.pk td.n{color:var(--em)}
+table.g tbody tr.new td.n{box-shadow:inset 3px 0 0 var(--violet)}
+table.g td.num{font-family:var(--f-num);font-size:12px}
+table.g td.empty{color:var(--dim)}
+.pager{display:flex;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);flex-wrap:wrap}
+.pager .sp{flex:1}
+.empty-state{padding:56px 20px;text-align:center;color:var(--muted)}
+.empty-state .big{font-size:42px;margin-bottom:8px}
+.xrow{border:0;background:transparent;color:var(--dim);cursor:pointer;font-size:12px;padding:0 4px}
+.xrow:hover{color:var(--danger)}
+
+/* results */
+.res{margin-top:14px}
+.rsum{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:10px 0 14px}
+.ucard{border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--panel2)}
+.ucard b{font-size:13px}.ucard .bar{height:6px;border-radius:9px;background:var(--bg2);margin:9px 0 6px;overflow:hidden}
+.ucard .bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--em),var(--teal))}
+.ucard .nums{display:flex;justify-content:space-between;font:600 11.5px var(--f-num);color:var(--muted)}
+.ucard .nums em{font-style:normal;color:var(--em)}
+
+/* gate / lock */
+.gate{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;overflow:auto;
+  background:radial-gradient(800px 500px at 50% 20%,rgba(150,134,255,.18),transparent 60%),radial-gradient(700px 500px at 50% 110%,rgba(230,187,98,.16),transparent 60%),#04070f}
+.orb{position:fixed;width:620px;height:620px;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;
+  background:radial-gradient(circle at 50% 50%,#04070f 54%,transparent 55%),conic-gradient(from 0deg,rgba(230,187,98,.0),rgba(230,187,98,.55),rgba(150,134,255,.45),rgba(52,209,196,.35),rgba(230,187,98,.0));
+  filter:blur(18px);opacity:.55;animation:spin 22s linear infinite}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.lcard{position:relative;width:min(440px,100%);background:rgba(13,20,38,.78);border:1px solid rgba(230,187,98,.25);border-radius:28px;padding:34px 32px 26px;
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 30px 80px rgba(0,0,0,.6);color:#eaf0fb;text-align:center}
+.lcard .mark{width:64px;height:64px;margin:0 auto 12px;display:block}
+.l1{font-size:11px;letter-spacing:.42em;font-weight:800;color:#e6bb62}
+.l2{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.05;margin:8px 0 6px;background:linear-gradient(90deg,#fff,#f7dc98);-webkit-background-clip:text;background-clip:text;color:transparent}
+.l3{font-size:11px;letter-spacing:.42em;font-weight:800;color:#9686ff}
+.lcard .ver{color:#9fb0d6;border-color:rgba(255,255,255,.18);display:inline-block;margin-top:12px}
+.lcard input{width:100%;margin-top:12px;background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14);color:#fff;padding:12px 16px;border-radius:999px;text-align:center;letter-spacing:.04em}
+.lcard .cap{width:100%;margin-top:16px;padding:12px}
+.lnk{display:block;margin:12px auto 0;border:0;background:none;color:#9fb0d6;font-size:12.5px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.lnk:hover{color:#f7dc98}
+.err{min-height:18px;margin-top:10px;font-size:12.5px;color:#ff9da1}
+.ok-line{font-size:12px;color:#6ee7a8;margin-top:10px}
+.lfoot{margin-top:18px;font-size:10.5px;color:#5d6886;letter-spacing:.06em}
+
+/* modal & toast */
+.modal{position:fixed;inset:0;z-index:90;background:rgba(3,6,14,.62);backdrop-filter:blur(6px);display:grid;place-items:center;padding:20px}
+.mcard{width:min(760px,100%);max-height:88vh;overflow:auto;background:var(--panel);border:1px solid var(--line2);border-radius:24px;padding:22px;box-shadow:var(--shadow);animation:pop .18s ease}
+.mcard.wide{width:min(1100px,100%)}
+@keyframes pop{from{transform:scale(.97);opacity:0}}
+.mcard h3{margin:0 0 6px;font-size:18px}
+.mcard .mrow{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.toasts{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{background:var(--panel);border:1px solid var(--gold);color:var(--ink);padding:10px 18px;border-radius:999px;box-shadow:var(--shadow);font-weight:600;font-size:13px;animation:pop .2s ease}
+.map{width:100%;border-collapse:collapse;font-size:12.5px}
+.map td,.map th{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left}
+.map th{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.map .arrow{color:var(--gold)}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th,.tbl td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.tbl th{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);position:sticky;top:0;background:var(--panel)}
+.scroll{max-height:52vh;overflow:auto;border:1px solid var(--line);border-radius:14px}
+
+/* admin */
+.adminpg{position:fixed;inset:0;z-index:60;background:var(--bg);overflow:auto}
+.ahead{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 22px;background:var(--glass);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.ahead .sp{flex:1}
+.atabs{display:flex;gap:6px;flex-wrap:wrap}
+.agrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:14px;padding:18px 22px 80px;max-width:1720px;margin:0 auto}
+.acard{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px}
+.acard.wide{grid-column:1/-1}
+.acard h4{margin:0 0 4px;font-size:15px}
+.ahelp{color:var(--muted);font-size:12.5px;margin:4px 0 10px}
+.fl{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.fl input,.fl select,.fl textarea{text-transform:none;letter-spacing:0;font-weight:500;color:var(--ink);font-size:13px}
+.frow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin:8px 0}
+.utable{overflow:auto;border:1px solid var(--line);border-radius:14px;max-height:560px}
+.utable table{border-collapse:separate;border-spacing:0;font-size:12px}
+.utable th,.utable td{padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:center;background:var(--panel)}
+.utable thead th{position:sticky;top:0;z-index:3;background:var(--hdr);color:#eef2fb;font-size:11px}
+.utable thead tr:nth-child(2) th{top:30px;font-size:10px;font-weight:600;max-width:64px;white-space:normal;line-height:1.15}
+.utable td input,.utable td select{padding:4px 8px;border-radius:8px;font-size:12px;min-width:90px}
+.utable .s0{position:sticky;left:0;z-index:2}.utable .s1{position:sticky;left:34px;z-index:2;text-align:left}
+.utable thead .s0,.utable thead .s1{z-index:4}
+.utable tr.sel td{background:var(--gold-soft)}
+.pp{border:0;width:26px;height:22px;border-radius:7px;font-weight:800;font-size:12px;cursor:pointer}
+.pp.y{background:var(--em-soft);color:var(--em)}.pp.n{background:var(--danger-soft);color:var(--danger)}
+.pp.inh{background:transparent;border:1px dashed var(--line2);color:var(--em);opacity:.55}.pp.inh.x{color:var(--danger)}
+.pc2{border:1px solid var(--line2);background:var(--panel2);border-radius:999px;font-size:10.5px;padding:2px 8px;margin:1px;cursor:pointer;color:var(--muted)}
+.pc2.on{background:var(--em-soft);color:var(--em);border-color:rgba(47,210,122,.5)}.pc2.inh{opacity:.6;border-style:dashed}
+.tg{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:4px 0}
+.tg input{display:none}.tg span.sw{width:38px;height:22px;border-radius:999px;background:var(--line2);position:relative;transition:.2s;flex:none}
+.tg span.sw:after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.tg input:checked+span.sw{background:var(--em)}.tg input:checked+span.sw:after{left:19px}
+.savebar{position:fixed;bottom:18px;right:22px;z-index:7;display:flex;gap:8px;align-items:center;background:var(--glass);border:1px solid var(--gold);border-radius:999px;padding:6px 6px 6px 16px;box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+.helpgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.helpgrid div{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:12.5px}
+.helpgrid b{display:block;margin-bottom:4px;color:var(--gold2)}
+:root[data-theme="light"] .helpgrid b{color:var(--gold2)}
+.soonbox{padding:70px 20px;text-align:center}
+.soonbox .big{font-size:48px}
+@media print{.top,.rail,.cols2,.rbar,.notice,.pager,.kpis,.lights,.hero .rules{display:none!important}.gbox{max-height:none}}
+@media (max-width:720px){.top{padding:10px 12px}.wrap{padding:10px 12px 50px}.rail{padding:12px 12px 4px}.bbig{font-size:16px}.hero h1{font-size:22px}.who .hide-m{display:none}.top{flex-wrap:wrap}.top .sp{display:none}.who{width:100%;justify-content:flex-start}#verTop{display:none}}
+
+/* ===================== build 2 · compact layout ===================== */
+#app:not([hidden]){display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.top{position:relative;padding:7px 18px;gap:12px;flex:none}
+.top .mark{width:32px;height:32px}.bbig{font-size:17px}.bsm{font-size:8.5px}
+.ptitle{display:flex;align-items:center;gap:10px;margin-left:4px;padding-left:14px;border-left:1px solid var(--line2);min-width:0}
+.ptitle h1{margin:0;font-size:21px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}.ptitle h1 span{color:var(--gold)}
+.ptitle small{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrule{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2);border-radius:999px;padding:2px 10px 2px 3px;font-size:11.5px;font-weight:650;white-space:nowrap;background:var(--panel)}
+.mrule i{font:700 10.5px var(--f-num);font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--gold-soft);color:var(--gold2)}
+.mrule small{font-size:9px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.rail{padding:6px 18px;gap:7px;align-items:center;flex:none;border-bottom:1px solid var(--line)}
+.pbtn{padding:3px 13px 3px 3px;gap:8px}.pbtn .pi{width:28px;height:28px;font-size:10.5px}.pbtn b{font-size:12.5px}.pbtn small{font-size:9.5px}
+.pbtn .pl.new{background:var(--violet);box-shadow:0 0 9px var(--violet)}
+.rail .acts{margin-left:auto;display:flex;gap:6px;padding-left:12px;flex:none}
+.wrap{flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;padding:7px 18px 10px;max-width:none;width:100%}
+.strip{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;flex:none}
+.strip .s{flex:1;display:flex;align-items:center;gap:10px;padding:5px 14px;border-right:1px solid var(--line);min-width:0;position:relative}
+.strip .s:before{content:"";width:4px;height:22px;border-radius:4px;background:var(--kc,var(--gold));flex:none}
+.strip .s:last-child{border:0}
+.strip small{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:750;white-space:nowrap}
+.strip b{font:700 18px var(--f-num)}
+.strip em{font-style:normal;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lightbar{flex:none;display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:5px 8px;min-width:0}
+.lightbar .lights{flex-wrap:nowrap;overflow-x:auto;flex:1;scrollbar-width:thin;padding-bottom:1px}
+.lt-cap{padding:2px 9px 2px 3px;font-size:11px;white-space:nowrap;flex:none}
+.lt-cap i{height:16px;min-width:18px;font-size:9px}
+.lt-cap.off{color:var(--danger);border-color:rgba(244,100,106,.32);background:var(--danger-soft)}
+.lt-cap.off .bulb{background:#f7a3a6;box-shadow:0 0 5px rgba(244,100,106,.5)}
+.tools{flex:none;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.6fr);gap:7px}
+.tool{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.tool .tt{font-size:12.5px;font-weight:800;white-space:nowrap;padding:0 4px}
+.dumpbox{flex:1;min-width:120px;height:32px;border:1.5px dashed var(--line2);border-radius:999px;padding:6px 14px;font:11.5px var(--f-num);resize:none;overflow:hidden;background:var(--bg2);white-space:nowrap}
+.dumpbox.over{border-color:var(--em);background:var(--em-soft)}
+.tool select{padding:5px 10px;border-radius:999px;font-size:12px;max-width:190px}
+.tool .seg button{padding:5px 11px;font-size:11.5px}.tool .seg{padding:3px}
+.tool .pct button{padding:4px 9px;font-size:11px}.tool .pct input{width:76px;padding:4px 8px;font-size:11.5px}
+.tool .hint{margin:0;font-size:11px;flex-basis:100%;padding-left:4px}
+.rbar{flex:none;margin:0;padding:4px 10px;border-radius:14px;gap:8px}
+.rbar input[type=date]{padding:3px 8px;font-size:12px}
+.rbar .dchips{max-height:26px}
+.gridcard{flex:1;min-height:0;display:flex;flex-direction:column;box-shadow:none;border-radius:16px}
+.gbox{flex:1;min-height:0;max-height:none}
+.ghead{padding:5px 10px;gap:8px}.ghead h3{font-size:13px}
+.ghead input{padding:5px 12px;font-size:12px}
+.pager{padding:4px 12px}
+table.g th,table.g td{padding:5px 10px}
+table.g thead th{padding:0;height:38px;vertical-align:middle}
+table.g thead th .thw{display:flex;align-items:center;gap:6px;padding:4px 6px 4px 10px;height:38px}
+table.g thead th .thw .tl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+table.g thead th.n .thw{justify-content:flex-end;padding-right:10px}
+.hdd{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#dfe6f7;width:22px;height:22px;border-radius:7px;cursor:pointer;font-size:10px;flex:none;display:grid;place-items:center;padding:0}
+.hdd:hover{background:rgba(255,255,255,.16)}
+.hdd.on{background:var(--gold);color:#1b1306;border-color:var(--gold)}
+.fpop{position:fixed;z-index:95;width:270px;background:var(--panel);border:1px solid var(--line2);border-radius:16px;box-shadow:var(--shadow);padding:10px;animation:pop .15s ease}
+.fpop .fl2{max-height:240px;overflow:auto;margin:8px 0;border:1px solid var(--line);border-radius:10px;padding:4px}
+.fpop label{display:flex;align-items:center;gap:8px;padding:3px 6px;font-size:12px;border-radius:7px;cursor:pointer}
+.fpop label:hover{background:var(--gold-soft)}
+.fpop label span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fpop label em{font:600 10.5px var(--f-num);font-style:normal;color:var(--muted)}
+.fpop input[type=text]{width:100%;padding:6px 10px;font-size:12px;border-radius:999px}
+.fpop .row{gap:6px}
+.tg.sm{font-size:12px;padding:0}.tg.sm span.sw{width:32px;height:18px}.tg.sm span.sw:after{width:12px;height:12px}.tg.sm input:checked+span.sw:after{left:17px}
+.bbig,.bsm{white-space:nowrap}.top .who{flex-wrap:nowrap}.top .uchip{padding:3px 10px 3px 3px}.top .uchip b{font-size:11.5px}
+.fpop{animation:none}
+.tools{grid-template-columns:minmax(0,.62fr) minmax(0,2fr)}
+@media (max-width:1700px){#expTxt{display:none}.ptitle small{display:none}}
+@media (max-width:1350px){.mrule small{display:none}}
+@media (max-width:1200px){.tools{grid-template-columns:1fr}}
+@media (max-height:640px),(max-width:900px){#app:not([hidden]){height:auto;overflow:visible}.wrap{flex:none}.gridcard{flex:none}.gbox{max-height:70vh}.ptitle{display:none}.rail{flex-wrap:wrap}.rail .acts{margin-left:0}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="gEcl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7dc98"/><stop offset=".55" stop-color="#e6bb62"/><stop offset="1" stop-color="#9686ff"/></linearGradient>
+  <symbol id="ecl" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" fill="none" stroke="url(#gEcl)" stroke-width="3"/><circle cx="32" cy="32" r="19" fill="url(#gEcl)"/><circle cx="38" cy="27" r="17" style="fill:var(--bg)"/><circle cx="47" cy="18" r="3" fill="#f7dc98"/></symbol>
+</defs></svg>
+
+<section id="app" hidden>
+  <div id="notice" class="notice" hidden></div>
+  <header class="top">
+    <div class="brand" id="brand" title="Alpha NextGen Eclipse">
+      <svg class="mark"><use href="#ecl"/></svg>
+      <div class="bstack"><span class="bsm">Alpha NextGen</span><span class="bbig">Provider Pick QA</span><span class="bsm" style="color:var(--violet)">Eclipse</span></div>
+    </div>
+    <span class="ver" id="verTop"></span>
+    <div class="ptitle" id="ptitle"></div>
+    <div class="sp"></div>
+    <div class="who">
+      <button class="cap sm ghost" id="btnFolder"><span class="sdot" id="syncDot"></span><span id="folderTxt">Connect data</span></button>
+      <span class="chip hide-m" id="expTxt"></span>
+      <button class="cap sm gold" id="btnBack" hidden>↩ Back to Admin</button>
+      <button class="cap sm ghost" id="btnHelp" title="Help">?</button>
+      <button class="cap sm ghost" id="btnTheme" title="Light / dark">☾</button>
+      <button class="cap sm" id="btnAdmin" hidden>⚙ Admin</button>
+      <div class="uchip"><span class="ava" id="ava">A</span><div><b id="uName"></b><small id="uRole"></small></div></div>
+      <button class="cap sm ghost" id="btnOut">Log out</button>
+    </div>
+  </header>
+  <nav class="rail" id="rail"></nav>
+  <main class="wrap" id="main"></main>
+</section>
+
+<div class="adminpg" id="adminPg" hidden></div>
+<div class="modal" id="modal" hidden><div class="mcard" id="mcard"></div></div>
+<div class="toasts" id="toasts"></div>
+
+<div id="gate" class="gate" hidden><div class="orb"></div><div class="lcard">
+  <svg class="mark"><use href="#ecl"/></svg>
+  <div class="l1">ALPHA NEXTGEN</div>
+  <div class="l2">Provider Pick QA</div>
+  <div class="l3">ECLIPSE</div>
+  <span class="ver" id="verGate"></span>
+  <div id="gateBody"></div>
+  <div class="lfoot">Confidential · authorised users only</div>
+</div></div>
+
+<div id="lock" class="gate" hidden><div class="orb"></div><div class="lcard">
+  <svg class="mark"><use href="#ecl"/></svg>
+  <div class="l2" style="font-size:26px">Access period ended</div>
+  <p id="lockMsg" style="color:#9fb0d6;margin:10px 0 0;line-height:1.5;font-size:13px"></p>
+  <input id="lockPw" type="password" placeholder="Master password" autocomplete="off">
+  <input id="lockDate" type="date">
+  <button class="cap gold" id="lockGo">Extend access</button>
+  <div class="err" id="lockErr"></div>
+</div></div>
+
 <script>
-/* ===== LICENSE: tool works only up to this date (YYYY-MM-DD). Change the date to extend access ===== */
-const EXPIRY="2026-12-31";
-(function(){let now=Date.now();try{const m=+localStorage.getItem("neoSeen")||0;if(m>now)now=m;else localStorage.setItem("neoSeen",String(now))}catch(e){}
- const end=new Date(EXPIRY+"T23:59:59").getTime();
- if(now>end){document.body.innerHTML='<div style="min-height:100vh;display:grid;place-items:center;background:radial-gradient(900px 500px at 50% 0,#8a5cff55,#070b19);color:#e9edff;font-family:system-ui,sans-serif;text-align:center;padding:24px"><div><div style="font-size:64px">🔒</div><h1 style="margin:8px 0;letter-spacing:2px;background:linear-gradient(90deg,#00e5ff,#8a5cff,#ff3d9a);-webkit-background-clip:text;background-clip:text;color:transparent">ACCESS EXPIRED</h1><p style="color:#8f9acb">Validity of this tool ended on '+EXPIRY.split("-").reverse().join(".")+'.<br>Please contact your administrator to renew access.</p></div></div>';throw new Error("Access expired")}
- window.__lic={end:end,now:now}})();
-addEventListener("contextmenu",e=>{if(!e.target.closest("input,textarea,[contenteditable]"))e.preventDefault()});
-addEventListener("keydown",e=>{const k=(e.key||"").toLowerCase();if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&"ijc".includes(k))||(e.ctrlKey&&k==="u"))e.preventDefault()},true);
-const MIN=75;
-const PR=[
-{n:"Pend 52",k:3,nm:2,dt:0,h:["In House Date","Process Date","Name","FLN","TIN","MPIN","Prefix/Suffix","Health Plan","Phone Call","PTI","Release Code","Call id"]},
-{n:"CPA",k:5,nm:1,dt:0,h:["Claim Date","User ID","Review","DIV","AUDIT","UFE","Mpin","PTI","Called, Transferred, or Completed","If Transferred, Transfer Message used:"]},
-{n:"CPQ",k:16,nm:6,dt:1,h:["Priority","In House","In Status","Status","Div","Office","OPID","Updated","Area","Role","Type","Claim Type","Source","Source File ID","Product","Sequence","Claim File ID / FLN","Claim ID / ICN","MPIN","Type 12","Prefix","TIN","Suffix","Group Name","Last Name","First Name","Middle Name","Bill Street Line 1","Bill Street Line 2","Bill City","Bill State","Bill Zip","Bill Zip+4","POS Street Line 1","POS Street Line 2","POS City","POS State","POS Zip","POS Zip+4","Claim Dollars","Error Description","Release Code"]},
-{n:"Repricing",k:3,nm:2,dt:0,h:["In House","In Status","OPID","Claim File ID / FLN","MPIN","Prefix","TIN","Suffix","Group Name","Last Name","First Name","Release Code"]},
-{n:"DBM",k:7,nm:3,dt:2,h:["State","Claim Type","Date","User","Status","Completed","CSP ID","Claim #","Image #","Name/MPIN","Comments","Demo Update","Which Field"]},
-{n:"OutReach",k:2,nm:1,dt:0,h:["Date","Name","CSTASK Number","Department","TIN","Phone Number","Provider Name/Group Name","Call Attempts","Call Attempt Status","Close Status","Comments","Call Categories"]}];
-const UP=PR.length;
-const $=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-let D;try{D=JSON.parse(localStorage.getItem("neoP2"))}catch(e){}
-D=D||{};D.h=D.h||[];D.d=D.d||[];D.k=D.k||[];D.em=D.em||{};
-function pad(p){const d=D.d[p],w=D.h[p].length;while(d.length<MIN||d.length%25)d.push(Array(w).fill(""))}
-PR.forEach((x,p)=>{D.h[p]=D.h[p]||x.h.concat("Assigned");D.d[p]=D.d[p]||[];if(D.k[p]==null)D.k[p]=x.k;pad(p)});
-let cur=0,pos={r:0,c:0},cf=[],gm="name",LR=null,selIds=new Set(),mq=[];
-const P=()=>PR[cur],H=()=>D.h[cur],NC=()=>D.h[cur].length,AC=()=>NC()-1,KC=()=>D.k[cur],blank=()=>Array(NC()).fill("");
-const rowHas=r=>r.some(v=>v!==""),colHas=(p,c)=>D.d[p].some(r=>r[c]!==""),cnt=p=>D.d[p].filter(rowHas).length;
-const nk=x=>String(x).trim().toLowerCase(),today=()=>new Date().toISOString().slice(0,10);
-function stamp(){if(D.ts)$("svst").textContent="💾 Saved "+new Date(D.ts).toLocaleString([],{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit",second:"2-digit"})}
-function save(){try{D.ts=Date.now();localStorage.setItem("neoP2",JSON.stringify(D));stamp()}catch(e){$("svst").textContent="⚠ Save failed (data too large) - please Export"}}
-function toast(m){const t=$("toast");t.textContent=m;t.classList.add("s");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("s"),2600)}
-function arm(b,fn){if(b.dataset.armed){clearTimeout(+b.dataset.armed);b.dataset.armed="";b.textContent=b.dataset.t;fn();return}b.dataset.t=b.textContent;b.textContent="Sure? Click again";b.dataset.armed=setTimeout(()=>{b.textContent=b.dataset.t;b.dataset.armed=""},3000)}
-function nav(){$("nav").innerHTML=PR.map((x,p)=>`<button class="pb ${p==cur?"on":""}" data-p="${p}"><span class="bulb ${cnt(p)?"lit":""}"></span>${esc(x.n)}<i>${cnt(p)}</i></button>`).join("")+`<button class="pb up" data-p="${UP}"><span class="bulb"></span>Process 7<i>Upcoming</i></button>`;
- $("nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{const p=+b.dataset.p;if(p===UP)return toast("Process 7 is upcoming - coming soon");
-  cur=p;pos={r:0,c:0};cf=[];LR=null;$("res").style.display="none";["dcol","dval","ncol","nval"].forEach(i=>$(i).innerHTML="");$("f0").value="";$("f1").value="";$("f8").value="";render()})}
-function render(){const h=H(),kc=KC(),ac=AC(),cc={};
- D.d[cur].forEach(r=>{const v=r[kc];if(v!=="")cc[v]=(cc[v]||0)+1});
- let s=`<thead><tr><th class="rn">#</th>${h.map((x,c)=>`<th><div class="bl"><span class="bulb" id="bu${c}"></span>${c==kc?"KEY":"COL "+(c+1)}</div><span class="h" contenteditable data-c="${c}">${esc(x)}</span><input class="cf" data-fc="${c}" list="dl${c}" placeholder="🔍 filter" value="${esc(cf[c]||"")}"></th>`).join("")}</tr></thead><tbody>`;
- D.d[cur].forEach((row,r)=>{s+=`<tr data-r="${r}"><td class="rn">${r+1}</td>${row.map((v,c)=>`<td contenteditable data-r="${r}" data-c="${c}"${c==kc&&cc[v]>1?' class="dup"':c==ac&&v?' class="as"':""}>${esc(v)}</td>`).join("")}</tr>`});
- $("tb").innerHTML=s+"</tbody>";nav();meta()}
-function meta(){const d=D.d[cur],h=H(),kc=KC(),nm=P().nm,dt=P().dt,ac=AC();
- for(let c=0;c<NC();c++){const b=$("bu"+c);if(b)b.classList.toggle("lit",colHas(cur,c))}
- $("l0").textContent=h[nm];$("l1").textContent=h[kc];$("l8").textContent=h[dt];
- [[nm,"f0"],[dt,"f8"]].forEach(([c,id])=>{const el=$(id),v=el.value,u=[...new Set(d.map(r=>r[c]).filter(x=>x!==""))].sort().slice(0,1000);el.innerHTML="<option value=''>All</option>"+u.map(x=>`<option>${esc(x)}</option>`).join("");el.value=u.includes(v)?v:""});
- const nS=new Set(d.map(r=>r[nm]).filter(x=>x!=="")),cl=d.map(r=>r[kc]).filter(x=>x!==""),du=cl.length-new Set(cl).size,as=d.filter(r=>r[kc]!==""&&r[ac]!=="").length;
- const K=[["Total Rows",cnt(cur),"--a"],[h[nm]+" (unique)",nS.size,"--b"],["Records",cl.length,"--ok"],["Duplicate "+h[kc],du,"--c"],["Assigned",cl.length?Math.round(as/cl.length*100)+"%":"0%","--wr"]];
- $("kpis").innerHTML=K.map(k=>`<div class="k glass" style="--kc:var(${k[2]})"><b>${k[1]}</b><span>${esc(k[0])}</span></div>`).join("");
- $("dk").innerHTML=h.map((x,i)=>`<option value="${i}">${esc(x)}</option>`).join("");$("dk").value=kc;
- $("dls").innerHTML=h.map((_,c)=>`<datalist id="dl${c}">${[...new Set(d.map(r=>r[c]).filter(x=>x!==""))].slice(0,300).map(x=>`<option value="${esc(x)}">`).join("")}</datalist>`).join("");
- fillG();filt()}
-function filt(){const d=D.d[cur],nm=P().nm,kc=KC(),dt=P().dt,a=$("f0").value,b=$("f1").value.toLowerCase(),c=$("f8").value,cfs=cf.map((v,i)=>[i,(v||"").toLowerCase()]).filter(x=>x[1]),on=a||b||c||cfs.length;let n=0;
- $("tb").querySelectorAll("tbody tr").forEach(tr=>{const r=d[+tr.dataset.r];
-  const ok=(!a||r[nm]===a)&&(!b||r[kc].toLowerCase().includes(b))&&(!c||r[dt]===c)&&cfs.every(([i,v])=>r[i].toLowerCase().includes(v))&&(!on||rowHas(r));
-  tr.style.display=ok?"":"none";if(ok&&rowHas(r))n++});
- $("fcnt").textContent=on?n+" rows match":""}
-["f0","f1","f8"].forEach(id=>$(id).addEventListener("input",filt));
-$("fReset").onclick=()=>{$("f0").value="";$("f1").value="";$("f8").value="";cf=[];$("tb").querySelectorAll(".cf").forEach(i=>i.value="");filt()};
-$("dk").onchange=()=>{D.k[cur]=+$("dk").value;save();render()};
-$("tb").addEventListener("focusin",e=>{const t=e.target;if(t.dataset&&t.dataset.r!==undefined)pos={r:+t.dataset.r,c:+t.dataset.c}});
-$("tb").addEventListener("input",e=>{const t=e.target;
- if(t.dataset.fc!==undefined){cf[+t.dataset.fc]=t.value;filt();return}
- if(t.classList.contains("h")){D.h[cur][+t.dataset.c]=t.textContent;save();return}
- if(t.dataset.r!==undefined){D.d[cur][+t.dataset.r][+t.dataset.c]=t.textContent;save();clearTimeout(meta.t);meta.t=setTimeout(()=>{meta();nav()},500)}});
-$("tb").addEventListener("keydown",e=>{const t=e.target;if(t.dataset.r===undefined)return;
- let m=e.key==="ArrowDown"?1:e.key==="ArrowUp"?-1:e.key==="Enter"?(e.shiftKey?-1:1):0;if(e.key==="Enter")e.preventDefault();
- if(!m)return;const n=$("tb").querySelector(`td[data-r="${+t.dataset.r+m}"][data-c="${t.dataset.c}"]`);if(n){e.preventDefault();n.focus()}});
-const parse=t=>t.replace(/\r/g,"").replace(/\n+$/,"").split("\n").map(l=>l.split("\t"));
-const nz=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,"");
-function mapCols(hdr,tg){const used=new Set(),map=hdr.map(()=>-1),T=tg.map(nz);
- hdr.forEach((x,j)=>{const a=nz(x);if(!a)return;const i=T.findIndex((t,i)=>t===a&&!used.has(i));if(i>=0){map[j]=i;used.add(i)}});
- hdr.forEach((x,j)=>{if(map[j]>=0)return;const a=nz(x);if(a.length<6)return;const i=T.findIndex((t,i)=>!used.has(i)&&t.length>=6&&(t.includes(a)||a.includes(t))&&Math.min(a.length,t.length)/Math.max(a.length,t.length)>=0.7);if(i>=0){map[j]=i;used.add(i)}});
- return map}
-function hdrScore(rows,p){const tg=D.h[p].slice();tg[tg.length-1]="";let best={n:0,i:-1,map:null};
- rows.slice(0,6).forEach((r,i)=>{const m=mapCols(r,tg),n=m.filter(x=>x>=0).length;if(n>best.n)best={n,i,map:m}});return best}
-function ingest(txt,mode){if(!txt.trim())return toast("Paste some data first");let rows=parse(txt);
- const me=hdrScore(rows,cur);let other=null;
- PR.forEach((x,p)=>{if(p===cur)return;const s=hdrScore(rows,p);if(s.n>(other?other.n:0))other={p,n:s.n}});
- if(other&&other.n>=4&&other.n>=2*me.n)return toast("This looks like "+PR[other.p].n+" data ("+other.n+" headers match) - open "+PR[other.p].n+" and paste there");
- let mapped=null,skipped=[];
- if(me.n>=2){mapped=me.map;rows[me.i].forEach((x,j)=>{if(x.trim()&&mapped[j]<0)skipped.push(x.trim())});rows=rows.slice(me.i+1)}
- cf=[];if(mode==="replace")D.d[cur]=[];
- const r0=mode==="cursor"?pos.r:0,c0=mode==="cursor"?pos.c:0,nc=NC()-1;
- while(D.d[cur].length<r0+rows.length)D.d[cur].push(blank());
- rows.forEach((row,i)=>row.forEach((v,j)=>{const c=mapped?mapped[j]:c0+j;if(c>=0&&c<nc)D.d[cur][r0+i][c]=v.trim()}));
- pad(cur);save();render();
- toast(rows.length+" rows loaded"+(mapped?" • "+me.n+" columns matched by header"+(skipped.length?" • skipped: "+skipped.slice(0,3).join(", ")+(skipped.length>3?"...":""):""):" • no header found - pasted by position from column "+(c0+1)))}
-$("tb").addEventListener("paste",e=>{if(e.target.classList.contains("h")||e.target.classList.contains("cf"))return;e.preventDefault();ingest((e.clipboardData||window.clipboardData).getData("text"),"cursor")});
-$("dump").addEventListener("input",()=>{const v=$("dump").value.trim();$("dinfo").textContent=v?parse(v).length+" lines pasted":""});
-$("bLoad").onclick=()=>{const t=$("dump").value;if(!t.trim())return toast("Paste some data first");ingest(t,"replace");$("dump").value="";$("dinfo").textContent=""};
-$("bDclr").onclick=()=>{$("dump").value="";$("dinfo").textContent=""};
-$("bClrS").onclick=function(){arm(this,()=>{D.d[cur]=[];pad(cur);LR=null;$("res").style.display="none";save();render();toast("Sheet cleared")})};
-$("eraseAll").onclick=function(){arm(this,clearAll)};
-function clearAll(){D.d[cur]=[];pad(cur);cf=[];LR=null;mq=[];selIds=new Set();
- $("dump").value="";$("f0").value="";$("f1").value="";$("f8").value="";$("pct").value="5";$("dinfo").textContent="";
- gb="total";[...$("seg").children].forEach((x,i)=>x.classList.toggle("on",i===0));["dcol","dval","ncol","nval"].forEach(i=>$(i).innerHTML="");
- $("res").style.display="none";save();render();toast("Cleared - fresh page")}
-const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-const pctv=()=>Math.max(0.1,Math.min(100,parseFloat($("pct").value)||5));
-var gb="total",LRt="";
-const take=(n,p)=>Math.min(n,Math.max(1,Math.round(n*p/100)));
-const dsort=(a,b)=>{const x=Date.parse(a),y=Date.parse(b);return(isNaN(x)||isNaN(y))?a.localeCompare(b):x-y};
-const colVals=(c,f)=>[...new Set(D.d[cur].filter(r=>r[KC()]!=="").map(r=>r[c]).filter(x=>x!==""))].sort(f);
-function scopes(){const kc=KC(),dc=+$("dcol").value,dv=$("dval").value,cl=D.d[cur].filter(r=>r[kc]!=="");
- if(dv==="*"){const g={};cl.forEach(r=>{const d=r[dc];if(d!=="")(g[d]=g[d]||[]).push(r)});return Object.keys(g).sort(dsort).map(d=>({d,rows:g[d]}))}
- return[{d:dv,rows:dv?cl.filter(r=>r[dc]===dv):cl}]}
-function plan(){const nc=+$("ncol").value,nv=$("nval").value,own=gb==="own",p=pctv(),dv=$("dval").value,G=[];
- scopes().forEach(sc=>{const names=nv?[nv]:[...new Set(sc.rows.map(r=>r[nc]).filter(x=>x!==""))].sort();let ks=0;
-  names.forEach(n=>{const base=own?sc.rows.filter(r=>r[nc]===n):sc.rows;if(!base.length)return;const k=take(base.length,p);ks+=k;G.push({name:n,key:n+(dv==="*"?" · "+sc.d:""),base,k,sc})});
-  if(!own&&ks>sc.rows.length)G.over=true});
- return G}
-function prev(){const G=plan();let n=0;G.forEach(g=>n+=g.k);
- $("pv").textContent=G.length?"≈ "+n+" records will be picked • "+G.length+" group"+(G.length>1?"s":"")+(G.over?" • pool is smaller than requested":""):""}
-function fillG(){const h=H().slice(0,-1);
- const opt=(id,def)=>{const el=$(id),o=el.value;el.innerHTML=h.map((x,i)=>`<option value="${i}">${esc(x)}</option>`).join("");el.value=(o!==""&&h[+o]!==undefined)?o:def};
- opt("dcol",P().dt);opt("ncol",P().nm);
- const fv=(id,first,vals)=>{const el=$(id),o=el.value;el.innerHTML=first+vals.slice(0,1000).map(x=>`<option>${esc(x)}</option>`).join("");el.value=o;if(el.selectedIndex<0)el.value=""};
- fv("dval","<option value=''>All dates (combined)</option><option value='*'>Each date separately</option>",colVals(+$("dcol").value,dsort));
- fv("nval","<option value=''>All names</option>",colVals(+$("ncol").value));
- prev()}
-$("seg").onclick=e=>{const b=e.target.closest("[data-b]");if(!b)return;gb=b.dataset.b;[...$("seg").children].forEach(x=>x.classList.toggle("on",x===b));prev()};
-$("dcol").onchange=()=>{$("dval").value="";fillG()};$("ncol").onchange=()=>{$("nval").value="";fillG()};
-$("dval").onchange=prev;$("nval").onchange=prev;$("pct").addEventListener("input",prev);
-function summary(){if(!LR||!LR.length){$("res").style.display="none";return}
- const kc=KC(),ac=AC(),as=LR.reduce((t,x)=>t+x.n,0),tot=LR.reduce((t,x)=>t+x.total,0),mx=Math.max(...LR.map(x=>x.n),1),r=$("res");
- selIds=new Set(LR.flatMap(x=>x.ids));mq=[...new Set(D.d[cur].filter(x=>x[kc]!==""&&selIds.has(x[kc])&&x[ac]!=="").map(x=>x[ac]))];
- r.style.display="block";
- r.innerHTML=`<div class="row" style="justify-content:space-between;margin-bottom:6px"><div class="sec" style="margin:0">📊 ${esc(P().n)} Result${esc(LRt)} - ${as} picked • ${LR.length} group${LR.length>1?"s":""}</div><button class="g2" id="rMail">✉ Mail</button></div>`+LR.map(x=>`<div class="bar"><span>${esc(x.key)}</span><div><u style="width:${x.n/mx*100}%"></u></div><b>${x.n} / ${x.total}</b></div><p class="ids">${esc(x.ids.slice(0,30).join(", "))}${x.ids.length>30?" ... +"+(x.ids.length-30)+" more":""}</p>`).join("")}
-function run(){const G=plan();if(!G.length)return toast("No records for this selection");
- const ac=AC(),kc=KC(),own=gb==="own",dv=$("dval").value,nv=$("nval").value,p=pctv(),names=new Set(G.map(g=>g.name));
- LRt=(dv&&dv!=="*"?" • "+dv:"")+(own?" • own claims":" • of total");
- if(!nv&&!dv)D.d[cur].forEach(r=>r[ac]="");else G.forEach(g=>g.sc.rows.forEach(r=>{if(names.has(r[ac]))r[ac]=""}));
- const pools=new Map();
- LR=G.map(g=>{let pick;
-  if(own)pick=shuf(g.base.filter(r=>r[ac]==="")).slice(0,g.k);
-  else{if(!pools.has(g.sc))pools.set(g.sc,shuf(g.sc.rows.filter(r=>r[ac]==="")));const pl=pools.get(g.sc);pick=[];while(pick.length<g.k&&pl.length)pick.push(pl.pop())}
-  pick.forEach(r=>r[ac]=g.name);return{key:g.key,total:g.base.length,n:pick.length,ids:pick.map(r=>r[kc])}});
- save();render();summary();toast("Picked "+LR.reduce((t,x)=>t+x.n,0)+" records ("+p+"%)"+(G.over?" • pool was smaller than requested":""))}
-$("bRes").onclick=run;$("pct").addEventListener("keydown",e=>{if(e.key==="Enter")run()});
-$("bUnas").onclick=()=>{D.d[cur].forEach(r=>r[AC()]="");LR=null;save();render();$("res").style.display="none";toast("Assignments cleared")};
-async function saveFile(name,data,mime){let dl=null;try{dl=window.claude?await claude.use("downloads"):null}catch(e){}
- if(dl){try{await dl.save({filename:name,data});return true}catch(e){if(!e||e.code!=="declined")toast("Export failed: "+((e&&(e.message||e.code))||""));return false}}
- try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:mime||"text/plain"}));a.download=name;document.body.appendChild(a);a.click();a.remove();return true}catch(e){toast("Download unavailable");return false}}
-const csvOf=rows=>{const q=v=>{v=String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};return "\ufeff"+rows.map(r=>r.map(q).join(",")).join("\r\n")};
-const fn=s=>P().n.replace(/\W+/g,"")+"_"+s+"_"+today()+".csv";
-function selRows(){return [...$("tb").querySelectorAll("tbody tr")].filter(t=>t.style.display!=="none").map(t=>D.d[cur][+t.dataset.r]).filter(rowHas)}
-$("bExpR").onclick=async()=>{const rows=[H(),...selRows()];if(rows.length<2)return toast("No data to export");
- if(await saveFile(fn("Data"),csvOf(rows),"text/csv"))toast("Exported "+(rows.length-1)+" rows")};
-$("bEm").onclick=()=>{const b=$("empBox");b.style.display=b.style.display==="none"?"block":"none";$("emTa").value=Object.values(D.em).map(v=>v.n+"\t"+v.e).join("\n")};
-$("emSave").onclick=()=>{const m={};let n=0;$("emTa").value.split(/\r?\n/).forEach(l=>{const p=l.split(/\t|,/).map(x=>x.trim());if(p.length>=2&&p[0]&&/@/.test(p[1])){m[nk(p[0])]={n:p[0],e:p[1]};n++}});D.em=m;save();$("emInfo").textContent=n+" emails saved";toast(n+" emails saved")};
-function mailPack(){const d=D.d[cur],h=H(),ac=AC(),kc=KC(),cols=[ac,...h.map((_,i)=>i).filter(i=>i!==ac)],set=new Set(mq),
- rows=d.filter(r=>r[kc]!==""&&selIds.has(r[kc])&&set.has(r[ac])).sort((a,b)=>mq.indexOf(a[ac])-mq.indexOf(b[ac])),
- to=mq.map(n=>D.em[nk(n)]).filter(Boolean).map(v=>v.e),
- body=(mq.length>1?"Hello Everyone,":"Hello "+mq[0]+",")+"\n\nBelow are the assignments:\n\n"+mq.join("\n")+"\n\nDetails are in the attached Excel.\n\nThank you";
- return{to,rows:[cols.map(c=>h[c]),...rows.map(r=>cols.map(c=>r[c]))],body,miss:mq.length-to.length}}
-async function mailAll(){if(!mq.length)return;const k=mailPack();
- const ok=await saveFile(fn("Assignments"),csvOf(k.rows),"text/csv");
- location.href="mailto:"+k.to.join(",")+"?subject="+encodeURIComponent(P().n+" - Assignment")+"&body="+encodeURIComponent(k.body);
- toast((ok?"Excel downloaded - attach it to the mail":"Mail draft opened")+(k.to.length?(k.miss?" • "+k.miss+" without email":""):" • no emails on file (📇 Emails)"))}
-$("res").addEventListener("click",e=>{if(e.target.closest("#rMail"))mailAll()});
-$("bSave").onclick=()=>{save();toast("Data saved - it will be here when you reopen")};
-addEventListener("beforeunload",()=>save());
-$("bTheme").onclick=()=>{const r=document.documentElement,l=getComputedStyle(r).getPropertyValue("--bg").trim()==="#eef1ff";r.dataset.theme=l?"dark":"light"};
-stamp();{const L=window.__lic,dl=Math.max(0,Math.ceil((L.end-L.now)/864e5));$("lic").textContent="🔑 Valid till "+EXPIRY.split("-").reverse().join(".")+" • "+dl+" days left"}
-render();
-</script></body></html>
+/* =====================================================================
+   Alpha NextGen · PROVIDER PICK QA · Eclipse
+   ===================================================================== */
+/* ======================= ADMIN SETTINGS (edit here) ======================= */
+const APP_NAME    = "Provider Pick QA";
+const APP_VER     = "V11.0.7";
+const BUILD       = "2";                       // goes up with every new build
+const APP_EXPIRY  = "2027-03-31";              // tool stops after this date (master password can extend)
+const ADMIN_MSID  = "ARANJA14";                // built-in Admin (logs in with the master password)
+const ADMIN_MC    = "LHTU05CG2122RJJ";         // Admin PC (2RJJ)
+const PW_MASTER   = 2349399753747566;          // hash of the master password (caps and spaces ignored)
+const FILE_KEY    = "Dwarkadesh14ar-PPQA";     // locks the files in the data folder
+const DEF_FOLDER  = "Provider Pick QA Data";   // default data folder name
+const LOCK_ON     = true;                      // login ON. false = testing only
+/* ========================================================================= */
+
+/* ---------- light protection: right-click, F12, view-source, save, print ---------- */
+(function(){
+  const stop=e=>{e.preventDefault();e.stopPropagation();return false};
+  document.addEventListener("contextmenu",e=>{if(!/INPUT|TEXTAREA/.test(e.target.tagName))stop(e)});
+  document.addEventListener("keydown",e=>{
+    const k=(e.key||"").toLowerCase(),c=e.ctrlKey||e.metaKey;
+    if(e.key==="F12"||(c&&e.shiftKey&&["i","j","c","k"].includes(k))||(c&&["u","s","p"].includes(k)))return stop(e);
+  },true);
+})();
+
+/* ---------- 6 processes (headings from the team Excel) ---------- */
+const PROC0=[
+ {k:"Pend52",label:"Pend52",ic:"P5",dc:"B",uc:"C",cols:["In House Date","Process Date","Name","FLN","TIN","MPIN","Prefix/Suffix","Health Plan","Phone Call","PTI","Release Code","Call id"]},
+ {k:"CPA",label:"CPA",ic:"CA",dc:"A",uc:"B",cols:["Claim Date","User ID","Review","DIV","AUDIT","UFE","Mpin","PTI","Transferred, or Not","If Transferred, Transfer Message used:"]},
+ {k:"CPQ",label:"CPQ",ic:"CQ",dc:"C",uc:"G",cols:["Priority","In House","In Status","Status","Div","Office","OPID","Updated","Area","Role","Type","Claim Type","Source","Source File","Product","Sequence","Claim File ID","Claim ID","MPIN","Type 12","Prefix","TIN","Suffix","Group Name","Last Name","First Name","Middle Name","Bill Street","Bill Street 2","Bill City","Bill State","Bill Zip","Bill Zip+4","POS Street","POS Street 2","POS City","POS State","POS Zip","POS Zip+4","Claim Dollar","Error Desc","Release Code"]},
+ {k:"Repricing",label:"Repricing",ic:"RP",dc:"B",uc:"C",cols:["In House","In Status","OPID","Claim File ID / FLN","MPIN","Prefix","TIN","Suffix","Group Name","Last Name","First Name","Release Code"]},
+ {k:"Outreach",label:"Outreach",ic:"OR",dc:"A",uc:"B",cols:["Date","Name","CSTASK Number","Department","TIN","Phone Number","Provider Name/Group","Call Attempts","Call Attempt Status","Close Status","Comments","Call Categories"]},
+ {k:"XC_DBM_ADJ",label:"XC / DBM ADJ",ic:"XD",dc:"A",uc:"C",cols:["DATE","STATE","DLA","CLAIM ID","PID","Request Submitted","Comments","DEMO","FIELDS"]},
+ {k:"Other",label:"Other",ic:"OT",dc:"",uc:"",dh:"",uh:"",cols:[],dyn:true},
+].map(p=>({...p,status:"live",roles:{mgr:1,sme:1,entry:1,employee:1}}));
+
+/* ---------- users from the Eclipse register (MSID, code, device name) ---------- */
+const ROSTER=[["AP21","PAS","LHTU05CG5321MJ9"],["ATONY","ATO","LHTU05CG5331DN2"],["RRUME","RRU","LHTU05CG5331DPF"],["SHARIVA2","SHA","LHTU05CG5243YCC"],["SNAGAPP1","4TV","LHTU05CG2322FC8"],["SE31","X4M","LHTU05CG230322X"],["KUDAYKU","KUD","LHTU05CG5321MK6"],["KSB1","KSB","LHTU05CG4244J31"],["HV5","X3K","LHTU05CG6264WJZ"],["AHP","AHP","LHTU05CG5321MKJ"],["RSIDDARA","AS6","LHTU05CG2122SJB"],["SHS6","SHS","LHTU05CG230322S"],["PTO20","PTO","LHTU05CG5331DPT"],["PS119","PSO","LHTU05CG4244J5K"],["NV25","NVA","LHTU05CG5331DK5"],["NPONGENE","WJC","LHTU05CG5331DPZ"],["SKAMBL19","HK5","LHTU05CG2122T52"],["BSANABAM","ZIO","LHTU05CG2122TCV"],["NSUBRA10","NS5","LHTU05CG2122WHK"],["MR53","KXN","LHTU05CG5331DPG"],["JBOMMASA","JAB","LHTU05CG2122T58"]];
+
+/* ---------- roles and features ---------- */
+const ROLES=[["admin","Admin"],["mgr","Manager"],["sme","SME"],["entry","Data Entry"],["employee","Employee"]];
+const ROLE3=["mgr","sme","entry","employee"];
+const ROLEN=r=>(ROLES.find(x=>x[0]===r)||[0,"Employee"])[1];
+const FEAT=[ // key, name, short, group, [Manager, SME, Data Entry, Employee]
+ ["dump","Dump / paste / upload data","Dump","Actions",[1,1,1,1]],
+ ["save","Save data to the folder (date-wise)","Save","Actions",[1,1,0,0]],
+ ["replace","Replace a date that is already saved","Replace","Actions",[1,1,0,0]],
+ ["clear","Clear screen (this screen only)","Clear","Actions",[1,1,1,1]],
+ ["delrow","Remove a saved row (✕)","Row ✕","Actions",[1,1,0,0]],
+ ["deldate","Delete a date from the data folder","Del date","Actions",[1,1,0,0]],
+ ["pick","Run QA pick (% per date / per user)","Pick","Actions",[1,1,1,0]],
+ ["savepick","Save / lock a QA pick","Save pick","Actions",[1,1,1,0]],
+ ["export","Excel export","Excel","Actions",[1,1,1,1]],
+ ["copy","Copy pick result","Copy","Actions",[1,1,1,1]],
+ ["history","Pick history","History","Actions",[1,1,1,0]],
+ ["refresh","Refresh from data folder","Refresh","Actions",[1,1,1,1]],
+ ["otherset","Change Other process date / user column","Other set","Actions",[1,1,0,0]],
+ ["rail","Process buttons","Procs","Screen",[1,1,1,1]],
+ ["kpis","Summary strip","Strip","Screen",[1,1,1,1]],
+ ["lights","Column lights (red / green)","Lights","Screen",[1,1,1,1]],
+ ["filters","Heading dropdown filters + search","Filters","Screen",[1,1,1,1]],
+ ["range","Date range bar","Dates","Screen",[1,1,1,1]],
+ ["notice","Notice strip","Notice","Screen",[1,1,1,1]],
+ ["folder","Connect / folder button","Folder","Screen",[1,1,1,1]],
+ ["theme","Light / dark button","Theme","Screen",[1,1,1,1]],
+ ["help","Help button","Help","Screen",[1,1,1,1]],
+];
+const GROUPS=["Actions","Screen"];
+const DEFPERM=Object.fromEntries(ROLE3.map((r,i)=>[r,Object.fromEntries(FEAT.map(f=>[f[0],f[4][i]]))]));
+const DEFSCOPE={mgr:"all",sme:"all",entry:"all",employee:"own"};
+const PCT0=[5,10,15,20,25,30,40,50];
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>String(s??"").toLowerCase().replace(/[^a-z0-9]/g,"");
+const clone=o=>JSON.parse(JSON.stringify(o));
+const toast=t=>{const d=document.createElement("div");d.className="toast";d.textContent=t;$("#toasts").appendChild(d);setTimeout(()=>d.remove(),3000)};
+const MONS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const todayISO=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const daysLeft=d=>Math.ceil((new Date(d+"T23:59:59")-new Date())/864e5);
+const us=iso=>iso&&/^\d{4}-\d{2}-\d{2}$/.test(iso)?iso.slice(5,7)+"/"+iso.slice(8,10)+"/"+iso.slice(0,4):iso||"";
+const fmtLong=iso=>{const d=new Date(iso+"T12:00:00");return `${String(d.getDate()).padStart(2,"0")} ${MONS[d.getMonth()]} ${d.getFullYear()} · ${DAYS[d.getDay()]}`};
+const nf=n=>Number(n||0).toLocaleString("en-IN");
+const colL=i=>{let s="";i++;while(i>0){const m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26)}return s};
+const colI=L=>{L=String(L||"").toUpperCase().replace(/[^A-Z]/g,"");let n=0;for(const ch of L)n=n*26+(ch.charCodeAt(0)-64);return n-1};
+const LS={get(k,d){try{const v=localStorage.getItem("ppqa_"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("ppqa_"+k,JSON.stringify(v))}catch(e){}}};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* date parser: 10/05/2026, 10/5/26, 2026-10-05, Excel serial, 05-Oct-2026 → ISO */
+function toISO(v){
+  if(v==null)return "";let s=String(v).trim();if(!s)return "";
+  let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(m)return mk(+m[1],+m[2],+m[3]);
+  m=s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/);if(m){let y=+m[3];if(y<100)y+=2000;return mk(y,+m[1],+m[2])}
+  m=s.match(/^(\d{1,2})[\s\-]([A-Za-z]{3})[A-Za-z]*[\s\-,]+(\d{2,4})/);if(m){let y=+m[3];if(y<100)y+=2000;const mo=MONS.findIndex(x=>x.toLowerCase()===m[2].toLowerCase());if(mo>=0)return mk(y,mo+1,+m[1])}
+  if(/^\d{5}(\.\d+)?$/.test(s)){const n=+s;if(n>20000&&n<80000){const d=new Date(Math.round((n-25569)*864e5));return mk(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate())}}
+  return "";
+  function mk(y,mo,d){if(mo<1||mo>12||d<1||d>31||y<1990||y>2100)return "";return y+"-"+String(mo).padStart(2,"0")+"-"+String(d).padStart(2,"0")}
+}
+
+/* ---------- hashing and file lock (AES-GCM, light protection) ---------- */
+const H=(str,seed=161)=>{let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return 4294967296*(2097151&h2)+(h1>>>0)};
+const b64=u=>{let s="";for(const x of new Uint8Array(u))s+=String.fromCharCode(x);return btoa(s)},unb=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+let _fk=null;
+async function fkey(){if(_fk)return _fk;const m=await crypto.subtle.importKey("raw",new TextEncoder().encode(FILE_KEY),"PBKDF2",false,["deriveKey"]);return _fk=await crypto.subtle.deriveKey({name:"PBKDF2",salt:new TextEncoder().encode("ppqa-v1"),iterations:60000,hash:"SHA-256"},m,{name:"AES-GCM",length:256},false,["encrypt","decrypt"])}
+async function encT(t){const iv=crypto.getRandomValues(new Uint8Array(12));return "PPQ1:"+b64(iv)+":"+b64(await crypto.subtle.encrypt({name:"AES-GCM",iv},await fkey(),new TextEncoder().encode(t)))}
+async function decT(s){const p=String(s).trim().split(":");return new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:unb(p[1])},await fkey(),unb(p[2])))}
+const unlock=async t=>/^PPQ1:/.test(String(t).trim())?decT(t):t;
+async function sha(t){try{return b64(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)))}catch(e){return "h"+H(t)}}
+const isMaster=async p=>{const q=String(p||"");if(S.cfg.mph)return(await sha("master|"+q))===S.cfg.mph;return H(q.replace(/\s+/g,"").toLowerCase())===PW_MASTER};
+
+/* ---------- this PC's store (IndexedDB, falls back to memory) ---------- */
+const MEM={};
+const IDB={db:null,
+  open(){return new Promise(res=>{try{const r=indexedDB.open("provider_pick_qa",1);r.onupgradeneeded=()=>r.result.createObjectStore("kv");r.onsuccess=()=>{this.db=r.result;res(true)};r.onerror=()=>res(false);setTimeout(()=>res(false),3000)}catch(e){res(false)}})},
+  get(k){return new Promise(res=>{if(!this.db)return res(MEM[k]);try{const q=this.db.transaction("kv").objectStore("kv").get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>res(MEM[k])}catch(e){res(MEM[k])}})},
+  put(k,v){MEM[k]=v;if(!this.db)return Promise.resolve(false);return new Promise(res=>{try{const t=this.db.transaction("kv","readwrite");t.objectStore("kv").put(v,k);t.oncomplete=()=>res(true);t.onerror=()=>res(false)}catch(e){res(false)}})}
+};
+let S=null,saveT=null;
+const fresh=()=>({v:2,cfg:{users:[],perms:{},scope:{},fon:{},procs:[],notice:{on:false,text:"",type:"info",speed:25},exp:null,folder:DEF_FOLDER,pcts:PCT0.slice(),minOne:true,msg:{},
+  idleMin:15,askEvery:true,wm:true,noLocal:["entry","employee"],adminPcOnly:false,maxTry:5,alertMail:""},days:{},auth:{},log:[],picks:{}});
+const noLocal=()=>me.role!=="admin"&&(S.cfg.noLocal||["entry","employee"]).includes(me.role);
+function save(now){clearTimeout(saveT);const go=()=>IDB.put("state",noLocal()?{...S,days:{}}:S);if(now)return go();saveT=setTimeout(go,400);return Promise.resolve()}
+const SHARED=["users","perms","scope","fon","procs","notice","exp","mph","folder","pcts","minOne","msg","seeded","idleMin","askEvery","wm","noLocal","adminPcOnly","maxTry","v2"];
+
+/* ---------- who am I ---------- */
+let me={pc:"",role:"admin",name:"",team:"",code:""};
+const view={proc:null,from:"",to:"",rows:[],page:0,ps:100,f:{},q:"",sort:null,onlyPk:false,mode:"date",pct:10,pdate:"",puser:"",pick:null,as:null};
+const role=()=>view.as?view.as.role:me.role;
+const ident=()=>view.as||me;
+const userOf=m=>(S.cfg.users||[]).find(u=>u.pc===m);
+const identUser=()=>{const id=ident();return id.pc?userOf(id.pc):null};
+const featOn=f=>(S.cfg.fon||{})[f]!==false;
+function can(f){
+  if(!featOn(f))return false;
+  if(role()==="admin")return true;
+  const u=identUser();if(u&&u.ov&&u.ov[f]!=null)return !!u.ov[f];
+  return !!((S.cfg.perms[role()]||{})[f]);
+}
+function scope(){if(role()==="admin")return "all";const u=identUser();if(u&&u.scope)return u.scope;return S.cfg.scope[role()]||"all"}
+const isBuiltInAdmin=m=>m===ADMIN_MSID;
+function resolveMe(){
+  if(!LOCK_ON){me={pc:"TESTING",role:"admin",name:"Tester",team:"",code:""};return}
+  const m=LS.get("msid",""),u=userOf(m);
+  me=isBuiltInAdmin(m)?{pc:m,role:"admin",name:"Akshay Ranjan",team:"",code:""}:u?{pc:m,role:u.role,name:u.name||"",team:u.team||"",code:u.code||""}:{pc:m,role:"employee",name:"",team:"",code:""};
+}
+/* the Admin settings page: only the built-in Admin (and only on the Admin PC when that switch is on) */
+const isOwner=()=>me.pc===ADMIN_MSID&&(!S.cfg.adminPcOnly||LS.get("adminpc",false));
+function _unused(){
+}
+const procs=()=>S.cfg.procs&&S.cfg.procs.length?S.cfg.procs:PROC0;
+const procOf=k=>procs().find(p=>p.k===k);
+function procVisible(p){
+  if(role()==="admin")return true;
+  if(p.status==="hidden")return false;
+  const u=identUser();if(u&&Array.isArray(u.procs))return u.procs.includes(p.k);
+  return (p.roles||{})[role()]!==0;
+}
+const msgOn=k=>(S.cfg.msg||{})[k]!==false;
+
+/* ---------- data folder (OneDrive / SharePoint synced folder) ---------- */
+const FS={handle:null,dir:null,index:{},cfgLM:0,err:false};
+const fsSupported=()=>"showDirectoryPicker" in window;
+const monthDir=d=>d.slice(5,7)+"-"+MONS[+d.slice(5,7)-1];
+const dkey=(p,d)=>p+"@"+d;
+const unkey=k=>{const i=k.indexOf("@");return{p:k.slice(0,i),d:k.slice(i+1)}};
+async function fsInit(){
+  if(!fsSupported())return;
+  try{FS.handle=await IDB.get("dirHandle")}catch(e){FS.handle=null}
+  if(!FS.handle)return;
+  try{if(await FS.handle.queryPermission({mode:"readwrite"})==="granted"){FS.dir=FS.handle;await fsReadConfig(true);await fsScan()}}catch(e){}
+}
+async function folderOK(h,adm){
+  const want=String(S.cfg.folder||DEF_FOLDER).trim(),nameOk=h.name.trim().toLowerCase()===want.toLowerCase();let has=false;
+  try{await h.getFileHandle("_ppqa.eclipse");has=true}catch(e){}
+  if(has&&nameOk)return "";
+  if(adm&&nameOk){try{const fh=await h.getFileHandle("_ppqa.eclipse",{create:true});const w=await fh.createWritable();await w.write(await encT(JSON.stringify({t:"ppqa",at:Date.now()})));await w.close();return ""}catch(e){return "Couldn't prepare the folder. Allow write access."}}
+  return nameOk?"This folder is not set up yet. Ask Admin to connect it first.":"Wrong folder. Please pick the folder “"+want+"”.";
+}
+async function fsConnect(){
+  if(!fsSupported()){toast("This browser can't connect a folder. Use Chrome or Edge.");return false}
+  try{const h=await window.showDirectoryPicker({id:"ppqa-data",mode:"readwrite"});const bad=await folderOK(h,isOwner()&&!view.as);if(bad){toast(bad);return false}
+    FS.handle=h;FS.dir=h;await IDB.put("dirHandle",h);await fsReadConfig(true);await fsSyncUp();await fsScan();toast("Connected to “"+h.name+"”");paintSync();return true}
+  catch(e){if(e&&e.name!=="AbortError")toast("Couldn't connect the folder");return false}
+}
+async function fsAllow(){
+  if(!FS.handle)return fsConnect();
+  try{if(await FS.handle.requestPermission({mode:"readwrite"})==="granted"){FS.dir=FS.handle;await fsReadConfig(true);await fsSyncUp();await fsScan();toast("Data folder connected");paintSync();return true}toast("Permission not given")}catch(e){toast("Couldn't open the data folder")}
+  return false;
+}
+async function fsDisconnect(){FS.handle=null;FS.dir=null;FS.index={};await IDB.put("dirHandle",null);toast("Folder disconnected");paintSync()}
+async function fsScan(){
+  if(!FS.dir)return;const idx={};
+  try{
+    for(const p of procs()){
+      let ph;try{ph=await FS.dir.getDirectoryHandle(p.k)}catch(e){continue}
+      for await(const [yn,yh] of ph.entries()){if(yh.kind!=="directory"||!/^\d{4}$/.test(yn))continue;
+        for await(const [mn,mh] of yh.entries()){if(mh.kind!=="directory")continue;
+          for await(const [fn,fh] of mh.entries()){const m=fn.match(/^(\d{4}-\d{2}-\d{2})\.json$/);if(fh.kind==="file"&&m)idx[dkey(p.k,m[1])]={h:fh}}}}
+    }
+    FS.index=idx;FS.err=false;
+    /* dates deleted in the folder by Admin disappear from this PC too */
+    let gone=0;for(const k of Object.keys(S.days)){if(!idx[k]&&S.days[k]&&S.days[k]._lm){delete S.days[k];gone++}}if(gone)save();
+    await fsReadConfig();
+  }catch(e){FS.err=true;toast("Couldn't read the data folder")}
+  paintSync();
+}
+async function fsReadConfig(force){
+  if(!FS.dir)return;
+  try{const fh=await FS.dir.getFileHandle("config.eclipse");const f=await fh.getFile();if(!force&&f.lastModified===FS.cfgLM)return;FS.cfgLM=f.lastModified;
+    applyShared(JSON.parse(await decT(await f.text())))}catch(e){}
+}
+function applyShared(c){SHARED.forEach(k=>{if(c[k]!==undefined)S.cfg[k]=c[k]});fixCfg();save();resolveMe()}
+async function fsWriteConfig(){
+  if(!FS.dir)return false;const c={};SHARED.forEach(k=>c[k]=S.cfg[k]);c.savedAt=new Date().toISOString();c.savedBy=me.pc;
+  try{const fh=await FS.dir.getFileHandle("config.eclipse",{create:true});const w=await fh.createWritable();await w.write(await encT(JSON.stringify(c)));await w.close();FS.cfgLM=(await fh.getFile()).lastModified;FS.err=false;paintSync();return true}
+  catch(e){FS.err=true;toast("Settings saved on this PC, but not in the data folder");paintSync();return false}
+}
+async function fsSub(path,create){let d=FS.dir;for(const part of path.split("/").filter(Boolean))d=await d.getDirectoryHandle(part,{create});return d}
+async function fsWriteText(dirPath,fname,text){
+  if(!FS.dir)return false;
+  try{if(!/^PPQ1:/.test(text))text=await encT(text);const sd=await fsSub(dirPath,true);const fh=await sd.getFileHandle(fname,{create:true});const w=await fh.createWritable();await w.write(text);await w.close();return true}catch(e){return false}
+}
+async function fsReadText(dirPath,fname){if(!FS.dir)return null;try{const sd=await fsSub(dirPath,false);const fh=await sd.getFileHandle(fname);return await unlock(await (await fh.getFile()).text())}catch(e){return null}}
+async function fsList(dirPath){const out=[];if(!FS.dir)return out;try{const sd=await fsSub(dirPath,false);for await(const [n,h] of sd.entries())if(h.kind==="file")out.push(n)}catch(e){}return out}
+async function fsRemove(dirPath,fname){if(!FS.dir)return false;try{const sd=await fsSub(dirPath,false);await sd.removeEntry(fname);return true}catch(e){return false}}
+async function fsWriteDay(k,obj){
+  if(!FS.dir)return false;const {p,d}=unkey(k);
+  try{const dir=await fsSub(p+"/"+d.slice(0,4)+"/"+monthDir(d),true);const fh=await dir.getFileHandle(d+".json",{create:true});const w=await fh.createWritable();
+    const o={...obj};delete o._lm;await w.write(await encT(JSON.stringify(o)));await w.close();
+    FS.index[k]={h:fh};obj._lm=(await fh.getFile()).lastModified;FS.err=false;paintSync();return true}
+  catch(e){FS.err=true;paintSync();toast("Saved on this PC, but couldn't write to the data folder");return false}
+}
+async function fsDeleteDay(k){if(!FS.dir)return;const {p,d}=unkey(k);await fsRemove(p+"/"+d.slice(0,4)+"/"+monthDir(d),d+".json");delete FS.index[k]}
+async function fsSyncUp(){if(!FS.dir||noLocal())return;await fsScan();for(const k of Object.keys(S.days))if(!FS.index[k]&&!S.days[k]._lm)await fsWriteDay(k,S.days[k])}
+async function loadDay(p,d){
+  const k=dkey(p,d);
+  if(FS.dir&&FS.index[k]){
+    try{const f=await FS.index[k].h.getFile();const c=S.days[k];if(c&&c._lm===f.lastModified)return c;
+      const o=JSON.parse(await unlock(await f.text()));o._lm=f.lastModified;if(!noLocal()){S.days[k]=o;save()}return o}catch(e){}
+  }
+  return S.days[k]||null;
+}
+function savedDates(p){const set=new Set();const pre=p+"@";Object.keys(S.days).forEach(k=>{if(k.startsWith(pre))set.add(k.slice(pre.length))});Object.keys(FS.index).forEach(k=>{if(k.startsWith(pre))set.add(k.slice(pre.length))});return [...set].sort().reverse()}
+function paintSync(){
+  const d=$("#syncDot"),t=$("#folderTxt");if(!d)return;
+  d.className="sdot "+(FS.dir?(FS.err?"bad":"ok"):FS.handle?"warn":"");
+  t.textContent=FS.dir?FS.dir.name:FS.handle?"Allow folder":"Connect data";
+}
+
+/* ---------- history log ---------- */
+async function logAct(a,p,n){
+  const e={at:Date.now(),pc:me.pc,a,p:p||"",n:n||""};
+  S.log=(S.log||[]).concat(e).slice(-600);save();
+  if(FS.dir){const f="log_"+todayISO().slice(0,7)+".json";let arr=[];try{arr=JSON.parse(await fsReadText("_system",f)||"[]")}catch(x){}arr.push(e);await fsWriteText("_system",f,JSON.stringify(arr))}
+}
+async function readLog(){
+  let arr=(S.log||[]).slice();
+  if(FS.dir){const fs=(await fsList("_system")).filter(n=>/^log_/.test(n)).sort().reverse().slice(0,3);for(const f of fs){try{arr=arr.concat(JSON.parse(await fsReadText("_system",f)||"[]"))}catch(e){}}}
+  const seen=new Set();return arr.filter(e=>{const k=e.at+e.pc+e.a;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>b.at-a.at);
+}
+
+/* ---------- modal / confirm ---------- */
+function modal(html,wide){$("#mcard").className="mcard"+(wide?" wide":"");$("#mcard").innerHTML=html;$("#modal").hidden=false;$("#mcard").querySelectorAll("[data-close]").forEach(b=>b.onclick=closeModal)}
+function closeModal(){$("#modal").hidden=true;$("#mcard").innerHTML=""}
+$("#modal").addEventListener("mousedown",e=>{if(e.target.id==="modal")closeModal()});
+function ask(title,body,okText,fn,danger){
+  modal(`<h3>${title}</h3><p style="margin:0;line-height:1.55;color:var(--muted)">${body}</p>
+   <div class="mrow"><button class="cap" data-close>Cancel</button><button class="cap ${danger?"danger":"gold"}" id="askGo">${okText}</button></div>`);
+  $("#askGo").onclick=()=>{closeModal();fn()};
+}
+function saveBlob(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+
+/* ================= login, expiry, security, top bar, process rail ================= */
+const expiry=()=>S.cfg.exp||APP_EXPIRY;
+function expired(){
+  const left=daysLeft(expiry());if(left>=0)return false;
+  $("#app").hidden=true;$("#gate").hidden=true;$("#lock").hidden=false;
+  $("#lockMsg").textContent="This tool was valid till "+us(expiry())+". Admin can extend it with the master password.";
+  $("#lockGo").onclick=async()=>{
+    if(!(await isMaster($("#lockPw").value))){$("#lockErr").textContent="Master password is wrong.";return}
+    const d=$("#lockDate").value;if(!d||daysLeft(d)<0){$("#lockErr").textContent="Pick a future date.";return}
+    S.cfg.exp=d;await save(true);await fsWriteConfig();$("#lock").hidden=true;start()};
+  return true;
+}
+const DID=()=>{let d=LS.get("did","");if(!d){d=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());LS.set("did",d)}return d};
+async function authGet(m){let a=null;S.auth=S.auth||{};
+  if(FS.dir){const t=await fsReadText("_auth",m+".eclipse");if(t){try{a=JSON.parse(t)}catch(e){}}if(a){S.auth[m]=a;save()}else delete S.auth[m]}
+  else a=S.auth[m]||null;return a}
+async function authPut(m,a){S.auth=S.auth||{};S.auth[m]=a;await save(true);if(FS.dir&&!(await fsWriteText("_auth",m+".eclipse",JSON.stringify(a))))toast("Saved on this PC only. Allow write access to the data folder.")}
+/* blocked / suspicious login → history log + alert file in the data folder */
+async function alertLog(m,t){const at=Date.now();S.log=(S.log||[]).concat({at,pc:m,a:"blocked",p:"",n:t}).slice(-600);save();if(FS.dir)await fsWriteText("_system","alert_"+at+"_"+m.replace(/[^A-Z0-9]/gi,"")+".json",JSON.stringify({at,msid:m,t,did:DID().slice(0,8)}))}
+/* wrong-password lockout on this browser */
+const TRY={get(m){return (LS.get("tries",{})[m])||{n:0,until:0}},set(m,v){const a=LS.get("tries",{});if(v)a[m]=v;else delete a[m];LS.set("tries",a)}};
+/* session: ask password every time the tool opens (default) or remember on this PC */
+const SESS={get(){try{return S.cfg.askEvery!==false?sessionStorage.getItem("ppqa_sess")==="1":LS.get("sess",false)}catch(e){return false}},
+  set(v){try{sessionStorage.setItem("ppqa_sess",v?"1":"0")}catch(e){}LS.set("sess",!!v)}};
+
+let gateMsg="";
+async function gateConnect(){
+  if(!fsSupported()){gateMsg="Use Chrome or Edge to connect the data folder.";return}
+  try{if(FS.handle&&!FS.dir){if(await FS.handle.requestPermission({mode:"readwrite"})==="granted"){FS.dir=FS.handle;await fsReadConfig(true);await fsScan();return}}
+    const h=await window.showDirectoryPicker({id:"ppqa-data",mode:"readwrite"});const bad=await folderOK(h,false);if(bad){gateMsg=bad;return}
+    FS.handle=h;FS.dir=h;await IDB.put("dirHandle",h);await fsReadConfig(true);await fsScan()}catch(e){}
+}
+function gate(mode,msg){
+  mode=mode||"login";const setup=mode==="setup";$("#gate").hidden=false;$("#app").hidden=true;$("#verGate").textContent=APP_VER+" · build "+BUILD;
+  const last=LS.get("lastmsid","");
+  $("#gateBody").innerHTML=`
+   ${FS.dir?`<div class="ok-line" style="margin-top:16px">● Server connected · ${esc(FS.dir.name)}</div>`
+     :`<button class="cap violet" id="gConn" style="width:100%;margin-top:18px;padding:11px">🔌 ${FS.handle?"Allow the data server (one click)":"Step 1 · Connect data server"}</button>
+       <div style="font-size:11.5px;color:#8d99b8;margin-top:6px">Pick the shared folder “${esc(S.cfg.folder||DEF_FOLDER)}”</div>`}
+   <p style="color:#9fb0d6;margin:14px 0 0;font-size:12.5px;line-height:1.5">${setup?"Set or reset your password. Enter your MSID and this PC's device name (Settings → System → About).":(FS.dir?"":"Step 2 · ")+"Sign in with your MSID and password."}</p>
+   <input id="gM" placeholder="MSID" value="${esc(last)}" style="text-transform:uppercase" autocomplete="off" spellcheck="false">
+   ${setup?`<input id="gD" placeholder="Device name, e.g. LHTU05CG2122RJJ" style="text-transform:uppercase" autocomplete="off" spellcheck="false">`:""}
+   <input id="gPw" type="password" placeholder="${setup?"New password (min 4)":"Password"}" autocomplete="off">
+   ${setup?`<input id="gPw2" type="password" placeholder="Repeat password" autocomplete="off">`:""}
+   <button class="cap gold" id="gGo">${setup?"Save password & sign in":"Sign in  →"}</button>
+   <button class="lnk" id="gAlt">${setup?"Back to sign in":"First time or forgot password?"}</button>
+   <div class="err" id="gErr">${msg||""}</div>`;
+  $("#gAlt").onclick=()=>gate(setup?"login":"setup");
+  const gc=$("#gConn");if(gc)gc.onclick=async()=>{await gateConnect();const m=gateMsg;gateMsg="";gate(mode,FS.dir?"":(m||"Server not connected."))};
+  $("#gGo").onclick=()=>gateGo(setup);$("#gateBody").onkeydown=e=>{if(e.key==="Enter")gateGo(setup)};
+  {const f=$(last?(setup?"#gD":"#gPw"):"#gM");if(f)f.focus()}
+}
+function doneLogin(m){TRY.set(m,null);LS.set("lastmsid",m);LS.set("msid",m);SESS.set(true);resolveMe();logAct("login","",ROLEN(me.role));enter()}
+async function gateGo(setup){
+  const err=t=>{$("#gErr").innerHTML=t},m=$("#gM").value.trim().toUpperCase().replace(/\s+/g,""),pw=$("#gPw").value;
+  if(m.length<2)return err("Enter your MSID.");
+  const tr=TRY.get(m);if(tr.until>Date.now())return err("<b>Too many wrong passwords.</b> Try again after "+new Date(tr.until).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})+".");
+  const bad=async(t,why)=>{const x=TRY.get(m);x.n=(x.n||0)+1;const max=+S.cfg.maxTry||5;if(x.n>=max){x.until=Date.now()+15*6e4;x.n=0;alertLog(m,"Locked for 15 min after "+max+" wrong passwords")}else if(why)alertLog(m,why);TRY.set(m,x);err(t)};
+  if(m===ADMIN_MSID){if(!(await isMaster(pw)))return bad("Password is wrong.","Wrong Admin password");return doneLogin(m)}
+  const u=userOf(m);
+  if(!u){if(FS.dir)alertLog(m,"Unregistered MSID tried to sign in");return err(!FS.dir?"Connect the data server first, then sign in.":"<b>Access Denied.</b> MSID "+esc(m)+" is not registered. Please contact Administration.")}
+  if(u.until&&daysLeft(u.until)<0){alertLog(m,"Sign in after access expired");return err("<b>Access expired</b> on "+us(u.until)+". Please contact Administration.")}
+  if(setup){
+    const d=$("#gD").value.trim().toUpperCase().replace(/\..*$/,""),p2=$("#gPw2").value;
+    if(!FS.dir)return err("Connect the data server first, so your password is saved for everyone.");
+    if(!u.mc)return err("No device name is saved for "+esc(m)+". Ask Administration to add it.");
+    if(d!==String(u.mc).toUpperCase())return bad("Device name doesn't match the list. Check Settings → System → About.","Password reset tried with a wrong device name");
+    if(pw.length<4)return err("Password needs at least 4 characters.");if(pw!==p2)return err("The two passwords don't match.");
+    const old=await authGet(m);
+    await authPut(m,{h:await sha(m+"|"+pw),did:DID(),at:Date.now()});
+    if(old&&old.did!==DID())logAct("moved","",m+" moved to a new PC");
+    return doneLogin(m);
+  }
+  const a=await authGet(m);
+  if(!a)return err(FS.dir?"No password yet. Tap “First time or forgot password?” to set one.":"Connect the data server first, then sign in.");
+  if(a.h!==await sha(m+"|"+pw))return bad("Password is wrong.","Wrong password");
+  if(a.did!==DID()){alertLog(m,"Sign in from a different PC / browser (blocked)");return err("<b>This MSID is linked to another PC.</b> Nobody else can use it. Use “First time or forgot password?” with your device name to move it.")}
+  doneLogin(m);
+}
+function logout(){SESS.set(false);view.as=null;view.rows=[];view.pick=null;Object.keys(FRESH).forEach(k=>delete FRESH[k]);$("#adminPg").hidden=true;document.body.style.overflow="";gate()}
+
+/* ---------- idle lock ---------- */
+let idleT=null,idleLast=0;
+function idleReset(){clearTimeout(idleT);const m=+S.cfg.idleMin||0;if(!LOCK_ON||!m||$("#app").hidden&&$("#adminPg").hidden)return;
+  idleT=setTimeout(()=>{if(Object.values(FRESH).some(a=>a&&a.length))return idleReset();SESS.set(false);view.as=null;$("#adminPg").hidden=true;gate("login","Locked after "+m+" minutes idle. Sign in again.")},m*6e4)}
+["mousemove","keydown","pointerdown","wheel"].forEach(ev=>document.addEventListener(ev,()=>{if(Date.now()-idleLast>3000){idleLast=Date.now();idleReset()}},{passive:true}));
+
+/* ---------- start ---------- */
+async function start(){
+  if(expired())return;
+  if(!LOCK_ON){resolveMe();return enter()}
+  try{await fsInit()}catch(e){}
+  const m=LS.get("msid",""),u=userOf(m);
+  if(SESS.get()&&m&&(isBuiltInAdmin(m)||(u&&!(u.until&&daysLeft(u.until)<0)))){resolveMe();return enter()}
+  gate();
+}
+function enter(){
+  $("#gate").hidden=true;$("#lock").hidden=true;$("#app").hidden=false;
+  setTop();renderRail();idleReset();
+  const vis=procs().filter(procVisible);
+  const last=LS.get("proc","");openProc((vis.find(p=>p.k===last)||vis[0]||{}).k);
+}
+
+/* ---------- top bar ---------- */
+function setTop(){
+  const id=ident();
+  $("#verTop").textContent=APP_VER+" · build "+BUILD;
+  $("#uName").textContent=view.as?("Viewing as "+(id.name||ROLEN(id.role))):(me.name||me.pc||"User");
+  $("#uRole").textContent=(view.as?"":me.pc+" · ")+ROLEN(role());
+  $("#ava").textContent=((view.as?id.name:me.name)||me.pc||"U").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
+  $("#btnAdmin").hidden=!isOwner()||!!view.as;
+  $("#btnBack").hidden=!view.as;
+  $("#btnFolder").hidden=!can("folder");$("#btnTheme").hidden=!can("theme");$("#btnHelp").hidden=!can("help");
+  const left=daysLeft(expiry());$("#expTxt").textContent="Valid till "+us(expiry());$("#expTxt").className="chip hide-m "+(left<15?"red":"");
+  paintSync();renderNotice();
+}
+function renderNotice(){
+  const n=S.cfg.notice||{},el=$("#notice");
+  if(!n.on||!String(n.text||"").trim()||!can("notice")){el.hidden=true;return}
+  el.hidden=false;el.className="notice"+(n.type==="urgent"?" urgent":"");
+  el.innerHTML=`<span class="ntag">${n.type==="urgent"?"URGENT":"NOTICE"}</span><div class="ntrack"><span class="nmove" style="animation-duration:${Math.max(8,Math.min(90,+n.speed||25))}s">${esc(n.text)}</span></div>`;
+}
+function renderRail(){
+  const R=$("#rail");
+  const list=can("rail")?procs().filter(procVisible):[];
+  R.innerHTML=list.map(p=>{
+    const n=savedDates(p.k).length,f=(FRESH[p.k]||[]).length;
+    return `<button class="pbtn ${view.proc===p.k?"on":""} ${p.status==="soon"?"soon":""}" data-proc="${esc(p.k)}"><span class="pi">${esc(p.ic||p.k.slice(0,2).toUpperCase())}</span><span><b>${esc(p.label||p.k)}</b><small>${p.status==="soon"?"Coming soon":p.status==="hidden"?"Hidden":f?nf(f)+" new · not saved":(n?n+" date"+(n===1?"":"s"):"No data yet")}</small></span><span class="pl ${f?"new":n?"on":""}"></span></button>`}).join("")
+   +`<div class="acts" id="railActs"></div>`;
+  R.querySelectorAll("[data-proc]").forEach(b=>b.onclick=()=>openProc(b.dataset.proc));
+  if(typeof renderActs==="function")renderActs();
+}
+
+/* ---------- theme (light first) ---------- */
+function applyTheme(){document.documentElement.dataset.theme=LS.get("theme","light")}
+$("#btnTheme").onclick=()=>{LS.set("theme",LS.get("theme","light")==="dark"?"light":"dark");applyTheme()};
+$("#btnOut").onclick=()=>ask("Log out?","You will need your MSID and password to sign in again.","Log out",logout);
+$("#btnFolder").onclick=async()=>{
+  if(FS.dir){modal(`<h3>🔌 Data server</h3><p class="muted" style="margin:0">Connected to <b style="color:var(--ink)">${esc(FS.dir.name)}</b> · ${Object.keys(FS.index).length} saved dates across all processes.</p>
+    <div class="mrow"><button class="cap" data-close>Close</button>${can("refresh")?`<button class="cap" id="fRef">↻ Refresh</button>`:""}<button class="cap" id="fChg">Change folder</button></div>`);
+    const r=$("#fRef");if(r)r.onclick=async()=>{closeModal();await refreshAll()};
+    $("#fChg").onclick=async()=>{closeModal();if(await fsConnect())await refreshAll()};return}
+  if(FS.handle?await fsAllow():await fsConnect())await refreshAll();
+};
+async function refreshAll(){await fsScan();renderRail();if(view.proc)await loadRange();toast("Updated from the data server")}
+$("#btnBack").onclick=()=>{view.as=null;setTop();renderRail();openAdmin(view.ret||1)};
+$("#btnAdmin").onclick=()=>openAdmin(1);
+/* Admin on a PC that is not the Admin PC: click the brand 3 times + master password (only for ARANJA14) */
+{let n=0,t=null;$("#brand").addEventListener("click",()=>{n++;clearTimeout(t);t=setTimeout(()=>n=0,700);if(n>=3&&me.pc===ADMIN_MSID&&!isOwner()){n=0;
+  modal(`<h3>Admin access</h3><p class="muted" style="margin:0">This is not the Admin PC.</p><input id="mpw" type="password" placeholder="Master password" style="width:100%;margin-top:10px"><div class="mrow"><button class="cap" data-close>Cancel</button><button class="cap gold" id="mGo">Open Admin</button></div>`);
+  $("#mGo").onclick=async()=>{if(await isMaster($("#mpw").value)){closeModal();LS.set("adminpc",true);setTop();openAdmin(1)}else{alertLog(me.pc,"Wrong master password at the Admin door");toast("Wrong password")}}}})}
+
+/* ---------- help ---------- */
+$("#btnHelp").onclick=()=>modal(`<h3>How to use Provider Pick QA</h3><p class="muted" style="margin:0 0 14px">Seven processes · smart dump · red / green lights · QA pick by percent.</p>
+ <div class="helpgrid">
+  <div><b>1 · Dump anywhere</b>Paste rows from Excel (with the heading row) or Upload Excel. The tool reads the headings and sends the data to the right process. Unknown headings go to <i>Other</i>.</div>
+  <div><b>2 · Lights</b>Each heading lights <span style="color:var(--em)">green</span> when it has data and <span style="color:var(--danger)">light red</span> when it is empty.</div>
+  <div><b>3 · Long numbers</b>For 15-digit numbers (FLN, Claim File ID) use <i>Upload Excel</i>: copy-paste can turn them into 9.16E+14.</div>
+  <div><b>4 · Save</b>Saved date-wise in the data server. If a date is already there you choose: Replace it, or add only the new rows (never double).</div>
+  <div><b>5 · QA pick</b>Per Date or Per User, a percent (5, 10, 15 …) and Pick. A claim that was saved in a pick is never picked again.</div>
+  <div><b>6 · Filter</b>Click ▾ on any heading to choose values, sort A→Z / Z→A or clear. The heading row stays on top while you scroll.</div>
+ </div><div class="mrow"><button class="cap gold" data-close>Got it</button></div>`,true);
+
+/* ================= process screen (build 2 · compact) ================= */
+const FRESH={};             // unsaved rows per process (dumped, not saved yet)
+let RID=0;
+const P=()=>procOf(view.proc);
+const hIdx=(p,h)=>h?p.cols.findIndex(c=>norm(c)===norm(h)):-1;
+const dIdx=p=>p.dyn?hIdx(p,p.dh):colI(p.dc),uIdx=p=>p.dyn?hIdx(p,p.uh):colI(p.uc);
+const dLet=p=>{const i=dIdx(p);return i<0?"—":colL(i)},uLet=p=>{const i=uIdx(p);return i<0?"—":colL(i)};
+const sigOf=v=>v.map(x=>String(x??"").trim()).join("\u0001");
+const rowUser=(p,r)=>{const i=uIdx(p);return i<0?"":String(r.v[i]??"").trim()};
+const userKey=s=>norm(s);
+function mineMatch(p,r){
+  const u=userKey(rowUser(p,r));if(!u)return false;const id=ident();
+  return [id.name,id.code,id.pc,(identUser()||{}).code].filter(Boolean).some(x=>{const k=userKey(x);return k&&(u===k||u.includes(k)&&k.length>=4)});
+}
+function scoped(p,rows){return scope()==="own"?rows.filter(r=>mineMatch(p,r)):rows}
+function allRows(){const p=P();if(!p)return [];return scoped(p,view.rows.concat(FRESH[p.k]||[]))}
+const cmp=(a,b)=>String(a).localeCompare(String(b),undefined,{numeric:true,sensitivity:"base"});
+function filteredRows(skipCol){
+  const q=norm(view.q),ks=Object.keys(view.f).filter(k=>+k!==skipCol&&Array.isArray(view.f[k]));const sets=ks.map(k=>[+k,new Set(view.f[k])]);
+  const pk=view.pick?view.pick.ids:null;
+  let out=allRows().filter(r=>{
+    for(const [i,st] of sets){if(!st.has(String(r.v[i]??"").trim()))return false}
+    if(q&&!norm(r.v.join(" ")).includes(q))return false;
+    if(view.onlyPk&&pk&&!pk.has(r.id))return false;return true});
+  if(view.sort&&skipCol==null){const {i,dir}=view.sort;out=out.slice().sort((a,b)=>dir*cmp(a.v[i]??"",b.v[i]??""))}
+  return out;
+}
+
+async function openProc(k){
+  const p=procOf(k);if(!p)return;
+  view.proc=k;LS.set("proc",k);view.f={};view.q="";view.sort=null;view.onlyPk=false;view.page=0;view.pick=null;view.pdate="";view.puser="";view.cleared=false;
+  const ds=savedDates(k);view.from=view.to=ds[0]||"";
+  renderRail();renderProc();await loadRange();
+}
+async function loadRange(){
+  const p=P();if(!p)return;view.rows=[];
+  if(view.from&&view.to&&!view.cleared){
+    const ds=savedDates(p.k).filter(d=>d>=view.from&&d<=view.to).sort(),objs=[];
+    for(const d of ds){const o=await loadDay(p.k,d);if(o)objs.push([d,o])}
+    if(p.dyn){let add=false;objs.forEach(([d,o])=>(o.cols||[]).forEach(c=>{if(!p.cols.some(x=>norm(x)===norm(c))){p.cols.push(c);add=true}}));if(add){autoRule(p);renderProc()}}
+    objs.forEach(([d,o])=>view.rows.push(...dayRows(p,d,o)));
+  }
+  view.page=0;paintAll();
+}
+/* a saved date file → row objects (re-mapped by heading name) */
+function dayRows(p,d,o){
+  const same=JSON.stringify(o.cols||[])===JSON.stringify(p.cols);
+  const map=same?null:p.cols.map(c=>(o.cols||[]).findIndex(x=>norm(x)===norm(c)));
+  return (o.rows||[]).map(v=>{const vv=same?v.slice():map.map(j=>j<0?"":v[j]??"");while(vv.length<p.cols.length)vv.push("");return{id:++RID,v:vv,d,s:"saved"}});
+}
+/* Other process: guess the date and user headings */
+function autoRule(p){
+  if(!p.dyn)return;const rows=(FRESH[p.k]||[]).concat(view.rows);
+  const rate=i=>{const s=rows.slice(0,200).map(r=>r.v[i]).filter(x=>String(x??"").trim());return s.length?s.filter(x=>toISO(x)).length/s.length:0};
+  if(hIdx(p,p.dh)<0){let best=-1;p.cols.forEach((c,i)=>{if(best<0&&/date|dos|dt$/i.test(c)&&rate(i)>=.5)best=i});if(best<0)p.cols.forEach((c,i)=>{if(best<0&&rate(i)>=.8)best=i});p.dh=best>=0?p.cols[best]:""}
+  if(hIdx(p,p.uh)<0){const bad=/group|provider|first|last|middle|file|health|plan|claim|state|city|street/i;
+    let i=p.cols.findIndex(c=>/^(name|user ?id|user|opid|dla|agent|associate|processor|employee|emp ?name|user ?name)$/i.test(String(c).trim()));
+    if(i<0)i=p.cols.findIndex(c=>/(name|user|opid|dla|agent|associate|processor|employee)/i.test(c)&&!bad.test(c));p.uh=i>=0?p.cols[i]:""}
+}
+const rebucket=p=>{const dc=dIdx(p),t=todayISO();(FRESH[p.k]||[]).forEach(r=>{r.d=(dc>=0&&toISO(r.v[dc]))||r.d0||t})};
+
+function renderProc(){
+  const p=P(),M=$("#main"),T=$("#ptitle");
+  if(!p){T.innerHTML="";M.innerHTML=`<div class="card empty-state"><div class="big">🔒</div>No process is open for your login. Please contact Administration.</div>`;renderActs();return}
+  T.innerHTML=`<h1>${esc(p.label)} <span>· QA</span></h1>
+    <span class="mrule"><i>${dLet(p)}</i><span><small>Per Date</small> ${esc(p.cols[dIdx(p)]||"not set")}</span></span>
+    <span class="mrule"><i>${uLet(p)}</i><span><small>Per User</small> ${esc(p.cols[uIdx(p)]||"not set")}</span></span>
+    <small>${p.cols.length} columns · ${scope()==="own"?"your own claims":"everyone's claims"}</small>`;
+  if(p.status==="soon"&&role()!=="admin"){M.innerHTML=`<div class="card soonbox"><div class="big">⏳</div><h2>${esc(p.label)} is coming soon</h2><p class="muted">Admin will switch it on.</p></div>`;renderActs();return}
+  M.innerHTML=`
+  <div class="strip" id="kpis" ${can("kpis")?"":"hidden"}></div>
+  <div class="lightbar" id="lightCard" ${can("lights")?"":"hidden"}><span title="Green = data · light red = empty">💡</span><div class="lights" id="lights"></div><span class="chip" id="lightSum"></span></div>
+  <div class="tools">
+    <div class="tool" id="dumpCard">
+      <span class="tt">📥 Dump</span>
+      ${can("dump")?`<textarea class="dumpbox" id="paste" placeholder="Click & Ctrl+V · any process · or drop Excel" spellcheck="false" rows="1"></textarea>
+      <button class="cap sm gold" id="btnLoad">⚡ Load</button>
+      <label class="cap sm">📄 Upload<input type="file" id="file" accept=".xlsx,.xlsm,.xls,.csv" hidden></label>`:`<span class="muted" style="font-size:12px">View only · data is loaded by Admin / SME</span>`}
+    </div>
+    <div class="tool" id="pickCard"></div>
+  </div>
+  <div class="rbar" id="rbar" ${can("range")?"":"hidden"}></div>
+  <div class="gridcard">
+    <div class="ghead"><h3>📋 Data</h3><span class="chip" id="gCount"></span><span class="chip violet" id="gNew" hidden></span><span class="chip em" id="gPk" hidden></span>
+      <label class="tg sm" id="gOnly" hidden><input type="checkbox" id="gOnlyC"><span class="sw"></span>Only picked</label><span class="sp"></span>
+      ${can("filters")?`<span class="chip gold" id="gFl" hidden></span><input id="gq" placeholder="Search anything…" style="max-width:240px;border-radius:999px" value="${esc(view.q)}"><button class="cap xs ghost" id="gReset">Reset filters</button>`:""}
+    </div>
+    <div class="gbox" id="gbox"></div>
+    <div class="pager" id="pager"></div>
+  </div>`;
+  wireProc();renderActs();
+}
+/* Save · Excel · Clear on the process line (right side) */
+function renderActs(){
+  const A=$("#railActs");if(!A)return;const p=P();if(!p||(p.status==="soon"&&role()!=="admin")){A.innerHTML="";return}
+  const n=(FRESH[p.k]||[]).length;
+  A.innerHTML=`${can("save")?`<button class="cap sm em" id="btnSave" ${n?"":"disabled"}>💾 Save${n?" ("+nf(n)+")":""}</button>`:""}
+    ${can("export")?`<button class="cap sm" id="btnExpView">⬇ Excel</button>`:""}
+    ${can("refresh")&&FS.dir?`<button class="cap sm ghost" id="btnRef" title="Refresh from the data server">↻</button>`:""}
+    ${can("clear")?`<button class="cap sm ghost" id="btnClear">🧹 Clear screen</button>`:""}`;
+  const SV=$("#btnSave");if(SV)SV.onclick=saveFresh;
+  const X=$("#btnExpView");if(X)X.onclick=exportView;
+  const R=$("#btnRef");if(R)R.onclick=refreshAll;
+  const C=$("#btnClear");if(C)C.onclick=()=>{
+    const nn=(FRESH[p.k]||[]).length,go=()=>{FRESH[p.k]=[];view.rows=[];view.pick=null;view.cleared=true;view.f={};view.q="";view.sort=null;view.onlyPk=false;renderRail();paintAll();toast("Screen cleared · saved data is safe")};
+    if(!msgOn("clear")&&!nn)return go();
+    ask("Clear the screen?",(nn?"<b>"+nf(nn)+" new rows are not saved</b> and will be lost. ":"")+"Only this screen is cleared. Saved data stays in the data server — pick a date to bring it back.","Clear screen",go,!!nn)};
+}
+function paintAll(){renderKpis();renderLights();renderRange();renderPick();renderGrid();paintFresh()}
+function paintFresh(){
+  const p=P();if(!p)return;const n=(FRESH[p.k]||[]).length;renderActs();
+  const g=$("#gNew");if(g){g.hidden=!n;g.textContent=nf(n)+" new · not saved"}
+}
+function renderKpis(){
+  const p=P(),el=$("#kpis");if(!p||!el)return;const rows=allRows();
+  const dates=new Set(rows.map(r=>r.d)),users=new Set(rows.map(r=>userKey(rowUser(p,r))).filter(Boolean));
+  const pk=view.pick?view.pick.ids.size:0;
+  el.innerHTML=[["Rows",nf(rows.length),view.from?(view.from===view.to?us(view.from):us(view.from)+" → "+us(view.to)):"no date loaded","var(--gold)"],
+    ["Dates",nf(dates.size),"by "+(p.cols[dIdx(p)]||"—"),"var(--violet)"],["Users",nf(users.size),"by "+(p.cols[uIdx(p)]||"—"),"var(--teal)"],
+    ["QA picked",nf(pk),view.pick?view.pick.pct+"% · "+(view.pick.mode==="date"?"per date":"per user"):"run a pick","var(--em)"]]
+    .map(([a,b,c,k])=>`<div class="s" style="--kc:${k}"><small>${a}</small><b>${b}</b><em>${esc(c)}</em></div>`).join("");
+}
+function renderLights(){
+  const p=P(),el=$("#lights");if(!p||!el)return;const rows=allRows(),n=rows.length;
+  if(!p.cols.length){el.innerHTML=`<span class="muted" style="font-size:12px">No headings yet · dump any data with headings and they appear here</span>`;$("#lightSum").textContent="0 columns";return}
+  const fill=p.cols.map((c,i)=>rows.reduce((a,r)=>a+(String(r.v[i]??"").trim()?1:0),0));
+  el.innerHTML=p.cols.map((c,i)=>{const f=fill[i],cls=f===0?"off":f===n?"on":"on part",key=i===dIdx(p)||i===uIdx(p);
+    return `<span class="lt-cap ${cls} ${key?"key":""}" title="${esc(c)} · ${n?Math.round(f/n*100):0}% filled"><i>${colL(i)}</i><span class="bulb"></span>${esc(c)}</span>`}).join("");
+  const on=fill.filter(x=>x>0).length;$("#lightSum").textContent=`${on}/${p.cols.length} green`;
+}
+function flashLights(){$$("#lights .lt-cap.on").forEach((e,i)=>setTimeout(()=>{e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash")},i*20))}
+function renderRange(){
+  const p=P(),el=$("#rbar");if(!p||!el)return;const ds=savedDates(p.k);
+  el.innerHTML=`<b style="font-size:12.5px">📅</b>
+    <input type="date" id="rFrom" value="${view.from}"><span class="muted" style="font-size:12px">to</span><input type="date" id="rTo" value="${view.to}">
+    <button class="cap xs" data-q="last">Latest</button><button class="cap xs" data-q="7">7 days</button><button class="cap xs" data-q="month">This month</button><button class="cap xs" data-q="all">All</button>
+    ${can("deldate")&&ds.length?`<button class="cap xs ghost" id="rManage">🗂 Saved dates</button>`:""}
+    <span class="sp"></span>
+    <div class="dchips">${ds.length?ds.slice(0,40).map(d=>`<span class="dc ${d>=view.from&&d<=view.to?"in":""}" data-d="${d}" title="${fmtLong(d)}">${us(d).slice(0,5)}</span>`).join(""):`<span class="muted" style="font-size:12px">No saved dates yet${FS.dir?"":" · server not connected"}</span>`}</div>`;
+  const go=async(f,t)=>{view.from=f;view.to=t;view.cleared=false;view.pick=null;view.onlyPk=false;await loadRange()};
+  $("#rFrom").onchange=e=>go(e.target.value,view.to&&view.to>=e.target.value?view.to:e.target.value);
+  $("#rTo").onchange=e=>go(view.from&&view.from<=e.target.value?view.from:e.target.value,e.target.value);
+  el.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{const q=b.dataset.q;if(!ds.length){toast("No saved dates yet");return}
+    if(q==="last")go(ds[0],ds[0]);else if(q==="all")go(ds[ds.length-1],ds[0]);
+    else if(q==="7"){const t=new Date(ds[0]+"T12:00:00");t.setDate(t.getDate()-6);go(t.toISOString().slice(0,10),ds[0])}
+    else go(ds[0].slice(0,8)+"01",ds[0])});
+  el.querySelectorAll("[data-d]").forEach(c=>c.onclick=()=>go(c.dataset.d,c.dataset.d));
+  const rm=$("#rManage");if(rm)rm.onclick=manageDates;
+}
+async function manageDates(){
+  const p=P(),ds=savedDates(p.k);const info=[];
+  for(const d of ds){const o=await loadDay(p.k,d);info.push({d,n:o?(o.rows||[]).length:0,by:o&&o.by||"",at:o&&o.at})}
+  modal(`<h3>🗂 Saved dates · ${esc(p.label)}</h3><p class="muted" style="margin:0 0 12px">Delete removes the date from the data server (SharePoint) for everyone.</p>
+   <div class="scroll"><table class="tbl"><thead><tr><th>Date</th><th>Rows</th><th>Saved by</th><th>When</th><th></th></tr></thead><tbody>
+   ${info.map(x=>`<tr><td><b>${fmtLong(x.d)}</b></td><td class="mono">${nf(x.n)}</td><td class="mono">${esc(x.by)}</td><td>${x.at?new Date(x.at).toLocaleString("en-IN"):""}</td><td><button class="cap xs danger" data-del="${x.d}">Delete</button></td></tr>`).join("")}
+   </tbody></table></div><div class="mrow"><button class="cap" data-close>Close</button></div>`,true);
+  $$("#mcard [data-del]").forEach(b=>b.onclick=()=>{const d=b.dataset.del;ask("Delete "+us(d)+" from the server?","All "+esc(p.label)+" rows of "+fmtLong(d)+" are removed from the data server for everyone. This can't be undone (keep a backup).","Delete date",async()=>{
+    const k=dkey(p.k,d);delete S.days[k];await save(true);await fsDeleteDay(k);await logAct("deldate",p.k,d);renderRail();await loadRange();toast(us(d)+" deleted from the server")},true)});
+}
+
+function renderGrid(){
+  const p=P(),box=$("#gbox");if(!p||!box)return;
+  const rows=filteredRows(),tot=allRows().length,pages=Math.max(1,Math.ceil(rows.length/view.ps));
+  if(view.page>=pages)view.page=pages-1;
+  const slice=rows.slice(view.page*view.ps,(view.page+1)*view.ps),pk=view.pick?view.pick.ids:new Set();
+  $("#gCount").textContent=rows.length===tot?nf(tot)+" rows":nf(rows.length)+" of "+nf(tot)+" rows";
+  const nf2=Object.keys(view.f).length,fl=$("#gFl");if(fl){fl.hidden=!nf2;fl.textContent=nf2+" filter"+(nf2>1?"s":"")+" on"}
+  const gp=$("#gPk");gp.hidden=!view.pick;if(view.pick)gp.textContent="✓ "+nf(pk.size)+" picked";
+  $("#gOnly").hidden=!view.pick;$("#gOnlyC").checked=view.onlyPk;$("#gOnlyC").onchange=e=>{view.onlyPk=e.target.checked;view.page=0;renderGrid()};
+  if(!tot||!p.cols.length){box.innerHTML=`<div class="empty-state"><div class="big">🗃️</div><b style="color:var(--ink)">No data on screen</b><br>${can("dump")?"Paste or upload in the Dump box (any process), or pick a saved date.":"Pick a saved date above."}</div>`;$("#pager").innerHTML="";return}
+  const dc=dIdx(p),uc=uIdx(p),canX=can("delrow")||can("dump");
+  const numLike=i=>/tin|mpin|fln|id|zip|claim|audit|ufe|pid|number|phone|priority|office|sequence|suffix|prefix|dollar|review/i.test(p.cols[i]);
+  const flt=can("filters");
+  box.innerHTML=`<table class="g"><thead><tr><th class="n"><div class="thw">#</div></th>${p.cols.map((c,i)=>`<th class="${i===dc||i===uc?"key":""}"><div class="thw"><span class="tl"><span class="cl">${colL(i)}${view.sort&&view.sort.i===i?(view.sort.dir>0?" ▲":" ▼"):""}</span>${esc(c)}</span>${flt?`<button class="hdd ${view.f[i]?"on":""}" data-hd="${i}" title="Filter / sort ${esc(c)}">▾</button>`:""}</div></th>`).join("")}${canX?"<th><div class='thw'></div></th>":""}</tr></thead>
+    <tbody>${slice.map((r,j)=>`<tr class="${pk.has(r.id)?"pk":""} ${r.s==="new"?"new":""}"><td class="n">${pk.has(r.id)?"✓ ":""}${view.page*view.ps+j+1}</td>${p.cols.map((c,i)=>{const s=String(r.v[i]??"");return `<td class="${s?"":"empty"} ${numLike(i)?"num":""}" title="${esc(s)}">${s?esc(s):"·"}</td>`}).join("")}${canX?`<td>${r.s==="new"||can("delrow")?`<button class="xrow" data-x="${r.id}" title="Remove row">✕</button>`:""}</td>`:""}</tr>`).join("")}</tbody></table>`;
+  $("#pager").innerHTML=`<span>Page ${view.page+1} of ${pages}</span><button class="cap xs" id="pgP" ${view.page?"":"disabled"}>‹ Prev</button><button class="cap xs" id="pgN" ${view.page<pages-1?"":"disabled"}>Next ›</button>
+    <select id="pgS" style="padding:2px 8px;border-radius:999px;font-size:12px">${[50,100,250,500,1000].map(n=>`<option ${n===view.ps?"selected":""}>${n}</option>`).join("")}</select><span>rows per page</span><span class="sp"></span>
+    <span><span class="sdot ok" style="vertical-align:0"></span> green = picked for QA · <span style="color:var(--violet)">▍</span> new, not saved</span>`;
+  $("#pgP").onclick=()=>{view.page--;renderGrid();box.scrollTop=0};$("#pgN").onclick=()=>{view.page++;renderGrid();box.scrollTop=0};$("#pgS").onchange=e=>{view.ps=+e.target.value;view.page=0;renderGrid()};
+  box.querySelectorAll("[data-hd]").forEach(b=>b.onclick=e=>{e.stopPropagation();openFilter(+b.dataset.hd,b)});
+  box.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>removeRow(+b.dataset.x));
+}
+/* Excel-style heading dropdown: values with counts, search, sort, clear */
+function openFilter(i,btn){
+  closeFilter();const p=P();
+  const base=filteredRows(i),cnt=new Map();base.forEach(r=>{const v=String(r.v[i]??"").trim();cnt.set(v,(cnt.get(v)||0)+1)});
+  const vals=[...cnt.keys()].sort(cmp),cur=view.f[i]?new Set(view.f[i]):null;
+  const d=document.createElement("div");d.className="fpop";d.id="fpop";
+  d.innerHTML=`<div class="row" style="justify-content:space-between"><b style="font-size:12.5px">${esc(p.cols[i])}</b><span class="chip">${nf(vals.length)} values</span></div>
+   <div class="row" style="margin-top:8px"><button class="cap xs" data-s="1">A → Z</button><button class="cap xs" data-s="-1">Z → A</button>${view.sort&&view.sort.i===i?`<button class="cap xs ghost" data-s="0">No sort</button>`:""}</div>
+   <input type="text" id="fpQ" placeholder="Search values…" style="margin-top:8px">
+   <div class="fl2" id="fpL"></div>
+   <div class="row" style="justify-content:flex-end"><button class="cap xs ghost" id="fpClr">Clear filter</button><button class="cap xs gold" id="fpOk">OK</button></div>`;
+  document.body.appendChild(d);
+  const r=btn.getBoundingClientRect();d.style.top=Math.min(window.innerHeight-d.offsetHeight-10,r.bottom+6)+"px";d.style.left=Math.max(10,Math.min(window.innerWidth-280,r.right-270))+"px";
+  const sel=new Set(cur||vals);
+  const draw=()=>{const q=$("#fpQ").value.toLowerCase(),show=vals.filter(v=>!q||v.toLowerCase().includes(q)).slice(0,800);
+    $("#fpL").innerHTML=`<label><input type="checkbox" id="fpAll" ${show.every(v=>sel.has(v))?"checked":""}><span><b>(Select all${q?" shown":""})</b></span></label>`+
+      show.map((v,k)=>`<label><input type="checkbox" data-v="${k}" ${sel.has(v)?"checked":""}><span>${v?esc(v):"<i style='color:var(--muted)'>(Blanks)</i>"}</span><em>${nf(cnt.get(v))}</em></label>`).join("")+(vals.length>800&&!q?`<p class="muted" style="font-size:11px;margin:4px 6px">Type to search more…</p>`:"");
+    $("#fpAll").onchange=e=>{show.forEach(v=>e.target.checked?sel.add(v):sel.delete(v));draw()};
+    $("#fpL").querySelectorAll("[data-v]").forEach(c=>c.onchange=()=>{const v=show[+c.dataset.v];c.checked?sel.add(v):sel.delete(v);$("#fpAll").checked=show.every(x=>sel.has(x))})};
+  draw();$("#fpQ").oninput=draw;$("#fpQ").focus();
+  const apply=()=>{if(sel.size===vals.length)delete view.f[i];else view.f[i]=[...sel];view.page=0;closeFilter();renderGrid();renderPick()};
+  $("#fpOk").onclick=apply;$("#fpQ").onkeydown=e=>{if(e.key==="Enter")apply();if(e.key==="Escape")closeFilter()};
+  $("#fpClr").onclick=()=>{delete view.f[i];view.page=0;closeFilter();renderGrid();renderPick()};
+  d.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const s=+b.dataset.s;view.sort=s?{i,dir:s}:null;closeFilter();renderGrid()});
+  setTimeout(()=>document.addEventListener("mousedown",fpOut),0);
+}
+function fpOut(e){const d=$("#fpop");if(d&&!d.contains(e.target))closeFilter()}
+function closeFilter(){const d=$("#fpop");if(d)d.remove();document.removeEventListener("mousedown",fpOut)}
+async function removeRow(id){
+  const p=P(),fr=FRESH[p.k]||[],fi=fr.findIndex(r=>r.id===id);
+  if(fi>=0){fr.splice(fi,1);if(view.pick)view.pick.ids.delete(id);paintAll();renderRail();return}
+  const r=view.rows.find(x=>x.id===id);if(!r||!can("delrow"))return;
+  ask("Remove this row?","It is removed from the saved date "+us(r.d)+" in the data server.","Remove row",async()=>{
+    const k=dkey(p.k,r.d),o=await loadDay(p.k,r.d);if(!o)return;const sg=sigOf(r.v);
+    const keep=p.cols.map(c=>(o.cols||p.cols).findIndex(x=>norm(x)===norm(c)));
+    o.rows=(o.rows||[]).filter(v=>sigOf(keep.map(j=>j<0?"":v[j]??""))!==sg);o.at=Date.now();o.by=me.pc;
+    if(!noLocal())S.days[k]=o;await save(true);await fsWriteDay(k,o);await logAct("delrow",p.k,r.d);await loadRange();toast("Row removed")},true);
+}
+
+function wireProc(){
+  const L=$("#btnLoad"),T=$("#paste");
+  if(L)L.onclick=()=>{const t=T.value;if(!t.trim()){toast("Paste rows from Excel first");return}handleAOA(parseTSV(t),"Paste")};
+  const F=$("#file");if(F)F.onchange=e=>{const f=e.target.files[0];if(f)handleFile(f);e.target.value=""};
+  if(T){const D=$("#dumpCard");D.ondragover=e=>{e.preventDefault();T.classList.add("over")};D.ondragleave=()=>T.classList.remove("over");
+    D.ondrop=e=>{e.preventDefault();T.classList.remove("over");const f=e.dataTransfer.files[0];if(f)handleFile(f);else{const t=e.dataTransfer.getData("text");if(t)handleAOA(parseTSV(t),"Drop")}};
+    T.addEventListener("paste",e=>{const t=(e.clipboardData||window.clipboardData).getData("text");if(t&&(t.includes("\t")||t.includes("\n"))){e.preventDefault();T.value="";handleAOA(parseTSV(t),"Paste")}})}
+  const q=$("#gq");if(q){let t=null;q.oninput=()=>{view.q=q.value;clearTimeout(t);t=setTimeout(()=>{view.page=0;renderGrid();renderPick()},250)}}
+  const gr=$("#gReset");if(gr)gr.onclick=()=>{view.f={};view.q="";view.sort=null;if(q)q.value="";view.page=0;renderGrid();renderPick()};
+}
+
+/* ================= smart dump: any screen → right process by headings → lights ================= */
+function parseTSV(t){
+  t=String(t).replace(/\r\n?/g,"\n");const out=[];let row=[],cell="",q=false;
+  for(let i=0;i<t.length;i++){const ch=t[i];
+    if(q){if(ch==='"'){if(t[i+1]==='"'){cell+='"';i++}else q=false}else cell+=ch;continue}
+    if(ch==='"'&&cell===""){q=true;continue}
+    if(ch==="\t"){row.push(cell);cell="";continue}
+    if(ch==="\n"){row.push(cell);out.push(row);row=[];cell="";continue}
+    cell+=ch}
+  if(cell!==""||row.length){row.push(cell);out.push(row)}
+  return out.filter(r=>r.some(c=>String(c).trim()));
+}
+/* one cell → text exactly as the team sees it (long numbers whole, leading zeros kept) */
+function cellText(c){
+  if(!c||c.v==null)return "";
+  if(c.t==="n"){
+    const z=c.z||"General";
+    if(z!=="General"&&XLSX.SSF.is_date(z)){const d=XLSX.SSF.parse_date_code(c.v);if(d)return String(d.m).padStart(2,"0")+"/"+String(d.d).padStart(2,"0")+"/"+d.y}
+    if(z==="General"||z==="@"){return Number.isInteger(c.v)?String(c.v):String(+c.v.toPrecision(15))}
+    return c.w!=null?String(c.w).trim():String(c.v);
+  }
+  if(c.t==="d"){const d=c.v;return String(d.getMonth()+1).padStart(2,"0")+"/"+String(d.getDate()).padStart(2,"0")+"/"+d.getFullYear()}
+  if(c.t==="b")return c.v?"TRUE":"FALSE";
+  return String(c.w!=null&&c.t!=="s"?c.w:c.v).replace(/\s+$/,"");
+}
+function sheetAOA(ws){
+  if(!ws||!ws["!ref"])return [];const r=XLSX.utils.decode_range(ws["!ref"]),out=[];
+  for(let R=r.s.r;R<=r.e.r;R++){const row=[];for(let C=r.s.c;C<=r.e.c;C++)row.push(cellText(ws[XLSX.utils.encode_cell({r:R,c:C})]));if(row.some(x=>x.trim()))out.push(row)}
+  return out;
+}
+const sheetFits=(name,p)=>{if(p.dyn)return /^other/i.test(String(name).trim());const a=norm(name),b=norm(p.k),c=norm(p.label);if(!a)return false;if(a===b||a===c)return true;
+  if(b.startsWith("pend")&&/^pe?nd?52$/.test(a))return true;if(b.startsWith("xc")&&/(xc|dbm)/.test(a))return true;if(b==="repricing"&&/^rep/.test(a))return true;return a.length>=3&&(b.startsWith(a)||a.startsWith(b))};
+const dumpProcs=()=>procs().filter(x=>procVisible(x)&&(x.status==="live"||role()==="admin"));
+async function handleFile(f){
+  if(typeof XLSX==="undefined"){toast("Excel reader didn't load (no internet?). Paste the rows instead.");return}
+  toast("Reading "+f.name+"…");
+  let wb;try{wb=XLSX.read(await f.arrayBuffer(),{type:"array",cellNF:true,cellDates:false})}catch(e){toast("That file couldn't be read");return}
+  const hits=dumpProcs().map(x=>({p:x,s:wb.SheetNames.find(n=>sheetFits(n,x))})).filter(h=>h.s);
+  if(hits.length>1){ /* the team workbook: one sheet per process */
+    const info=hits.map(h=>{const aoa=sheetAOA(wb.Sheets[h.s]);return{...h,aoa,n:Math.max(0,aoa.length-1)}});
+    modal(`<h3>📚 Team workbook found</h3><p class="muted" style="margin:0 0 12px">${esc(f.name)} has a sheet for ${info.length} processes. Tick the ones to load — each sheet goes into its own process (saved only when you click Save).</p>
+     <div class="scroll"><table class="tbl"><thead><tr><th></th><th>Process</th><th>Sheet</th><th>Rows</th></tr></thead><tbody>
+     ${info.map((h,i)=>`<tr><td><input type="checkbox" data-wb="${i}" ${h.n?"checked":""}></td><td><b>${esc(h.p.label)}</b></td><td class="mono">${esc(h.s)}</td><td class="mono">${nf(h.n)}</td></tr>`).join("")}
+     </tbody></table></div>
+     <div class="mrow"><button class="cap" data-close>Cancel</button><button class="cap gold" id="wbGo">Load ticked sheets</button></div>`,true);
+    $("#wbGo").onclick=()=>{const pick=$$("#mcard [data-wb]").filter(c=>c.checked).map(c=>info[+c.dataset.wb]);closeModal();let tot=0;const lines=[];
+      pick.forEach(h=>{const r=buildRows(h.p,h.aoa);if(r.ok){if(h.p.dyn){h.p.cols=r.cols;autoRule(h.p)}FRESH[h.p.k]=(FRESH[h.p.k]||[]).concat(r.rows);tot+=r.rows.length;lines.push(h.p.label+" "+nf(r.rows.length))}});
+      renderRail();if(view.proc){renderProc();paintAll();flashLights()}toast(nf(tot)+" rows loaded · "+lines.join(" · "))};
+    return;
+  }
+  const s=hits[0];
+  handleAOA(sheetAOA(wb.Sheets[s?s.s:wb.SheetNames[0]]),f.name+(s?" · "+s.s:""));
+}
+
+/* heading match: exact → starts-with → shared words; one source column per heading */
+function matchHeads(src,cols){
+  const pairs=[];
+  src.forEach((h,i)=>{const a=norm(h);if(!a)return;const aw=String(h).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+    cols.forEach((c,j)=>{const b=norm(c);let s=0;
+      if(a===b)s=100;else if(a.length>=3&&b.length>=3&&(a.startsWith(b)||b.startsWith(a)))s=72-Math.min(20,Math.abs(a.length-b.length));
+      else{const bw=String(c).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);const inter=aw.filter(w=>bw.includes(w)).length,uni=new Set([...aw,...bw]).size;if(inter&&uni)s=Math.round(55*inter/uni)}
+      if(s>=40)pairs.push({i,j,s,d:Math.abs(i-j)})})});
+  pairs.sort((x,y)=>y.s-x.s||x.d-y.d);
+  const m={},usedJ=new Set();pairs.forEach(x=>{if(m[x.i]==null&&!usedJ.has(x.j)){m[x.i]=x.j;usedJ.add(x.j)}});
+  return m;
+}
+function headRow(p,aoa){let hi=-1,best={},bestN=0;for(let r=0;r<Math.min(6,aoa.length);r++){const m=matchHeads(aoa[r],p.cols),n=Object.keys(m).length;if(n>bestN){bestN=n;best=m;hi=r}}return{hi,map:best,n:bestN}}
+/* which process do these headings belong to? */
+function routeAOA(aoa){
+  const cur=P(),cand=dumpProcs().filter(p=>!p.dyn),other=dumpProcs().find(p=>p.dyn);
+  let best=null;cand.forEach(p=>{const h=headRow(p,aoa);const hc=h.hi>=0?aoa[h.hi].filter(x=>String(x).trim()).length:0;
+    const sc=h.n+(p===cur?.5:0);if(h.n>=2&&h.n>=Math.ceil(.5*Math.min(hc,p.cols.length))&&(!best||sc>best.sc))best={p,sc}});
+  if(best)return best.p;
+  if(other)return other;
+  return cur&&!cur.dyn?cur:cand[0];
+}
+function buildRows(p,aoa){
+  if(!aoa.length)return{ok:false,why:"Nothing to load"};
+  let cols=p.cols.slice(),hi,map,pos=false,added=[];
+  if(p.dyn){ /* Other: the headings come from the data itself */
+    hi=0;const hdr=aoa[0].map(x=>String(x).trim());map={};
+    hdr.forEach((h,i)=>{if(!h)return;let j=cols.findIndex(c=>norm(c)===norm(h));if(j<0||Object.values(map).includes(j)){cols.push(h);j=cols.length-1;added.push(h)}map[i]=j});
+  }else{
+    const h=headRow(p,aoa);hi=h.hi;map=h.map;
+    if(h.n<2){hi=-1;pos=true;map={};const w=Math.max(...aoa.map(r=>r.length));for(let i=0;i<Math.min(w,cols.length);i++)map[i]=i}
+  }
+  const body=aoa.slice(hi+1),seen=new Set((FRESH[p.k]||[]).concat(p.k===view.proc?view.rows:[]).map(r=>sigOf(r.v.concat(Array(Math.max(0,cols.length-r.v.length)).fill("")))));
+  const rows=[];let dup=0,nodate=0,dupIn=0;const inSet=new Set(),tmp={...p,cols},dc=dIdx(tmp)>=0?dIdx(tmp):-1,today=todayISO();
+  body.forEach(src=>{const v=cols.map(()=>"");Object.entries(map).forEach(([i,j])=>{v[j]=String(src[+i]??"").trim()});
+    if(!v.some(x=>x))return;const sg=sigOf(v);if(seen.has(sg)){dup++;return}if(inSet.has(sg)){dupIn++;return}inSet.add(sg);
+    let d=dc>=0?toISO(v[dc]):"";if(!d){d=today;nodate++}rows.push({id:++RID,v,d,d0:today,s:"new"})});
+  return{ok:true,rows,map,hi,pos,dup,dupIn,nodate,cols,added,src:hi>=0?aoa[hi]:null,skipped:!p.dyn&&hi>=0?aoa[hi].map((h,i)=>map[i]==null&&String(h).trim()?h:null).filter(Boolean):[]};
+}
+function handleAOA(aoa,from){
+  if(!can("dump")){toast("Dump is not allowed for your login");return}
+  const cur=P(),p=routeAOA(aoa);if(!p){toast("No process open for your login");return}
+  const r=buildRows(p,aoa);if(!r.ok){toast(r.why);return}
+  /* Other: guess date / user headings on a temp copy for the preview */
+  const tp={...p,cols:r.cols};if(p.dyn)autoRuleRows(tp,r.rows);
+  const ui=uIdx(tp),filled=new Set(Object.values(r.map)),users=new Set(r.rows.map(x=>userKey(x.v[ui]??"")).filter(Boolean)),dI=dIdx(tp);
+  r.nodate=0;r.rows.forEach(x=>{const d=dI>=0&&toISO(x.v[dI]);x.d=d||x.d0;if(!d)r.nodate++});
+  const dates=[...new Set(r.rows.map(x=>x.d))].sort(),moved=cur&&p.k!==cur.k;
+  const sample=j=>{const x=r.rows.find(z=>z.v[j]);return x?x.v[j]:""};
+  const opt=(sel)=>`<option value="">— none —</option>`+r.cols.map(c=>`<option ${norm(c)===norm(sel)?"selected":""}>${esc(c)}</option>`).join("");
+  modal(`<h3>⚡ Check before loading</h3>
+   ${moved?`<div class="chip ${p.dyn?"violet":"em"}" style="margin:2px 0 10px;font-size:12.5px;padding:6px 14px">🔀 ${p.dyn?"No process has these headings → data goes to <b>&nbsp;Other&nbsp;</b>":"These headings belong to <b>&nbsp;"+esc(p.label)+"&nbsp;</b> → data goes there"}</div>`:`<p class="muted" style="margin:0 0 10px">Into <b style="color:var(--ink)">${esc(p.label)}</b></p>`}
+   <p class="muted" style="margin:0 0 12px;font-size:12.5px">${esc(from)} · ${r.pos?"<b style='color:var(--amber)'>No heading row found</b> – columns placed by position.":p.dyn?(r.added.length?r.added.length+" new headings added to Other":"headings match Other"):"Heading row "+(r.hi+1)+" matched."}</p>
+   <div class="strip" style="margin-bottom:12px">
+     <div class="s" style="--kc:var(--em)"><small>Rows</small><b>${nf(r.rows.length)}</b><em>${r.dup+r.dupIn?nf(r.dup+r.dupIn)+" duplicates skipped":"no duplicates"}</em></div>
+     <div class="s" style="--kc:var(--gold)"><small>Columns</small><b>${filled.size}/${r.cols.length}</b><em>${r.skipped.length?r.skipped.length+" extra ignored":"all used"}</em></div>
+     <div class="s" style="--kc:var(--violet)"><small>Dates</small><b>${dates.length}</b><em>${dates.length?us(dates[0])+(dates.length>1?" → "+us(dates[dates.length-1]):""):"—"}</em></div>
+     <div class="s" style="--kc:var(--teal)"><small>Users</small><b>${users.size}</b><em>${esc(r.cols[ui]||"—")}</em></div>
+   </div>
+   ${p.dyn?`<div class="frow"><label class="fl">Per Date heading<select id="oD">${opt(tp.dh)}</select></label><label class="fl">Per User heading<select id="oU">${opt(tp.uh)}</select></label><span class="muted" style="font-size:12px">QA % is taken by these two headings</span></div>`:""}
+   ${r.nodate?`<p class="chip red" style="margin:0 0 10px">${nf(r.nodate)} rows have no valid date → kept under today (${us(todayISO())})</p>`:""}
+   <div class="scroll" style="max-height:34vh"><table class="map"><thead><tr><th>#</th><th>Heading in the tool</th><th></th><th>From your data</th><th>Sample</th></tr></thead><tbody>
+   ${r.cols.map((c,j)=>{const si=Object.keys(r.map).find(i=>r.map[i]===j);return `<tr><td class="mono muted">${colL(j)}</td><td><b>${esc(c)}</b></td><td class="arrow">${si!=null?"←":""}</td><td>${si!=null?(r.src?esc(r.src[si]):"column "+colL(+si)):`<span class="chip red">empty</span>`}</td><td class="mono" style="max-width:240px;overflow:hidden;text-overflow:ellipsis">${esc(sample(j))}</td></tr>`}).join("")}
+   </tbody></table></div>
+   ${r.skipped.length?`<p class="muted" style="font-size:12px;margin:10px 0 0">Ignored columns: ${r.skipped.map(esc).join(", ")}</p>`:""}
+   <div class="mrow"><button class="cap" data-close>Cancel</button><button class="cap gold" id="dGo" ${r.rows.length?"":"disabled"}>Load ${nf(r.rows.length)} rows${moved?" into "+esc(p.label):""}</button></div>`,true);
+  $("#dGo").onclick=async()=>{
+    if(p.dyn){p.cols=r.cols;p.dh=($("#oD")||{}).value??tp.dh;p.uh=($("#oU")||{}).value??tp.uh;await persistOther(p)}
+    closeModal();FRESH[p.k]=(FRESH[p.k]||[]).concat(r.rows);if(p.dyn)rebucket(p);const t=$("#paste");if(t)t.value="";
+    if(moved)await openProc(p.k);else{view.pick=null;view.page=0;renderRail();if(p.dyn)renderProc();paintAll()}
+    flashLights();toast(nf(r.rows.length)+" rows loaded into "+p.label+(can("save")?" · click Save to keep them":""))};
+}
+function autoRuleRows(p,rows){const keep=FRESH[p.k];FRESH[p.k]=rows;const vr=view.rows;view.rows=[];try{autoRule(p)}finally{FRESH[p.k]=keep;view.rows=vr}}
+/* Other's headings and date / user choice are kept on this PC, and shared when allowed */
+async function persistOther(p){const c=S.cfg.procs.find(x=>x.k===p.k);if(c&&c!==p)Object.assign(c,{cols:p.cols,dh:p.dh,uh:p.uh});save();if(FS.dir&&(isOwner()||can("otherset")))await fsWriteConfig()}
+
+/* save new rows date-wise into the data server */
+async function saveFresh(){
+  const p=P(),fr=FRESH[p.k]||[];if(!fr.length)return;
+  if(!FS.dir&&noLocal()){toast("Connect the data server first");return}
+  const by={};fr.forEach(r=>(by[r.d]=by[r.d]||[]).push(r));const ds=Object.keys(by).sort(),have=new Set(savedDates(p.k));
+  const info=[];for(const d of ds){let ex=0,dup=0;if(have.has(d)){const o=await loadDay(p.k,d);if(o){ex=(o.rows||[]).length;const sg=new Set(dayRows(p,d,o).map(r=>sigOf(r.v)));dup=by[d].filter(r=>sg.has(sigOf(r.v))).length}}info.push({d,n:by[d].length,ex,dup,clash:have.has(d)})}
+  const clash=info.filter(x=>x.clash),newRows=info.reduce((a,x)=>a+(x.n-x.dup),0);
+  modal(`<h3>💾 Save ${nf(fr.length)} rows · ${esc(p.label)}</h3>
+   <p class="muted" style="margin:0 0 10px">Saved by <b style="color:var(--ink)">${esc(p.cols[dIdx(p)]||"dump date")}</b> into ${ds.length} date${ds.length>1?"s":""}${FS.dir?" on the data server":" <b style='color:var(--amber)'>on this PC only (server not connected)</b>"}.</p>
+   <div class="scroll" style="max-height:34vh"><table class="tbl"><thead><tr><th>Date</th><th>Your rows</th><th>Already saved</th><th>Same rows already there</th><th>Status</th></tr></thead><tbody>
+   ${info.map(x=>`<tr><td><b>${fmtLong(x.d)}</b></td><td class="mono">${nf(x.n)}</td><td class="mono">${x.clash?nf(x.ex):"—"}</td><td class="mono">${x.clash?nf(x.dup):"—"}</td><td>${x.clash?`<span class="chip gold">date is already there</span>`:`<span class="chip em">new date</span>`}</td></tr>`).join("")}
+   </tbody></table></div>
+   ${clash.length?`<p style="margin:12px 0 0;font-size:13px"><b>${clash.length} date${clash.length>1?"s are":" is"} already there.</b> Do you want to replace ${clash.length>1?"them":"it"}?</p>
+   <p class="muted" style="font-size:12px;margin:4px 0 0"><b>Add only new rows</b> keeps the saved data and adds just the ${nf(newRows)} rows that are not there yet — nothing is doubled. <b>Replace</b> removes the saved rows of ${clash.length>1?"those dates":"that date"} and keeps only this data.</p>`:""}
+   <div class="mrow"><button class="cap" data-close>Cancel</button>
+    ${clash.length&&can("replace")?`<button class="cap danger" id="sRep">Replace ${clash.length>1?"those dates":"the date"}</button>`:""}
+    <button class="cap em" id="sGo">${clash.length?"Add only new rows":"Save now"}</button></div>`,true);
+  const run=async over=>{closeModal();let added=0;
+    for(const d of ds){const k=dkey(p.k,d);let o=await loadDay(p.k,d);
+      if(!o||over)o={p:p.k,d,cols:p.cols.slice(),rows:[]};
+      if(JSON.stringify(o.cols)!==JSON.stringify(p.cols)){const mp=p.cols.map(c=>(o.cols||[]).findIndex(x=>norm(x)===norm(c)));o.rows=o.rows.map(v=>mp.map(j=>j<0?"":v[j]??""));o.cols=p.cols.slice()}
+      const sg=new Set(o.rows.map(sigOf));by[d].forEach(r=>{const s=sigOf(r.v);if(!sg.has(s)){o.rows.push(r.v);sg.add(s);added++}});
+      o.at=Date.now();o.by=me.pc;o.n=o.rows.length;
+      if(!noLocal())S.days[k]=o;await save(true);if(FS.dir)await fsWriteDay(k,o);else if(noLocal())S.days[k]=o}
+    await logAct(over?"replace":"save",p.k,nf(added)+" rows · "+ds.map(us).join(", "));
+    FRESH[p.k]=[];view.cleared=false;
+    if(!view.from||ds[0]<view.from)view.from=ds[0];if(!view.to||ds[ds.length-1]>view.to)view.to=ds[ds.length-1];
+    renderRail();await loadRange();toast("✓ Saved "+nf(added)+" rows into "+ds.length+" date"+(ds.length>1?"s":""))};
+  $("#sGo").onclick=()=>run(false);const rp=$("#sRep");if(rp)rp.onclick=()=>run(true);
+}
+
+/* ================= QA pick: % per date / per user · a claim is never picked twice ================= */
+const pctList=()=>(S.cfg.pcts&&S.cfg.pcts.length?S.cfg.pcts:PCT0);
+const qaCount=c=>{if(!c)return 0;const n=Math.round(c*view.pct/100);return Math.min(c,Math.max(S.cfg.minOne!==false?1:0,n))};
+let OLD={k:"",set:new Set(),at:0};
+async function oldPickSigs(p,force){
+  if(!force&&OLD.k===p.k&&Date.now()-OLD.at<60e3)return OLD.set;
+  const set=new Set();((S.picks||{})[p.k]||[]).forEach(o=>(o.rows||[]).forEach(r=>set.add(r.sig)));
+  if(FS.dir){try{const root=await fsSub("_picks/"+p.k,false);for await(const [mn,mh] of root.entries()){if(mh.kind!=="directory")continue;
+    for await(const [fn,fh] of mh.entries()){if(fh.kind!=="file")continue;try{const o=JSON.parse(await unlock(await (await fh.getFile()).text()));(o.rows||[]).forEach(r=>set.add(r.sig))}catch(e){}}}}catch(e){}}
+  OLD={k:p.k,set,at:Date.now()};return set;
+}
+function pickPool(p){const rows=filteredRows();return rows.filter(r=>(view.mode!=="date"||!view.pdate||r.d===view.pdate)&&(!view.puser||userKey(rowUser(p,r))===view.puser)&&userKey(rowUser(p,r)))}
+function renderPick(){
+  const p=P(),el=$("#pickCard");if(!p||!el)return;
+  const hist=can("history")?`<button class="cap xs ghost" id="pHist" title="Saved picks">📜</button>`:"";
+  if(!can("pick")){el.innerHTML=`<span class="tt">🎯 QA pick</span><span class="muted" style="font-size:12px">Picks are made by Admin / SME / Data Entry.</span>${hist}`;const h=$("#pHist");if(h)h.onclick=pickHistory;return}
+  const rows=filteredRows(),dates=[...new Set(rows.map(r=>r.d))].sort(),uMap=new Map();
+  rows.forEach(r=>{const u=rowUser(p,r),k=userKey(u);if(k&&!uMap.has(k))uMap.set(k,u)});
+  const users=[...uMap.entries()].sort((a,b)=>a[1].localeCompare(b[1]));
+  if(view.pdate&&!dates.includes(view.pdate))view.pdate="";if(view.puser&&!uMap.has(view.puser))view.puser="";
+  const pl=pctList(),custom=!pl.includes(view.pct),pool=pickPool(p);
+  const g=new Map();pool.forEach(r=>{const k=(view.mode==="date"?r.d:"")+"|"+userKey(rowUser(p,r));g.set(k,(g.get(k)||0)+1)});
+  let est=0;g.forEach(c=>est+=qaCount(c));
+  const opt=sel=>`<option value="">— choose —</option>`+p.cols.map(c=>`<option ${norm(c)===norm(sel)?"selected":""}>${esc(c)}</option>`).join("");
+  el.innerHTML=`<span class="tt">🎯 QA pick</span>
+   ${p.dyn&&can("otherset")?`<select id="oD" title="Per Date heading">${opt(p.dh).replace("— choose —","Date heading")}</select><select id="oU" title="Per User heading">${opt(p.uh).replace("— choose —","User heading")}</select>`:""}
+   <div class="seg" id="pMode"><button data-m="date" class="${view.mode==="date"?"on":""}">📅 Per Date · ${dLet(p)}</button><button data-m="user" class="${view.mode==="user"?"on":""}">👤 Per User · ${uLet(p)}</button></div>
+   <div class="pct" id="pPct">${pl.map(x=>`<button data-p="${x}" class="${view.pct===x?"on":""}">${x}%</button>`).join("")}<input id="pCus" type="number" min="1" max="100" step="0.5" placeholder="Custom %" value="${custom?view.pct:""}"></div>
+   ${view.mode==="date"?`<select id="pDate"><option value="">All dates (${dates.length})</option>${dates.map(d=>`<option value="${d}" ${view.pdate===d?"selected":""}>${us(d)}</option>`).join("")}</select>`:""}
+   <select id="pUser"><option value="">All users (${users.length})</option>${users.map(([k,n])=>`<option value="${esc(k)}" ${view.puser===k?"selected":""}>${esc(n)}</option>`).join("")}</select>
+   <button class="cap sm em" id="pGo" ${pool.length&&uIdx(p)>=0?"":"disabled"}>🎯 Pick</button>
+   ${view.pick?`<button class="cap sm gold" id="pRes">✅ Result (${nf(view.pick.ids.size)})</button><button class="cap xs" id="pAgain" title="New random pick">🔀</button><button class="cap xs ghost" id="pClr" title="Clear pick">✕</button>`:""}${hist}
+   <div class="hint">${uIdx(p)<0?"<span style='color:var(--danger)'>Choose the user heading first.</span>":pool.length?`≈ <b>${nf(est)}</b> of <b>${nf(pool.length)}</b> claims · ${view.mode==="date"?"each user on each date gets "+view.pct+"%":"each user gets "+view.pct+"% of all their claims"} · claims picked before are never picked again${Object.keys(view.f).length||view.q?" · <span style='color:var(--amber)'>filters apply</span>":""}`:"Load data first (dump or a saved date)."}</div>`;
+  $$("#pMode [data-m]").forEach(b=>b.onclick=()=>{view.mode=b.dataset.m;renderPick()});
+  $$("#pPct [data-p]").forEach(b=>b.onclick=()=>{view.pct=+b.dataset.p;renderPick()});
+  $("#pCus").onchange=e=>{const v=+e.target.value;if(v>0&&v<=100){view.pct=v;renderPick()}};
+  const pd=$("#pDate");if(pd)pd.onchange=e=>{view.pdate=e.target.value;renderPick()};
+  $("#pUser").onchange=e=>{view.puser=e.target.value;renderPick()};
+  const oD=$("#oD"),oU=$("#oU");
+  if(oD)oD.onchange=async()=>{p.dh=oD.value;rebucket(p);await persistOther(p);renderProc();await loadRange()};
+  if(oU)oU.onchange=async()=>{p.uh=oU.value;await persistOther(p);renderProc();paintAll()};
+  $("#pGo").onclick=()=>runPick();const a=$("#pAgain");if(a)a.onclick=()=>runPick();
+  const rs=$("#pRes");if(rs)rs.onclick=openResult;
+  const c=$("#pClr");if(c)c.onclick=()=>{view.pick=null;view.onlyPk=false;renderKpis();renderPick();renderGrid()};
+  const h=$("#pHist");if(h)h.onclick=pickHistory;
+}
+const rnd=n=>{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n};
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+async function runPick(){
+  const p=P(),pool=pickPool(p);
+  if(!pool.length){toast("No claims to pick from");return}
+  const old=await oldPickSigs(p,true);
+  const groups=new Map();
+  pool.forEach(r=>{const u=rowUser(p,r),k=(view.mode==="date"?r.d:"")+"|"+userKey(u);if(!groups.has(k))groups.set(k,{d:view.mode==="date"?r.d:"",u,rows:[]});groups.get(k).rows.push(r)});
+  const out=[],ids=new Set();let skipped=0;
+  [...groups.values()].sort((a,b)=>a.d.localeCompare(b.d)||a.u.localeCompare(b.u)).forEach(g=>{
+    const want=qaCount(g.rows.length),fresh=g.rows.filter(r=>!old.has(sigOf(r.v))),done=g.rows.length-fresh.length;skipped+=done;
+    const n=Math.max(0,Math.min(fresh.length,want-done)); /* picked-before claims count towards the %, never repeated */
+    const pk=shuffle(fresh.slice()).slice(0,n);pk.forEach(r=>ids.add(r.id));out.push({d:g.d,u:g.u,total:g.rows.length,n:pk.length,done,want,rows:pk});
+  });
+  view.pick={mode:view.mode,pct:view.pct,date:view.pdate,user:view.puser,at:Date.now(),by:me.pc,groups:out,ids,from:view.from,to:view.to,skipped,saved:false};
+  renderKpis();renderPick();renderGrid();
+  if(!ids.size){toast(skipped?"Everything is already covered by earlier picks — nothing new to pick":"Nothing picked");return}
+  toast("🎯 "+nf(ids.size)+" claims picked for QA");openResult();
+}
+function pickRows(){const pk=view.pick;if(!pk)return [];const out=[];pk.groups.forEach(g=>g.rows.forEach(r=>out.push({g,r})));return out}
+function openResult(){
+  const p=P(),pk=view.pick;if(!pk)return;
+  const byU=new Map();pk.groups.forEach(g=>{const k=userKey(g.u),x=byU.get(k)||{u:g.u,t:0,n:0,done:0,dates:0};x.t+=g.total;x.n+=g.n;x.done+=g.done;x.dates++;byU.set(k,x)});
+  const list=pickRows(),U=[...byU.values()].sort((a,b)=>b.n-a.n||a.u.localeCompare(b.u));
+  modal(`<div class="row"><h3 style="margin:0">✅ QA pick result · ${esc(p.label)}</h3>
+      <span class="chip em">${nf(list.length)} claims</span><span class="chip gold">${pk.pct}% · ${pk.mode==="date"?"Per Date":"Per User"}</span>
+      <span class="chip">${pk.mode==="date"?(pk.date?us(pk.date):"all dates"):"all loaded dates"}${pk.user?" · 1 user":""}</span>
+      ${pk.skipped?`<span class="chip violet">${nf(pk.skipped)} picked before · not repeated</span>`:""}${pk.saved?`<span class="chip em">🔒 saved</span>`:""}</div>
+    <div class="rsum">${U.map(x=>`<div class="ucard"><b>${esc(x.u)}</b><div class="bar"><i style="width:${x.t?Math.max(4,(x.n+x.done)/x.t*100):0}%"></i></div><div class="nums"><span>${nf(x.t)} claims${pk.mode==="date"?" · "+x.dates+" date"+(x.dates>1?"s":""):""}${x.done?" · "+x.done+" before":""}</span><em>${nf(x.n)} new</em></div></div>`).join("")}</div>
+    <div class="scroll" style="max-height:42vh"><table class="tbl"><thead><tr><th>QA #</th>${pk.mode==="date"?"<th>Pick date</th>":""}<th>Pick user</th>${p.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>
+    ${list.slice(0,1000).map((x,i)=>`<tr><td class="mono">${i+1}</td>${pk.mode==="date"?`<td class="mono">${us(x.g.d)}</td>`:""}<td><b>${esc(x.g.u)}</b></td>${p.cols.map((c,j)=>`<td>${esc(x.r.v[j]??"")}</td>`).join("")}</tr>`).join("")}
+    </tbody></table></div>${list.length>1000?`<p class="muted" style="font-size:12px">Showing the first 1,000. Excel has all ${nf(list.length)}.</p>`:""}
+    <div class="mrow"><button class="cap" data-close>Close</button>
+      ${can("copy")?`<button class="cap" id="rC">⧉ Copy</button>`:""}${can("export")?`<button class="cap gold" id="rX">⬇ Excel</button>`:""}
+      ${can("savepick")&&!pk.saved?`<button class="cap em" id="rS">🔒 Save pick (never repeat)</button>`:""}</div>`,true);
+  const x=$("#rX");if(x)x.onclick=()=>exportPick(view.pick,p);
+  const c=$("#rC");if(c)c.onclick=async()=>{const t=[["QA #",...(pk.mode==="date"?["Pick date"]:[]),"Pick user",...p.cols].join("\t"),...list.map((x,i)=>[i+1,...(pk.mode==="date"?[us(x.g.d)]:[]),x.g.u,...p.cols.map((cc,j)=>x.r.v[j]??"")].join("\t"))].join("\n");
+    try{await navigator.clipboard.writeText(t);toast("Copied "+nf(list.length)+" rows · paste in Excel")}catch(e){toast("Copy blocked by the browser")}};
+  const s=$("#rS");if(s)s.onclick=savePick;
+}
+async function savePick(){
+  const p=P(),pk=view.pick;if(!pk||pk.saved)return;
+  const id=new Date(pk.at).toISOString().replace(/[-:]/g,"").slice(0,15)+"_"+me.pc;
+  const o={p:p.k,mode:pk.mode,pct:pk.pct,date:pk.date,user:pk.user,from:pk.from,to:pk.to,by:me.pc,at:pk.at,cols:p.cols,
+    sum:pk.groups.map(g=>({d:g.d,u:g.u,t:g.total,n:g.n,done:g.done})),rows:pickRows().map(x=>({d:x.g.d,u:x.g.u,v:x.r.v,sig:sigOf(x.r.v)}))};
+  let ok=false;
+  if(FS.dir)ok=await fsWriteText("_picks/"+p.k+"/"+todayISO().slice(0,7),todayISO()+"_"+id+".json",JSON.stringify(o));
+  else if(!noLocal()){S.picks=S.picks||{};(S.picks[p.k]=S.picks[p.k]||[]).push(o);await save(true);ok=true}
+  if(!ok){toast(FS.dir?"Couldn't save the pick":"Connect the data server to save picks");return}
+  pk.saved=true;OLD.at=0;await logAct("pick",p.k,o.rows.length+" claims · "+pk.pct+"% "+pk.mode);closeModal();openResult();toast("🔒 Pick saved · these claims won't be picked again")
+}
+async function pickHistory(){
+  const p=P(),items=[];
+  ((S.picks||{})[p.k]||[]).forEach((o,i)=>items.push({o,local:i}));
+  if(FS.dir){try{const root=await fsSub("_picks/"+p.k,false);for await(const [mn,mh] of root.entries()){if(mh.kind!=="directory")continue;
+    for await(const [fn,fh] of mh.entries()){if(fh.kind!=="file")continue;try{const o=JSON.parse(await unlock(await (await fh.getFile()).text()));items.push({o,dir:"_picks/"+p.k+"/"+mn,fn})}catch(e){}}}}catch(e){}}
+  items.sort((a,b)=>b.o.at-a.o.at);
+  modal(`<h3>📜 Saved picks · ${esc(p.label)}</h3><p class="muted" style="margin:0 0 12px">${items.length} saved pick${items.length===1?"":"s"} · claims in these are never picked again.</p>
+   ${items.length?`<div class="scroll"><table class="tbl"><thead><tr><th>When</th><th>By</th><th>Mode</th><th>%</th><th>Dates</th><th>Claims</th><th></th></tr></thead><tbody>
+   ${items.map((x,i)=>`<tr><td>${new Date(x.o.at).toLocaleString("en-IN")}</td><td class="mono">${esc(x.o.by)}</td><td>${x.o.mode==="date"?"Per Date":"Per User"}</td><td class="mono">${x.o.pct}%</td><td class="mono">${x.o.date?us(x.o.date):(x.o.from?us(x.o.from)+(x.o.to!==x.o.from?" → "+us(x.o.to):""):"")}</td><td class="mono">${nf((x.o.rows||[]).length)}</td>
+     <td>${can("export")?`<button class="cap xs" data-hx="${i}">⬇ Excel</button>`:""} ${isOwner()||can("deldate")?`<button class="cap xs danger" data-hd="${i}" title="Delete: these claims can be picked again">✕</button>`:""}</td></tr>`).join("")}
+   </tbody></table></div>`:`<div class="empty-state" style="padding:30px">No saved picks yet.</div>`}
+   <div class="mrow"><button class="cap" data-close>Close</button></div>`,true);
+  $$("#mcard [data-hx]").forEach(b=>b.onclick=()=>{const o=items[+b.dataset.hx].o;
+    const groups=[],gm=new Map();(o.rows||[]).forEach(r=>{const k=r.d+"|"+userKey(r.u);if(!gm.has(k)){const s=(o.sum||[]).find(z=>z.d===r.d&&userKey(z.u)===userKey(r.u));const g={d:r.d,u:r.u,total:s?s.t:0,n:0,rows:[]};gm.set(k,g);groups.push(g)}const g=gm.get(k);g.rows.push({v:r.v});g.n++});
+    exportPick({mode:o.mode,pct:o.pct,date:o.date,at:o.at,by:o.by,groups},{...p,cols:o.cols||p.cols})});
+  $$("#mcard [data-hd]").forEach(b=>b.onclick=()=>{const x=items[+b.dataset.hd];ask("Delete this saved pick?","Its "+nf((x.o.rows||[]).length)+" claims can be picked again.","Delete pick",async()=>{
+    if(x.local!=null){S.picks[p.k].splice(x.local,1);await save(true)}else await fsRemove(x.dir,x.fn);OLD.at=0;await logAct("delpick",p.k,(x.o.rows||[]).length+" claims");pickHistory()},true)});
+}
+
+/* ================= Excel export ================= */
+async function xlsxBook(sheets,fname){
+  if(typeof ExcelJS==="undefined"){ /* fallback: plain SheetJS */
+    if(typeof XLSX==="undefined"){toast("Excel library didn't load (no internet?)");return}
+    const wb=XLSX.utils.book_new();sheets.forEach(s=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([[s.title],[s.sub],s.head,...s.rows]),s.name.slice(0,31)));XLSX.writeFile(wb,fname);return}
+  const wb=new ExcelJS.Workbook();wb.creator="Alpha NextGen · Provider Pick QA · Eclipse";wb.created=new Date();
+  sheets.forEach(s=>{
+    const ws=wb.addWorksheet(s.name.slice(0,31),{views:[{state:"frozen",ySplit:3}]});
+    ws.mergeCells(1,1,1,Math.max(2,s.head.length));const t=ws.getCell(1,1);t.value=s.title;t.font={bold:true,size:14,color:{argb:"FF14213F"}};
+    ws.mergeCells(2,1,2,Math.max(2,s.head.length));const st=ws.getCell(2,1);st.value=s.sub;st.font={italic:true,size:10,color:{argb:"FF5A6684"}};
+    const hr=ws.getRow(3);s.head.forEach((h,i)=>{const c=hr.getCell(i+1);c.value=h;c.font={bold:true,color:{argb:"FFFFFFFF"}};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:s.color||"FF14213F"}};c.alignment={vertical:"middle",horizontal:"center",wrapText:true};c.border={bottom:{style:"thin",color:{argb:"FFE6BB62"}}}});hr.height=30;
+    s.rows.forEach((r,ri)=>{const row=ws.addRow(r);row.eachCell({includeEmpty:true},(c,ci)=>{c.numFmt=s.num&&s.num.includes(ci-1)?"0":"@";c.border={bottom:{style:"hair",color:{argb:"FFDFE4EF"}}};if(ri%2)c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FFF6F8FC"}}})});
+    s.head.forEach((h,i)=>{let w=String(h).length;s.rows.slice(0,300).forEach(r=>{w=Math.max(w,String(r[i]??"").length)});ws.getColumn(i+1).width=Math.min(48,Math.max(9,w+2))});
+    ws.autoFilter={from:{row:3,column:1},to:{row:3,column:s.head.length}};
+    if(S.cfg.wm!==false){ws.headerFooter.oddFooter="&L"+stampTxt()+"&RPage &P of &N"}
+  });
+  const buf=await wb.xlsx.writeBuffer();saveBlob(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}),fname);
+}
+const stampTxt=()=>(S.cfg.wm!==false?"Confidential · "+me.pc+" · ":"")+new Date().toLocaleString("en-IN");
+async function exportPick(pk,p){
+  const list=[];pk.groups.forEach(g=>g.rows.forEach(r=>list.push({g,r})));
+  const head=["QA #",...(pk.mode==="date"?["Pick date"]:[]),"Pick user",...p.cols];
+  const rows=list.map((x,i)=>[i+1,...(pk.mode==="date"?[us(x.g.d)]:[]),x.g.u,...p.cols.map((c,j)=>x.r.v[j]??"")]);
+  const sumH=pk.mode==="date"?["Date","User","Total claims","Picked","% picked"]:["User","Total claims","Picked","% picked"];
+  const sumR=pk.groups.map(g=>pk.mode==="date"?[us(g.d),g.u,g.total,g.n,g.total?Math.round(g.n/g.total*1000)/10+"%":""]:[g.u,g.total,g.n,g.total?Math.round(g.n/g.total*1000)/10+"%":""]);
+  const tt=sumR.reduce((a,r)=>a+(+r[pk.mode==="date"?2:1]||0),0),tp=list.length;sumR.push(pk.mode==="date"?["","TOTAL",tt,tp,""]:["TOTAL",tt,tp,""]);
+  const title=`${p.label} · QA pick · ${pk.pct}% ${pk.mode==="date"?"per date":"per user"}`;
+  await xlsxBook([
+    {name:"QA Pick",title,sub:"Alpha NextGen · Provider Pick QA · Eclipse — "+stampTxt(),head,rows,num:[0],color:"FF0F6B3E"},
+    {name:"Summary",title:title+" · summary",sub:"Picked "+new Date(pk.at).toLocaleString("en-IN")+" by "+pk.by,head:sumH,rows:sumR,num:pk.mode==="date"?[2,3]:[1,2]}
+  ],`QA_Pick_${p.k}_${todayISO()}.xlsx`);
+  toast("Excel downloaded · "+nf(tp)+" claims");
+}
+async function exportView(){
+  const p=P(),rows=filteredRows();if(!rows.length){toast("Nothing on screen to export");return}
+  await xlsxBook([{name:p.label,title:p.label+" · data",sub:"Alpha NextGen · Provider Pick QA · Eclipse — "+stampTxt(),head:p.cols,rows:rows.map(r=>p.cols.map((c,j)=>r.v[j]??""))}],`${p.k}_${view.from||todayISO()}.xlsx`);
+  toast("Excel downloaded · "+nf(rows.length)+" rows");
+}
+
+/* ================= Admin ================= */
+let AD=null;const ADF={q:"",role:"",sel:new Set()};
+const roleFrom=r=>{r=String(r||"employee").toLowerCase().trim();return r.startsWith("adm")?"admin":r.startsWith("ent")||r.startsWith("data")?"entry":r.startsWith("sme")?"sme":r.startsWith("man")||r.startsWith("lead")||r.startsWith("mgr")?"mgr":"employee"};
+const tgl=(k,on,label)=>`<label class="tg"><input type="checkbox" data-t="${k}" ${on?"checked":""}><span class="sw"></span>${label}</label>`;
+function adChanged(){AD.changed=true;const b=$("#saveBar");if(b)b.hidden=false}
+function openAdmin(pg){
+  if(!isOwner())return;view.as=null;setTop();
+  if(!AD||!AD.changed)AD=clone(S.cfg);AD.page=pg||AD.page||1;
+  const P=$("#adminPg");P.hidden=false;document.body.style.overflow="hidden";
+  P.innerHTML=`<div class="ahead">
+     <div class="brand"><svg class="mark"><use href="#ecl"/></svg><div class="bstack"><span class="bsm">Alpha NextGen</span><span class="bbig">Admin · Provider Pick QA</span><span class="bsm" style="color:var(--violet)">Eclipse</span></div></div>
+     <span class="ver">${APP_VER} · build ${BUILD}</span><span class="sp"></span>
+     <div class="atabs">${[[1,"👥 Users & access"],[2,"🧩 Processes & rules"],[3,"🛡️ System & data"]].map(([n,t])=>`<button class="cap sm ${AD.page===n?"on":""}" data-pg="${n}">${t}</button>`).join("")}</div>
+     <button class="cap sm ghost" id="aClose">✕ Close</button></div>
+   <div class="agrid">${AD.page===1?adminPage1():AD.page===2?adminPage2():adminPage3()}</div>
+   <div class="savebar" id="saveBar" ${AD.changed?"":"hidden"}><span style="font-size:12.5px;font-weight:650">Unsaved changes</span><button class="cap sm ghost" id="aUndo">Undo</button><button class="cap sm gold" id="aSave">Save &amp; apply</button></div>`;
+  P.querySelectorAll("[data-pg]").forEach(b=>b.onclick=()=>openAdmin(+b.dataset.pg));
+  $("#aClose").onclick=()=>{const go=()=>{AD=null;P.hidden=true;document.body.style.overflow="";setTop();renderRail();if(view.proc){renderProc();paintAll()}};if(AD.changed)ask("Close without saving?","Your Admin changes are not saved yet.","Close",go,true);else go()};
+  $("#aUndo").onclick=()=>{AD=null;openAdmin(pg)};
+  $("#aSave").onclick=applyAdmin;
+  /* generic inputs: data-k="path.to.key" */
+  P.querySelectorAll("[data-k]").forEach(el=>{const ev=el.tagName==="SELECT"||el.type==="date"?"onchange":"oninput";el[ev]=()=>{setPath(AD,el.dataset.k,el.type==="number"?(el.value===""?"":+el.value):el.value);adChanged();if(el.dataset.live)renderNoticePreview()}});
+  P.querySelectorAll("[data-t]").forEach(el=>el.onchange=()=>{setPath(AD,el.dataset.t,el.checked);adChanged();if(el.dataset.t.startsWith("notice"))renderNoticePreview()});
+  if(AD.page===1)wireAdmin1();else if(AD.page===2)wireAdmin2();else wireAdmin3();
+}
+function setPath(o,path,v){const ks=path.split(".");let x=o;ks.slice(0,-1).forEach(k=>{if(x[k]==null)x[k]={};x=x[k]});x[ks[ks.length-1]]=v}
+function getPath(o,path){return path.split(".").reduce((x,k)=>x==null?x:x[k],o)}
+async function applyAdmin(){
+  const c=clone(AD);delete c.changed;delete c.page;
+  S.cfg=Object.assign(S.cfg,c);fixCfg();await save(true);const ok=await fsWriteConfig();
+  await logAct("settings","",ok?"saved to folder":"this PC only");AD.changed=false;openAdmin(AD.page);
+  toast(FS.dir?"✓ Settings saved for everyone":"✓ Settings saved on this PC (connect the folder to share)");
+}
+
+/* ===== page 1: users & access ===== */
+function adminPage1(){
+  const users=AD.users||[],cnt=r=>users.filter(u=>u.role===r).length;
+  return `
+  <section class="acard wide"><h4>📊 Quick look</h4><div class="kpis" style="margin:10px 0 0">
+    ${[["Users",users.length+1,"var(--gold)"],["Managers",cnt("mgr"),"var(--violet)"],["SME",cnt("sme"),"var(--teal)"],["Data Entry",cnt("entry"),"var(--violet)"],["Employees",cnt("employee"),"var(--em)"],["Saved dates",Object.keys(FS.index).length||Object.keys(S.days).length,"var(--gold)"],["Login",LOCK_ON?"ON":"OFF","var(--danger)"]]
+      .map(([a,b,k])=>`<div class="kpi" style="--kc:${k}"><small>${a}</small><b>${b}</b></div>`).join("")}</div></section>
+
+  <section class="acard"><h4>🧪 See the tool as a role</h4><p class="ahelp">Nothing is saved. Use <b>Back to Admin</b> at the top to return.</p>
+    <div class="frow"><label class="fl">Role<select id="asRole">${ROLES.slice(1).map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select></label>
+    <label class="fl">Name (own claims)<input id="asName" placeholder="Karthik Kumar"></label><button class="cap sm gold" id="asGo">View as role</button></div></section>
+
+  <section class="acard"><h4>📥 Import user register</h4><p class="ahelp">Excel with columns <code>MSID, Code, Device name, Role, Name, Team, Valid till</code> (same as Eclipse_Users.xlsx). Existing MSIDs are updated, new ones added.</p>
+    <div class="frow"><label class="cap sm gold">📄 Choose register file<input type="file" id="regF" accept=".xlsx,.xls,.csv" hidden></label><button class="cap sm" id="regX">⬇ Download register</button></div></section>
+
+  <section class="acard wide"><h4>🔐 Role defaults</h4>
+    <p class="ahelp"><b>On</b> = feature exists for everyone. Role columns = default for every user of that role. Change one user at a time in the table below.</p>
+    <div class="utable" style="max-height:440px"><table><thead><tr><th style="text-align:left">Feature</th><th>On</th><th>Admin</th>${ROLE3.map(r=>`<th>${ROLEN(r)}</th>`).join("")}</tr></thead><tbody>
+      ${GROUPS.map(g=>`<tr><td colspan="7" style="text-align:left;font-weight:800;font-size:10.5px;letter-spacing:.12em;color:var(--gold)">${g==="Actions"?"BUTTONS & ACTIONS":"SCREEN PARTS"}</td></tr>`+FEAT.filter(f=>f[3]===g).map(([f,n,sh])=>`<tr><td style="text-align:left">${n} <span class="chip" style="padding:1px 7px;font-size:10px">${esc(sh)}</span></td><td><input type="checkbox" data-fon="${f}" ${(AD.fon||{})[f]!==false?"checked":""}></td><td>✓</td>${ROLE3.map(r=>`<td><input type="checkbox" data-pf="${r}:${f}" ${AD.perms[r][f]?"checked":""}></td>`).join("")}</tr>`).join("")).join("")}
+      <tr><td style="text-align:left"><b>Which claims they see</b></td><td></td><td>All</td>${ROLE3.map(r=>`<td><select data-sc="${r}">${[["all","Everyone"],["own","Own claims"]].map(([v,n])=>`<option value="${v}" ${AD.scope[r]===v?"selected":""}>${n}</option>`).join("")}</select></td>`).join("")}</tr>
+    </tbody></table></div>
+    <div class="frow"><button class="cap sm" id="permReset">↺ Reset access to defaults</button></div></section>
+
+  <section class="acard wide"><h4>👥 Every user, every access <span class="muted" id="uCount"></span></h4>
+    <p class="ahelp">Click a box: <span class="pp inh">✓</span> role default → <span class="pp y">✓</span> allow → <span class="pp n">✗</span> block → back. ⭐ = custom access. “Own claims” matches the user's Name / Code / MSID with the process's user column.</p>
+    <div class="frow">
+      <input id="uQ" placeholder="Search MSID or name" value="${esc(ADF.q)}" style="max-width:200px">
+      <select id="uR" style="max-width:150px"><option value="">All roles</option>${ROLES.slice(1).map(([k,n])=>`<option value="${k}" ${ADF.role===k?"selected":""}>${n}</option>`).join("")}</select>
+      <span class="chip" id="uSelN">0 selected</span>
+      <select id="uSetRole" style="max-width:140px">${ROLES.slice(1).map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select><button class="cap sm" id="uApplyRole">Set role</button>
+      <select id="uCopyFrom" style="max-width:190px"><option value="">Copy access from…</option>${users.map((u,i)=>`<option value="${i}">${esc(u.pc)} · ${esc(u.name||"")}</option>`).join("")}</select><button class="cap sm" id="uCopy">Copy to selected</button>
+      <input type="date" id="uSetTill" style="max-width:150px"><button class="cap sm" id="uApplyTill">Set valid till</button>
+      <button class="cap sm" id="uResetSel">Reset custom</button><button class="cap sm danger" id="uDelSel">Remove selected</button>
+    </div>
+    <div class="utable" id="uTable"></div>
+    <div class="frow" style="margin-top:12px"><label class="fl" style="flex:1">Add users · one per line: MSID, role, name, team, device name, code<textarea id="uBulk" rows="3" placeholder="KKUMAR12, entry, Karthik Kumar, TM-VINESH, LHTU05CG2122ABC, KK1"></textarea></label><button class="cap sm gold" id="uAdd">Add</button></div></section>
+
+  <section class="acard wide"><h4>🔑 Who logged in as whom</h4><p class="ahelp">Each MSID is linked to one PC/browser after the first password set. Reset to let the user set a new password (with the device name).</p>
+    <div class="frow"><button class="cap sm" id="authLoad">Show login links</button></div><div id="authBox"></div></section>`;
+}
+const isCustom=u=>(u.ov&&Object.keys(u.ov).length)||u.scope||Array.isArray(u.procs);
+function userRows(){const q=norm(ADF.q);return (AD.users||[]).map((u,i)=>({u,i})).filter(({u})=>(!q||norm(u.pc+" "+(u.name||"")+" "+(u.code||"")).includes(q))&&(!ADF.role||u.role===ADF.role))}
+function pcTable(){
+  const rows=userRows(),PR=AD.procs&&AD.procs.length?AD.procs:PROC0;
+  const pill=(u,i,f)=>{if(u.role==="admin")return `<span class="pp y">✓</span>`;const o=u.ov&&u.ov[f]!=null?u.ov[f]:null,d=(AD.perms[u.role]||{})[f]?1:0;
+    return o==null?`<button class="pp inh ${d?"":"x"}" data-pu="${i}" data-f="${f}">${d?"✓":"✗"}</button>`:`<button class="pp ${o?"y":"n"}" data-pu="${i}" data-f="${f}">${o?"✓":"✗"}</button>`};
+  const procCell=(u,i)=>PR.map(p=>{const def=(p.roles||{})[u.role]!==0&&p.status!=="hidden",on=u.role==="admin"?true:Array.isArray(u.procs)?u.procs.includes(p.k):def;
+    return `<button class="pc2 ${on?"on":""} ${Array.isArray(u.procs)||u.role==="admin"?"":"inh"}" data-pp="${i}" data-p="${esc(p.k)}" ${u.role==="admin"?"disabled":""}>${esc(p.label||p.k)}</button>`}).join("")+(Array.isArray(u.procs)?`<button class="pc2" data-ppr="${i}" title="Back to role default">↺</button>`:"");
+  const head1=`<tr><th rowspan="2" class="s0"><input type="checkbox" id="uAll"></th><th rowspan="2" class="s1">MSID</th><th rowspan="2">Name</th><th rowspan="2">Code</th><th rowspan="2">Device name</th><th rowspan="2">Team</th><th rowspan="2">Role</th><th rowspan="2">Valid till</th><th rowspan="2">Sees</th><th rowspan="2">Processes</th>${GROUPS.map(g=>`<th colspan="${FEAT.filter(f=>f[3]===g).length}">${g}</th>`).join("")}<th rowspan="2"></th></tr>`;
+  const head2=`<tr>${FEAT.map(([f,n,s])=>`<th title="${esc(n)}">${esc(s)}</th>`).join("")}</tr>`;
+  const adm=`<tr><td class="s0"></td><td class="s1 mono">🔒 ${ADMIN_MSID}</td><td>You (built in)</td><td>—</td><td class="mono">${ADMIN_MC}</td><td>—</td><td>Admin</td><td>—</td><td>All</td><td>All</td>${FEAT.map(()=>`<td><span class="pp y">✓</span></td>`).join("")}<td></td></tr>`;
+  const body=rows.map(({u,i})=>`<tr class="${ADF.sel.has(u.pc)?"sel":""}"><td class="s0"><input type="checkbox" data-us="${esc(u.pc)}" ${ADF.sel.has(u.pc)?"checked":""}></td>
+    <td class="s1 mono">${isCustom(u)?"⭐ ":""}${esc(u.pc)}</td>
+    <td><input data-un="${i}" value="${esc(u.name||"")}" placeholder="name" style="min-width:140px"></td>
+    <td><input data-uc="${i}" value="${esc(u.code||"")}" placeholder="code" style="min-width:60px;width:70px"></td>
+    <td><input data-um="${i}" value="${esc(u.mc||"")}" placeholder="device name" class="mono" style="min-width:150px"></td>
+    <td><input data-ut="${i}" value="${esc(u.team||"")}" placeholder="team"></td>
+    <td><select data-ur="${i}">${ROLES.map(([k,n])=>`<option value="${k}" ${k===u.role?"selected":""}>${n}</option>`).join("")}</select></td>
+    <td><input type="date" data-uu="${i}" value="${esc(u.until||"")}"></td>
+    <td>${u.role==="admin"?"All":`<select data-usc="${i}"><option value="">Role (${AD.scope[u.role]==="own"?"Own":"All"})</option>${[["all","Everyone"],["own","Own claims"]].map(([v,n])=>`<option value="${v}" ${u.scope===v?"selected":""}>${n}</option>`).join("")}</select>`}</td>
+    <td style="white-space:normal;min-width:260px;text-align:left">${procCell(u,i)}</td>
+    ${FEAT.map(([f])=>`<td>${pill(u,i,f)}</td>`).join("")}
+    <td><button class="pp n" data-ud="${i}" title="Remove ${esc(u.pc)}">✕</button></td></tr>`).join("");
+  $("#uTable").innerHTML=`<table><thead>${head1}${head2}</thead><tbody>${adm}${body||`<tr><td colspan="99" style="padding:16px;color:var(--muted)">No user matches.</td></tr>`}</tbody></table>`;
+  $("#uCount").textContent=`· ${rows.length} of ${(AD.users||[]).length+1} shown`;$("#uSelN").textContent=ADF.sel.size+" selected";
+}
+function wireAdmin1(){
+  const PG=$("#adminPg");pcTable();
+  $("#asGo").onclick=()=>{if(AD.changed){Object.assign(S.cfg,clone({...AD,page:undefined,changed:undefined}));fixCfg()}
+    view.as={pc:"",role:$("#asRole").value,name:$("#asName").value.trim(),team:"",code:""};view.ret=AD.page;PG.hidden=true;document.body.style.overflow="";setTop();renderRail();if(view.proc){renderProc();paintAll()}toast("Viewing as "+ROLEN(view.as.role))};
+  PG.querySelectorAll("[data-pf]").forEach(c=>c.onchange=()=>{const [r,f]=c.dataset.pf.split(":");AD.perms[r][f]=c.checked?1:0;adChanged();pcTable()});
+  PG.querySelectorAll("[data-fon]").forEach(c=>c.onchange=()=>{AD.fon=AD.fon||{};if(c.checked)delete AD.fon[c.dataset.fon];else AD.fon[c.dataset.fon]=false;adChanged()});
+  PG.querySelectorAll("[data-sc]").forEach(s=>s.onchange=()=>{AD.scope[s.dataset.sc]=s.value;adChanged();pcTable()});
+  $("#permReset").onclick=()=>ask("Reset access to defaults?","Role defaults, “which claims they see” and every user's custom access go back to standard.","Reset",()=>{AD.perms=clone(DEFPERM);AD.scope=clone(DEFSCOPE);AD.fon={};(AD.users||[]).forEach(u=>{delete u.ov;delete u.scope;delete u.procs});adChanged();openAdmin(1)},true);
+  $("#uQ").oninput=e=>{ADF.q=e.target.value;pcTable()};$("#uR").onchange=e=>{ADF.role=e.target.value;pcTable()};
+  const U=$("#uTable");
+  U.onclick=e=>{const t=e.target;
+    const pu=t.closest("[data-pu]");if(pu){const u=AD.users[+pu.dataset.pu],f=pu.dataset.f;u.ov=u.ov||{};const o=u.ov[f];if(o==null)u.ov[f]=1;else if(o===1)u.ov[f]=0;else delete u.ov[f];if(!Object.keys(u.ov).length)delete u.ov;adChanged();pcTable();return}
+    const pp=t.closest("[data-pp]");if(pp){const u=AD.users[+pp.dataset.pp],PR=AD.procs&&AD.procs.length?AD.procs:PROC0;if(!Array.isArray(u.procs))u.procs=PR.filter(p=>(p.roles||{})[u.role]!==0&&p.status!=="hidden").map(p=>p.k);const k=pp.dataset.p;u.procs=u.procs.includes(k)?u.procs.filter(x=>x!==k):u.procs.concat(k);adChanged();pcTable();return}
+    const pr=t.closest("[data-ppr]");if(pr){delete AD.users[+pr.dataset.ppr].procs;adChanged();pcTable();return}
+    const ud=t.closest("[data-ud]");if(ud){const u=AD.users[+ud.dataset.ud];ask("Remove "+esc(u.pc)+"?","This user loses access.","Remove",()=>{AD.users.splice(+ud.dataset.ud,1);ADF.sel.delete(u.pc);adChanged();pcTable()},true)}};
+  U.onchange=e=>{const t=e.target,d=t.dataset;
+    if(t.id==="uAll"){userRows().forEach(({u})=>t.checked?ADF.sel.add(u.pc):ADF.sel.delete(u.pc));pcTable();return}
+    if(d.us!=null){t.checked?ADF.sel.add(d.us):ADF.sel.delete(d.us);t.closest("tr").classList.toggle("sel",t.checked);$("#uSelN").textContent=ADF.sel.size+" selected";return}
+    if(d.ur!=null){AD.users[+d.ur].role=t.value;adChanged();pcTable();return}
+    if(d.usc!=null){const u=AD.users[+d.usc];if(t.value)u.scope=t.value;else delete u.scope;adChanged();pcTable();return}
+    if(d.uu!=null){const u=AD.users[+d.uu];if(t.value)u.until=t.value;else delete u.until;adChanged()}};
+  U.oninput=e=>{const d=e.target.dataset,v=e.target.value;if(d.un!=null)AD.users[+d.un].name=v.trim();else if(d.uc!=null)AD.users[+d.uc].code=v.trim();else if(d.um!=null)AD.users[+d.um].mc=v.trim().toUpperCase();else if(d.ut!=null)AD.users[+d.ut].team=v.trim();else return;adChanged()};
+  const sel=()=>(AD.users||[]).filter(u=>ADF.sel.has(u.pc));
+  $("#uCopy").onclick=()=>{const s2=sel(),f=AD.users[+$("#uCopyFrom").value];if(!f||!s2.length){toast("Pick who to copy from, and tick users first");return}
+    s2.forEach(u=>{if(u===f)return;u.role=f.role;["ov","scope","procs"].forEach(k=>{if(f[k]!==undefined)u[k]=clone(f[k]);else delete u[k]})});adChanged();pcTable();toast("Access copied to "+s2.length+" users")};
+  $("#uApplyRole").onclick=()=>{const s=sel();if(!s.length){toast("Tick some users first");return}s.forEach(u=>u.role=$("#uSetRole").value);adChanged();pcTable();toast(s.length+" users set to "+ROLEN($("#uSetRole").value))};
+  $("#uApplyTill").onclick=()=>{const s=sel(),v=$("#uSetTill").value;if(!s.length){toast("Tick some users first");return}s.forEach(u=>{if(v)u.until=v;else delete u.until});adChanged();pcTable()};
+  $("#uResetSel").onclick=()=>{const s=sel();if(!s.length){toast("Tick some users first");return}s.forEach(u=>{delete u.ov;delete u.scope;delete u.procs});adChanged();pcTable()};
+  $("#uDelSel").onclick=()=>{const s=sel();if(!s.length){toast("Tick some users first");return}ask("Remove "+s.length+" users?","They lose access.","Remove",()=>{AD.users=AD.users.filter(u=>!ADF.sel.has(u.pc));ADF.sel.clear();adChanged();pcTable()},true)};
+  $("#uAdd").onclick=()=>{let n=0;$("#uBulk").value.split(/\n/).map(l=>l.split(",").map(x=>x.trim())).filter(a=>a[0]).forEach(([pc,r,name,team,mc,code])=>{pc=pc.toUpperCase().replace(/\s+/g,"");if(pc.length<2||pc===ADMIN_MSID)return;
+      const old=AD.users.find(u=>u.pc===pc),o={role:roleFrom(r),name:name||"",team:team||"",mc:(mc||"").toUpperCase(),code:code||""};if(old)Object.keys(o).forEach(k=>{if(o[k]||k==="role")old[k]=o[k]});else AD.users.push({pc,...o});n++});
+    $("#uBulk").value="";adChanged();openAdmin(1);toast(n+" users added · click Save & apply")};
+  $("#regF").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;
+    try{const wb=XLSX.read(await f.arrayBuffer(),{type:"array"}),aoa=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:false,defval:""});
+      const h=aoa[0].map(norm),ix=n=>h.findIndex(x=>n.some(y=>x===y||x.startsWith(y)));
+      const c={m:ix(["msid","pc"]),code:ix(["code"]),mc:ix(["devicename","device","machine"]),r:ix(["role"]),n:ix(["name","username"]),t:ix(["team"]),v:ix(["validtill","valid"])};
+      if(c.m<0){toast("No MSID column found");return}let a=0,up=0;
+      aoa.slice(1).forEach(r=>{const m=String(r[c.m]||"").toUpperCase().replace(/\s+/g,"");if(m.length<2||m===ADMIN_MSID)return;
+        let u=AD.users.find(x=>x.pc===m);if(!u){u={pc:m,role:"employee",name:"",team:"",mc:"",code:""};AD.users.push(u);a++}else up++;
+        if(c.code>=0&&r[c.code])u.code=String(r[c.code]).trim();if(c.mc>=0&&r[c.mc])u.mc=String(r[c.mc]).trim().toUpperCase();if(c.r>=0&&r[c.r])u.role=roleFrom(r[c.r]);
+        if(c.n>=0&&r[c.n])u.name=String(r[c.n]).trim();if(c.t>=0&&r[c.t])u.team=String(r[c.t]).trim();if(c.v>=0&&r[c.v]){const d=toISO(r[c.v]);if(d)u.until=d}});
+      adChanged();openAdmin(1);toast(a+" added · "+up+" updated · click Save & apply")}catch(x){toast("That register couldn't be read")}};
+  $("#regX").onclick=()=>xlsxBook([{name:"Access",title:"Provider Pick QA · user register",sub:stampTxt(),head:["MSID","Code","Device name","Role","Name","Team","Valid till"],rows:(AD.users||[]).map(u=>[u.pc,u.code||"",u.mc||"",ROLEN(u.role),u.name||"",u.team||"",u.until?us(u.until):""])}],"ProviderPickQA_Users.xlsx");
+  $("#authLoad").onclick=async()=>{const B=$("#authBox");if(!FS.dir){B.innerHTML=`<p class="ahelp">Connect the data folder first.</p>`;return}
+    const fs=(await fsList("_auth")).filter(n=>/\.eclipse$/.test(n)),list=[];for(const f of fs){try{list.push({m:f.replace(/\.eclipse$/,""),...JSON.parse(await fsReadText("_auth",f))})}catch(e){}}
+    B.innerHTML=list.length?`<div class="scroll"><table class="tbl"><thead><tr><th>MSID</th><th>Name</th><th>Linked since</th><th>Browser id</th><th></th></tr></thead><tbody>${list.map(a=>`<tr><td class="mono">${esc(a.m)}</td><td>${esc((userOf(a.m)||{}).name||"")}</td><td>${new Date(a.at).toLocaleString("en-IN")}</td><td class="mono muted">${esc(String(a.did).slice(0,8))}…</td><td><button class="cap xs danger" data-ra="${esc(a.m)}">Reset login</button></td></tr>`).join("")}</tbody></table></div>`:`<p class="ahelp">Nobody has set a password yet.</p>`;
+    B.querySelectorAll("[data-ra]").forEach(b=>b.onclick=()=>ask("Reset login for "+esc(b.dataset.ra)+"?","Password and PC link are cleared. The user sets a new one with the device name.","Reset",async()=>{await fsRemove("_auth",b.dataset.ra+".eclipse");if(S.auth)delete S.auth[b.dataset.ra];save();$("#authLoad").click();toast("Login reset")},true))};
+}
+
+/* ===== page 2: processes & rules ===== */
+function adminPage2(){
+  const PR=AD.procs,n=AD.notice||(AD.notice={on:false,text:"",type:"info",speed:25});
+  return `
+  <section class="acard wide"><h4>🧩 Processes</h4>
+    <p class="ahelp"><b>Live</b> = open for the roles ticked. <b>Soon</b> = shows “coming soon”. <b>Hidden</b> = only Admin. <b>Per Date</b> / <b>Per User</b> = column letters used by the QA pick.</p>
+    <div class="utable"><table><thead><tr><th>Key</th><th>Button name</th><th>Status</th>${ROLE3.map(r=>`<th>${ROLEN(r)}</th>`).join("")}<th>Per Date</th><th>Per User</th><th>Columns</th><th>Order</th></tr></thead><tbody>
+    ${PR.map((p,i)=>p.dyn?`<tr><td class="mono">${esc(p.k)}</td><td><input data-k="procs.${i}.label" value="${esc(p.label||p.k)}"></td>
+      <td><select data-k="procs.${i}.status">${[["live","Live"],["soon","Soon"],["hidden","Hidden"]].map(([v,t])=>`<option value="${v}" ${p.status===v?"selected":""}>${t}</option>`).join("")}</select></td>
+      ${ROLE3.map(r=>`<td><input type="checkbox" data-pr="${i}:${r}" ${(p.roles||{})[r]!==0?"checked":""}></td>`).join("")}
+      <td><select data-k="procs.${i}.dh" style="min-width:120px"><option value="">—</option>${p.cols.map(c=>`<option ${c===p.dh?"selected":""}>${esc(c)}</option>`).join("")}</select></td>
+      <td><select data-k="procs.${i}.uh" style="min-width:120px"><option value="">—</option>${p.cols.map(c=>`<option ${c===p.uh?"selected":""}>${esc(c)}</option>`).join("")}</select></td>
+      <td><button class="cap xs" data-hd="${i}">✎ ${p.cols.length} headings</button> <small class="muted">from dumped data</small></td>
+      <td><button class="pp inh" data-mv="${i}:-1" ${i?"":"disabled"}>↑</button><button class="pp inh" data-mv="${i}:1" ${i<PR.length-1?"":"disabled"}>↓</button></td></tr>`:`<tr><td class="mono">${esc(p.k)}</td><td><input data-k="procs.${i}.label" value="${esc(p.label||p.k)}"></td>
+      <td><select data-k="procs.${i}.status">${[["live","Live"],["soon","Soon"],["hidden","Hidden"]].map(([v,t])=>`<option value="${v}" ${p.status===v?"selected":""}>${t}</option>`).join("")}</select></td>
+      ${ROLE3.map(r=>`<td><input type="checkbox" data-pr="${i}:${r}" ${(p.roles||{})[r]!==0?"checked":""}></td>`).join("")}
+      <td><input data-k="procs.${i}.dc" value="${esc(p.dc)}" class="mono" style="min-width:0;width:54px;text-align:center;text-transform:uppercase"> <small class="muted">${esc(p.cols[colI(p.dc)]||"?")}</small></td>
+      <td><input data-k="procs.${i}.uc" value="${esc(p.uc)}" class="mono" style="min-width:0;width:54px;text-align:center;text-transform:uppercase"> <small class="muted">${esc(p.cols[colI(p.uc)]||"?")}</small></td>
+      <td><button class="cap xs" data-hd="${i}">✎ ${p.cols.length} headings</button></td>
+      <td><button class="pp inh" data-mv="${i}:-1" ${i?"":"disabled"}>↑</button><button class="pp inh" data-mv="${i}:1" ${i<PR.length-1?"":"disabled"}>↓</button></td></tr>`).join("")}
+    </tbody></table></div>
+    <div class="frow"><button class="cap sm" id="procReset">↺ Restore the standard processes</button></div></section>
+
+  <section class="acard"><h4>🎯 QA pick rules</h4>
+    <label class="fl">Percent buttons (comma separated)<input id="pcts" value="${esc((AD.pcts||PCT0).join(", "))}"></label>
+    <div style="margin-top:10px">${tgl("minOne",AD.minOne!==false,"Every user gets at least 1 claim (when they have claims)")}</div>
+    <p class="ahelp">Count = percent × user's claims, rounded (2.5 → 3). Per Date: per user per date. Per User: per user over all loaded dates.</p></section>
+
+  <section class="acard"><h4>📢 Notice strip</h4>
+    <div class="frow"><label class="fl" style="flex:1">Message<input data-k="notice.text" data-live="1" value="${esc(n.text||"")}" placeholder="QA picks for today must be done by 6 PM"></label></div>
+    <div class="frow"><label class="fl">Type<select data-k="notice.type" data-live="1"><option value="info" ${n.type!=="urgent"?"selected":""}>Info</option><option value="urgent" ${n.type==="urgent"?"selected":""}>Urgent</option></select></label>
+    <label class="fl">Speed (sec)<input type="number" data-k="notice.speed" data-live="1" value="${+n.speed||25}" min="8" max="90" style="width:90px"></label>${tgl("notice.on",n.on,"Show the notice")}</div>
+    <div id="npv"></div></section>`;
+}
+function renderNoticePreview(){const n=AD.notice||{},el=$("#npv");if(!el)return;
+  el.innerHTML=String(n.text||"").trim()?`<div class="notice ${n.type==="urgent"?"urgent":""}" style="border-radius:12px;margin-top:8px"><span class="ntag">${n.type==="urgent"?"URGENT":"NOTICE"}</span><div class="ntrack"><span class="nmove" style="animation-duration:${Math.max(8,+n.speed||25)}s">${esc(n.text)}</span></div></div><p class="ahelp">Preview${n.on?"":" · switched off"}</p>`:""}
+function wireAdmin2(){
+  const PG=$("#adminPg");renderNoticePreview();
+  PG.querySelectorAll("[data-pr]").forEach(c=>c.onchange=()=>{const [i,r]=c.dataset.pr.split(":");const p=AD.procs[+i];p.roles=p.roles||{};p.roles[r]=c.checked?1:0;adChanged()});
+  PG.querySelectorAll("[data-mv]").forEach(b=>b.onclick=()=>{const [i,d]=b.dataset.mv.split(":").map(Number),a=AD.procs;[a[i],a[i+d]]=[a[i+d],a[i]];adChanged();openAdmin(2)});
+  PG.querySelectorAll('[data-k$=".dc"],[data-k$=".uc"]').forEach(el=>el.addEventListener("change",()=>{el.value=el.value.toUpperCase().replace(/[^A-Z]/g,"");setPath(AD,el.dataset.k,el.value);openAdmin(2)}));
+  $("#pcts").oninput=e=>{const a=e.target.value.split(/[,\s]+/).map(Number).filter(x=>x>0&&x<=100);AD.pcts=[...new Set(a)].sort((x,y)=>x-y);adChanged()};
+  $("#procReset").onclick=()=>ask("Restore the standard processes?","The 6 processes get the original team Excel headings and Per Date / Per User letters again, and Other is added. Saved data is not touched.","Restore",()=>{const oth=AD.procs.find(x=>x.dyn);AD.procs=clone(PROC0);if(oth){const o=AD.procs.find(x=>x.dyn);Object.assign(o,{cols:oth.cols,dh:oth.dh,uh:oth.uh})}adChanged();openAdmin(2)},true);
+  PG.querySelectorAll("[data-hd]").forEach(b=>b.onclick=()=>{const p=AD.procs[+b.dataset.hd];
+    modal(`<h3>✎ Headings · ${esc(p.label)}</h3><p class="muted" style="margin:0 0 10px">One heading per line, in column order (A, B, C …). Saved data is matched by heading name, so renaming keeps old data only if the name stays the same.</p>
+     <textarea id="hdT" rows="14" style="width:100%;font-family:var(--f-num);font-size:12.5px">${esc(p.cols.join("\n"))}</textarea>
+     <div class="mrow"><button class="cap" data-close>Cancel</button><button class="cap gold" id="hdGo">Use these headings</button></div>`);
+    $("#hdGo").onclick=()=>{const a=$("#hdT").value.split(/\n/).map(x=>x.trim()).filter(Boolean);if(a.length<2&&!p.dyn){toast("Need at least 2 headings");return}p.cols=a;closeModal();adChanged();openAdmin(2)}});
+}
+
+/* ===== page 3: system & data ===== */
+function adminPage3(){
+  return `
+  <section class="acard"><h4>📁 Team data folder</h4>
+    <p class="ahelp">Use a folder that OneDrive / SharePoint keeps in sync. Each process saves <code>Process\\Year\\Month\\date.json</code>; picks in <code>_picks</code>, logins in <code>_auth</code>, log in <code>_system</code>. Files are locked (encrypted).</p>
+    <div class="frow"><label class="fl" style="flex:1">Folder name everyone must pick<input data-k="folder" value="${esc(AD.folder||DEF_FOLDER)}"></label></div>
+    <p class="chip ${FS.dir?"em":FS.handle?"gold":""}" style="margin:6px 0">${!fsSupported()?"This browser can't connect folders · use Chrome or Edge":FS.dir?"Connected · "+esc(FS.dir.name)+" · "+Object.keys(FS.index).length+" dates":FS.handle?"Folder remembered · waiting for permission":"Not connected · data stays on this PC"}</p>
+    <div class="frow">${fsSupported()?`<button class="cap sm gold" id="fsC">${FS.dir?"Change folder":"Connect folder"}</button>${FS.handle&&!FS.dir?`<button class="cap sm" id="fsA">Allow access</button>`:""}${FS.dir?`<button class="cap sm" id="fsS">Sync now</button><button class="cap sm ghost" id="fsD">Disconnect</button>`:""}`:""}</div></section>
+
+  <section class="acard"><h4>🔑 Master password</h4>
+    <p class="ahelp">Used by ${ADMIN_MSID} and to extend expiry. ${AD.mph?"A custom master password is set.":"Default master password in use."} After changing, the old one stops working on every PC using the folder.</p>
+    <div class="frow"><input id="mp0" type="password" placeholder="Current password"><input id="mp1" type="password" placeholder="New (10+ characters)"><input id="mp2" type="password" placeholder="Repeat new"><button class="cap sm gold" id="mpGo">Change</button></div></section>
+
+  <section class="acard"><h4>📅 Tool expiry</h4>
+    <div class="frow"><label class="fl">Tool works till<input type="date" data-k="exp" value="${AD.exp||APP_EXPIRY}"></label></div>
+    <p class="ahelp">Per-user “Valid till” is on the Users page.</p></section>
+
+  <section class="acard"><h4>💾 Backup & restore</h4>
+    <p class="ahelp">One file with every saved date of every process plus settings and users.</p>
+    <div class="frow"><button class="cap sm gold" id="bkB">⬇ Download backup</button><label class="cap sm">⬆ Restore backup<input type="file" id="bkR" accept=".json" hidden></label></div></section>
+
+  <section class="acard"><h4>📜 History log</h4><p class="ahelp">Logins, saves, picks, deletes and settings — who, when, which process.</p><div class="frow"><button class="cap sm" id="lgOpen">Open history log</button></div></section>
+
+  <section class="acard wide"><h4>🔒 Security</h4>
+    <div class="frow">
+      <label class="fl">Lock screen after idle (min, 0 = off)<input type="number" data-k="idleMin" value="${+AD.idleMin||0}" min="0" style="width:120px"></label>
+      <label class="fl">Wrong passwords before 15-min lock<input type="number" data-k="maxTry" value="${+AD.maxTry||5}" min="2" max="20" style="width:120px"></label>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:4px 18px;margin-top:6px">
+      ${tgl("askEvery",AD.askEvery!==false,"Ask the password every time the tool opens")}
+      ${tgl("wm",AD.wm!==false,"Watermark on Excel (Confidential · MSID · date)")}
+      ${tgl("msg.clear",(AD.msg||{}).clear!==false,"Ask before Clear screen")}
+      ${tgl("adminPcOnly",!!AD.adminPcOnly,"Admin button only on the Admin PC (2RJJ)")}
+    </div>
+    <p class="ahelp" style="margin-top:10px"><b>No data copy on the PC</b> (they only see what is on the data server):</p>
+    <div class="chips">${ROLE3.map(r=>`<label class="tg"><input type="checkbox" data-nl="${r}" ${(AD.noLocal||[]).includes(r)?"checked":""}><span class="sw"></span>${ROLEN(r)}</label>`).join("")}</div>
+    <p class="ahelp" style="margin-top:10px">This PC: <b>${LS.get("adminpc",false)?"Admin PC ✓":"not marked as Admin PC"}</b>. Always on: one MSID = one PC, device-name check for new passwords, locked files, F12 / right-click blocked, tool expiry.</p>
+    <div class="frow">${LS.get("adminpc",false)?`<button class="cap sm" id="apForget">Forget this PC as Admin PC</button>`:`<button class="cap sm gold" id="apSet">Make this PC the Admin PC</button>`}<button class="cap sm" id="alOpen">🚨 Login alerts</button></div></section>
+
+  <section class="acard"><h4>⚠️ Clean up this PC</h4><p class="ahelp">Removes saved dates from <b>this browser</b> only. The data folder is not touched.</p><div class="frow"><button class="cap sm danger" id="wipe">Clear this PC's copy</button></div></section>`;
+}
+async function backupObj(){const all={};for(const k of Object.keys(FS.index)){const u=unkey(k);const o=await loadDay(u.p,u.d);if(o)all[k]=o}Object.keys(S.days).forEach(k=>{if(!all[k])all[k]=S.days[k]});Object.values(all).forEach(o=>delete o._lm);return{app:"Provider Pick QA",ver:APP_VER,build:BUILD,at:new Date().toISOString(),cfg:S.cfg,days:all}}
+function wireAdmin3(){
+  const on=(id,fn)=>{const el=$(id);if(el)el.onclick=fn};
+  on("#fsC",async()=>{if(AD.changed){S.cfg.folder=AD.folder}if(await fsConnect()){await fsWriteConfig();renderRail()}openAdmin(3)});
+  on("#fsA",async()=>{await fsAllow();openAdmin(3)});on("#fsS",async()=>{await fsSyncUp();await fsWriteConfig();await fsScan();renderRail();openAdmin(3);toast("Synced")});
+  on("#fsD",async()=>{await fsDisconnect();openAdmin(3)});
+  on("#mpGo",async()=>{const a=$("#mp0").value,b=$("#mp1").value,c=$("#mp2").value;
+    if(!(await isMaster(a))){toast("Current password is wrong");return}if(b.length<10){toast("Use 10 or more characters");return}if(b!==c){toast("New passwords don't match");return}
+    S.cfg.mph=await sha("master|"+b);AD.mph=S.cfg.mph;await save(true);await fsWriteConfig();await logAct("settings","","master password changed");toast("✓ Master password changed");openAdmin(3)});
+  on("#bkB",async()=>{const b=await backupObj();saveBlob(new Blob([await encT(JSON.stringify(b))],{type:"application/json"}),"ProviderPickQA_Backup_"+todayISO()+".json");toast("Backup of "+Object.keys(b.days).length+" dates downloaded")});
+  $("#bkR").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const rd=new FileReader();rd.onload=async()=>{let b;try{b=JSON.parse(await unlock(rd.result));if(!b.days)throw 0}catch(x){toast("That file isn't a Provider Pick QA backup");return}
+    ask("Restore backup?",Object.keys(b.days).length+" dates from "+(b.at?new Date(b.at).toLocaleString("en-IN"):"the file")+". Dates in the backup replace the same dates here. Settings and users are restored too.","Restore",async()=>{
+      for(const [k,o] of Object.entries(b.days)){S.days[k]=o;await fsWriteDay(k,o)}if(b.cfg){SHARED.forEach(k=>{if(b.cfg[k]!==undefined)S.cfg[k]=b.cfg[k]});fixCfg();await fsWriteConfig()}
+      await save(true);AD=null;renderRail();openAdmin(3);toast("Backup restored")},true)};rd.readAsText(f)};
+  on("#lgOpen",async()=>{const L=(await readLog()).slice(0,500);const AN={login:"Login",save:"Save data (add new)",replace:"Save data (replace date)",pick:"Save pick",delpick:"Delete pick",delrow:"Remove row",deldate:"Delete date",settings:"Settings",blocked:"🚨 Blocked login",moved:"Login moved to new PC"};
+    modal(`<h3>📜 History log</h3>${L.length?`<div class="scroll"><table class="tbl"><thead><tr><th>When</th><th>MSID</th><th>Action</th><th>Process</th><th>Note</th></tr></thead><tbody>${L.map(e=>`<tr><td>${new Date(e.at).toLocaleString("en-IN")}</td><td class="mono">${esc(e.pc)}</td><td>${esc(AN[e.a]||e.a)}</td><td>${esc(e.p||"")}</td><td style="white-space:normal">${esc(e.n||"")}</td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">Nothing logged yet.</p>`}<div class="mrow"><button class="cap" data-close>Close</button></div>`,true)});
+  $("#adminPg").querySelectorAll("[data-nl]").forEach(c=>c.onchange=()=>{const a=new Set(AD.noLocal||[]);c.checked?a.add(c.dataset.nl):a.delete(c.dataset.nl);AD.noLocal=[...a];adChanged()});
+  on("#apSet",()=>{LS.set("adminpc",true);toast("This PC is now the Admin PC");openAdmin(3)});
+  on("#apForget",()=>{LS.set("adminpc",false);toast("This PC is no longer the Admin PC");openAdmin(3)});
+  on("#alOpen",async()=>{const L=(await readLog()).filter(e=>e.a==="blocked");const files=(await fsList("_system")).filter(n=>/^alert_/.test(n));
+    for(const f of files){try{const o=JSON.parse(await fsReadText("_system",f));if(!L.some(e=>e.at===o.at))L.push({at:o.at,pc:o.msid,n:o.t})}catch(e){}}L.sort((a,b)=>b.at-a.at);
+    modal(`<h3>🚨 Login alerts</h3><p class="muted" style="margin:0 0 12px">Wrong passwords, unknown MSIDs, sign-in from another PC, locked accounts.</p>${L.length?`<div class="scroll"><table class="tbl"><thead><tr><th>When</th><th>MSID</th><th>What happened</th></tr></thead><tbody>${L.slice(0,500).map(e=>`<tr><td>${new Date(e.at).toLocaleString("en-IN")}</td><td class="mono">${esc(e.pc)}</td><td style="white-space:normal">${esc(e.n||"")}</td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">No alerts. 👍</p>`}<div class="mrow"><button class="cap" data-close>Close</button></div>`,true)});
+  on("#wipe",()=>ask("Clear this PC's copy?","Saved dates are removed from this browser only. The data folder keeps everything.","Clear",async()=>{S.days={};await save(true);if(view.proc)await loadRange();toast("This PC's copy cleared")},true));
+}
+
+/* ---------- settings defaults ---------- */
+function fixCfg(){
+  const c=S.cfg;c.users=Array.isArray(c.users)?c.users:[];
+  if(!c.v2){c.perms={};c.scope={};c.users.forEach(u=>{if(u.role==="manager")u.role="sme";delete u.ov});(c.procs||[]).forEach(p=>{if(p.roles&&p.roles.manager!=null){p.roles.sme=p.roles.manager;p.roles.mgr=p.roles.manager;delete p.roles.manager}});c.v2=1}
+  c.users.forEach(u=>{if(u.role==="manager")u.role="sme"});
+  c.perms=c.perms||{};ROLE3.forEach(r=>c.perms[r]=Object.assign({},DEFPERM[r],c.perms[r]||{}));
+  c.scope=Object.assign({},DEFSCOPE,c.scope||{});c.fon=c.fon||{};c.msg=c.msg||{};
+  if(!Array.isArray(c.procs)||!c.procs.length)c.procs=clone(PROC0);
+  if(!c.procs.some(p=>p.dyn))c.procs.push(clone(PROC0.find(p=>p.dyn)));
+  c.procs.forEach(p=>{const d=PROC0.find(x=>x.k===p.k)||{};p.roles=Object.assign({mgr:1,sme:1,entry:1,employee:1},p.roles||{});p.label=p.label||d.label||p.k;p.status=p.status||"live";
+    if(d.dyn){p.dyn=true;p.cols=Array.isArray(p.cols)?p.cols:[];p.dh=p.dh||"";p.uh=p.uh||""}else{p.cols=Array.isArray(p.cols)&&p.cols.length?p.cols:(d.cols||[]);p.dc=p.dc||d.dc||"A";p.uc=p.uc||d.uc||"B"}p.ic=p.ic||d.ic||p.k.slice(0,2).toUpperCase()});
+  if(c.idleMin===undefined)c.idleMin=15;if(c.askEvery===undefined)c.askEvery=true;if(c.wm===undefined)c.wm=true;if(!Array.isArray(c.noLocal))c.noLocal=["entry","employee"];if(!c.maxTry)c.maxTry=5;
+  c.notice=c.notice||{on:false,text:"",type:"info",speed:25};c.folder=c.folder||DEF_FOLDER;
+  c.pcts=Array.isArray(c.pcts)&&c.pcts.length?c.pcts:PCT0.slice();if(c.minOne===undefined)c.minOne=true;
+  if(!c.seeded){ROSTER.forEach(([m,code,mc])=>{if(!c.users.some(u=>u.pc===m))c.users.push({pc:m,role:"employee",name:"",team:"",code,mc})});c.seeded=1}
+}
+
+/* ---------- boot ---------- */
+(async()=>{
+  applyTheme();
+  await IDB.open();
+  S=(await IDB.get("state"))||fresh();if(!S.cfg)S=fresh();
+  S.cfg=Object.assign(fresh().cfg,S.cfg);S.days=S.days||{};S.auth=S.auth||{};S.log=S.log||[];S.picks=S.picks||{};fixCfg();
+  start();
+})();
+
+</script>
+</body>
+</html>
