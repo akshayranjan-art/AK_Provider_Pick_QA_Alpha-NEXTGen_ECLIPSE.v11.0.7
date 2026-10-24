@@ -986,7 +986,7 @@ function renderRange(){
   el.innerHTML=`<b style="font-size:12.5px">📅</b>
     <input type="date" id="rFrom" value="${view.from}"><span class="muted" style="font-size:12px">to</span><input type="date" id="rTo" value="${view.to}">
     <button class="cap xs" data-q="last">Latest</button><button class="cap xs" data-q="7">7 days</button><button class="cap xs" data-q="month">This month</button><button class="cap xs" data-q="all">All</button>
-    ${can("deldate")&&ds.length?`<button class="cap xs ghost" id="rManage">🗂 Saved dates</button>`:""}
+    ${can("deldate")&&ds.length?`<button class="cap xs ghost" id="rManage">🗂 Saved dates and delete </button>`:""}
     <span class="sp"></span>
     <div class="dchips">${ds.length?ds.slice(0,40).map(d=>`<span class="dc ${d>=view.from&&d<=view.to?"in":""}" data-d="${d}" title="${fmtLong(d)}">${us(d).slice(0,5)}</span>`).join(""):`<span class="muted" style="font-size:12px">No saved dates yet${FS.dir?"":" · server not connected"}</span>`}</div>`;
   const go=async(f,t)=>{view.from=f;view.to=t;view.cleared=false;view.pick=null;view.onlyPk=false;await loadRange()};
