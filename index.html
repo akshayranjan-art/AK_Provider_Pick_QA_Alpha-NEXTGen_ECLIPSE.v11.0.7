@@ -355,6 +355,23 @@ a.cap{text-decoration:none;color:inherit}
 .rail .acts{gap:5px}.rail .acts .cap.sm{padding:6px 11px}
 @media (max-width:1600px){.pbtn small{display:none}.pbtn{padding:3px 12px 3px 3px}}
 .cap.msave{background:linear-gradient(135deg,#1fb7a6,#0b7f86);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(15,157,146,.3)}
+.cap.v{background:linear-gradient(135deg,#b2a6ff,#7c6cf0);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(150,134,255,.25)}
+.tkl{display:flex;flex-direction:column;gap:8px;max-height:56vh;overflow:auto;padding-right:4px}
+.tk{border:1px solid var(--line2);border-radius:14px;padding:8px 12px;background:var(--panel2);opacity:.65;transition:.15s}
+.tk.on{opacity:1;border-color:var(--gold);background:var(--gold-soft)}
+.tkh{display:flex;align-items:center;gap:10px;cursor:pointer;flex-wrap:wrap}.tkh input[type=checkbox]{width:17px;height:17px;accent-color:#b07d1f}
+.tkh b{font-size:13.5px}.tki{font-size:12px;color:var(--muted)}.tkh .sp{flex:1}.tkh select{padding:4px 10px;border-radius:999px;font-size:12px}
+.tkk{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 2px 27px}.tkk label.dc{display:inline-flex;align-items:center;gap:5px;cursor:pointer}.tkk input{width:13px;height:13px;margin:0;accent-color:#13a35a}
+#btnFolder.warn{color:var(--danger);border-color:rgba(244,100,106,.45);background:var(--danger-soft)}
+.sbar .bbig,:root[data-theme="light"] .sbar .bbig{background:linear-gradient(90deg,#fff,#f7dc98);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tools2{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.tools2::-webkit-scrollbar{display:none}
+.tools2 .pickline .hint{display:none}
+.tools2 .rbar input[type=date]{width:128px}
+.cguide{text-align:left;font-size:12px;margin-top:10px;line-height:1.5}
+.cguide .cpath{display:flex;gap:6px;align-items:center;border:1px dashed currentColor;border-radius:12px;padding:6px 8px}
+.cguide .cap{width:auto!important;margin:0!important;padding:4px 10px!important;flex:none}
+.cguide code{flex:1;min-width:0;font:600 11px var(--f-num);word-break:break-all;color:inherit}
+.cguide ol{margin:8px 0 0;padding-left:18px}.cguide b{color:inherit;filter:brightness(1.35)}
 .cap.clr{background:var(--panel2);color:var(--muted);border-color:var(--line2)}
 .cap.mclr{background:linear-gradient(135deg,#ff9a8b,#f0656f);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(240,101,111,.28)}a.cap.gold{color:#fff}
 .topstrip{flex:none;display:flex;gap:7px;min-width:0}
@@ -378,6 +395,54 @@ table.g thead th .thw{padding-left:8px}
 @media (max-width:1350px){.mrule small{display:none}}
 @media (max-width:1200px){.tools{grid-template-columns:1fr}}
 @media (max-height:640px),(max-width:900px){#app:not([hidden]){height:auto;overflow:visible}.wrap{flex:none}.gridcard{flex:none}.gbox{max-height:70vh}.ptitle{display:none}.rail{flex-wrap:wrap}.rail .acts{margin-left:0}}
+
+/* ===================== build 5 · C2 split layout ===================== */
+#app:not([hidden]){display:flex;flex-direction:row;height:100vh;overflow:hidden}
+.sbar{width:238px;flex:none;background:#0f1a33;color:#dfe6f7;display:flex;flex-direction:column;gap:5px;padding:12px 10px;overflow-y:auto;scrollbar-width:thin}
+.sbar .brand{margin:0 2px 4px}.sbar .bbig{background:linear-gradient(90deg,#fff,#f7dc98);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:16px}
+.sbar .ver{color:#8d99b8;border-color:#ffffff22;font-size:9px;padding:1px 6px;letter-spacing:0;margin-left:4px}
+.sbar{--bg:#0f1a33}
+.sh{font:800 9.5px var(--f-body);letter-spacing:.16em;color:#e6bb62;text-transform:uppercase;margin:8px 4px 1px;display:flex;justify-content:space-between;align-items:center}
+.sh em{font-style:normal;color:#5d6886;letter-spacing:.04em}
+.plist2{display:flex;flex-direction:column;gap:2px}
+.pr2{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:10px;font:700 12.5px var(--f-body);border:0;background:transparent;color:#dfe6f7;cursor:pointer;text-align:left;width:100%}
+.pr2:hover{background:#ffffff0d}
+.pr2 i{font:800 9px var(--f-body);font-style:normal;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;background:#ffffff14;flex:none}
+.pr2.on{background:linear-gradient(90deg,#e6bb6230,transparent);color:#f7dc98}.pr2.on i{background:linear-gradient(135deg,#f7dc98,#c48f2c);color:#1b1306}
+.pr2 b{margin-left:auto;font:700 10px var(--f-num);color:#8d99b8}.pr2 b.nw{color:#b2a6ff}
+.pr2 .pl{width:7px;height:7px;border-radius:50%;background:#5d6886;flex:none}.pr2 .pl.on{background:#2fd27a;box-shadow:0 0 6px #2fd27a}.pr2 .pl.new{background:#9686ff;box-shadow:0 0 6px #9686ff}
+.pr2.soon{opacity:.5}
+#sbDump .dumpbox{width:100%;height:50px;border-radius:12px;white-space:normal;background:#ffffff0a;border-color:#ffffff2a;color:#dfe6f7;font-size:11px;padding:7px 10px}
+#sbDump .dumpbox::placeholder{color:#8d99b8}
+#sbDump .row{margin-top:5px;gap:5px}#sbDump .row .cap{flex:1}
+.cap.dk{background:#ffffff12;border-color:#ffffff2a;color:#eaf0fb}
+.vbtn{display:flex;flex-direction:column;gap:5px}.vbtn .cap{justify-content:flex-start;padding:7px 13px;width:100%}
+.vbtn .cap.plain{background:#ffffff12;border-color:#ffffff2a;color:#eaf0fb}
+.dchips2{display:flex;flex-wrap:wrap;gap:4px}
+.dchips2 .dc{background:transparent;border-color:#ffffff22;color:#8d99b8}.dchips2 .dc.in{color:#2fd27a;border-color:#2fd27a88;background:#2fd27a14}
+.sgrow{flex:1;min-height:6px}
+.ucard2{display:flex;align-items:center;gap:8px;padding:7px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14}
+.ucard2 b{display:block;font-size:12px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ucard2 small{font-size:10px;color:#8d99b8}
+.sbar #expTxt{background:transparent;border-color:#ffffff22;color:#8d99b8;font-size:10px}
+.mainc{flex:1;display:flex;flex-direction:column;min-width:0}
+.topl{flex:none;display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+.tools2{flex:1;display:flex;align-items:center;gap:6px;min-width:0;flex-wrap:wrap}
+.tools2 .rbar{border:0;background:transparent;padding:0;margin:0;gap:5px;flex-wrap:nowrap}
+.tools2 .tool{border:0;background:transparent;padding:0;flex-wrap:nowrap}
+.ticons{display:flex;gap:5px;align-items:center;flex:none}
+.wrap{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 12px 10px;gap:0}
+.pager .mk{padding:2px 8px}.pager .mk b{font-size:11.5px}
+.tools2{flex-wrap:wrap!important;row-gap:5px}.tools2 .rbar,.tools2 .tool{flex-wrap:nowrap!important;flex:none}
+.tools2 select{max-width:120px}.tools2 .rbar input[type=date]{width:118px!important;padding:3px 6px}
+.tools2 .rbar .muted{display:none}.pager label.tg,.pager span{white-space:nowrap}.pager #gHint{display:none}
+@media (min-width:1700px){.pager #gHint{display:inline}}.tools2 .pct input{width:70px}.tools2 .tt{display:none}
+.pager{flex-wrap:wrap!important;row-gap:4px}.pager #gHint{flex:1 1 auto}
+.topl .ticons .cap.sm{padding:6px 10px}
+.sicons{display:flex;flex-wrap:wrap;gap:5px}.sicons .cap{flex:1}
+#btnFolder.warn{color:#ff9da1!important;border-color:rgba(244,100,106,.55)!important;background:rgba(244,100,106,.14)!important}
+
+@media (max-width:1500px){.tools2 .rbar [data-q="7"],.tools2 .rbar [data-q="month"]{display:none}}
+@media (max-width:900px){#app:not([hidden]){flex-direction:column;height:auto;overflow:visible}.sbar{width:100%;max-height:none}.mainc{min-height:100vh}}
 </style>
 </head>
 <body>
@@ -387,30 +452,41 @@ table.g thead th .thw{padding-left:8px}
 </defs></svg>
 
 <section id="app" hidden>
-  <div id="notice" class="notice" hidden></div>
-  <header class="top">
+  <aside class="sbar">
     <div class="brand" id="brand" title="Alpha NextGen Eclipse">
       <svg class="mark"><use href="#ecl"/></svg>
-      <div class="bstack"><span class="bsm">Alpha NextGen</span><span class="bbig">Provider Pick QA</span><span class="bsm" style="color:var(--violet)">Eclipse</span></div>
+      <div class="bstack"><span class="bsm">Alpha NextGen</span><span class="bbig">Provider Pick QA</span><span class="bsm" style="color:var(--violet)">Eclipse <span class="ver" id="verTop"></span></span></div>
     </div>
-    <span class="ver" id="verTop"></span>
-    <div class="ptitle" id="ptitle"></div>
-    <div class="sp"></div>
-    <div class="who">
-      <span class="chip red" id="folderWarn" hidden>⚠ Connect folder first</span>
-      <button class="cap sm ghost" id="btnFolder"><span class="sdot" id="syncDot"></span><span id="folderTxt">Connect data</span></button>
-      <span class="chip hide-m" id="expTxt"></span>
-      <button class="cap sm gold" id="btnBack" hidden>↩ Back to Admin</button>
-      <button class="cap sm ghost" id="btnHelp" title="Help">?</button>
-      <button class="cap sm ghost" id="btnTheme" title="Light / dark">☾</button>
-      <button class="cap sm ghost" id="btnRefTop" title="Refresh from the data server" hidden>↻ Refresh</button>
-      <button class="cap sm" id="btnAdmin" hidden>⚙ Admin</button>
-      <div class="uchip"><span class="ava" id="ava">A</span><div><b id="uName"></b><small id="uRole"></small></div></div>
-      <button class="cap sm ghost" id="btnOut">Log out</button>
+    <div class="sh">Processes</div>
+    <nav class="plist2" id="rail"></nav>
+    <div class="sh">📥 Dump</div>
+    <div id="sbDump"></div>
+    <div class="sh">Actions</div>
+    <div class="vbtn" id="railActs"></div>
+    <div class="sh" id="sdH">Saved dates</div>
+    <div class="dchips2" id="sbDates"></div>
+    <div class="sgrow"></div>
+    <div class="sicons">
+        <span class="chip red" id="folderWarn" hidden>⚠ Connect folder first</span>
+        <button class="cap xs dk" id="btnFolder" style="flex:1 1 100%;justify-content:flex-start"><span class="sdot" id="syncDot"></span><span id="folderTxt">Connect data</span></button>
+        <button class="cap xs gold" id="btnBack" hidden style="flex:1 1 100%">↩ Back to Admin</button>
+        <button class="cap xs dk" id="btnRefTop" title="Refresh from the data folder" hidden>↻ Refresh</button>
+        <button class="cap xs dk" id="btnAdmin" hidden>⚙ Admin</button>
+        <button class="cap xs dk" id="btnHelp" title="Help">?</button>
+        <button class="cap xs dk" id="btnTheme" title="Light / dark">☾</button>
     </div>
-  </header>
-  <nav class="rail" id="rail"></nav>
-  <main class="wrap" id="main"></main>
+    <div class="ucard2"><span class="ava" id="ava">A</span><div style="min-width:0;flex:1"><b id="uName"></b><small id="uRole"></small></div><button class="cap xs dk" id="btnOut" title="Log out">⏻</button></div>
+    <span class="chip hide-m" id="expTxt" style="align-self:flex-start"></span>
+  </aside>
+  <div class="mainc">
+    <div id="notice" class="notice" hidden></div>
+    <div class="topl">
+      <div class="tools2" id="tools"></div>
+
+    </div>
+    <main class="wrap" id="main"></main>
+    <div id="ptitle" hidden></div>
+  </div>
 </section>
 
 <div class="adminpg" id="adminPg" hidden></div>
@@ -444,13 +520,14 @@ table.g thead th .thw{padding-left:8px}
 /* ======================= ADMIN SETTINGS (edit here) ======================= */
 const APP_NAME    = "Provider Pick QA";
 const APP_VER     = "V11.0.7";
-const BUILD       = "4";                       // goes up with every new build
+const BUILD       = "6";                       // goes up with every new build
 const APP_EXPIRY  = "2027-03-31";              // tool stops after this date (master password can extend)
 const ADMIN_MSID  = "ARANJA14";                // built-in Admin (logs in with the master password)
 const ADMIN_MC    = "LHTU05CG2122RJJ";         // Admin PC (2RJJ)
 const PW_MASTER   = 2349399753747566;          // hash of the master password (caps and spaces ignored)
 const FILE_KEY    = "Dwarkadesh14ar-PPQA";     // locks the files in the data folder
 const DEF_FOLDER  = "Provider Pick QA Data";   // default data folder name
+const DEF_PATH    = "%USERPROFILE%\\OneDrive - UnitedHealth Group\\Provider Pick QA Data"; // shown next to Connect (Admin can change)
 const LOCK_ON     = true;                      // login ON. false = testing only
 /* ========================================================================= */
 
@@ -484,11 +561,11 @@ const ROLE3=["mgr","sme","entry","employee"];
 const ROLEN=r=>(ROLES.find(x=>x[0]===r)||[0,"Employee"])[1];
 const FEAT=[ // key, name, short, group, [Manager, SME, Data Entry, Employee]
  ["dump","Dump / paste / upload data","Dump","Actions",[1,1,1,1]],
- ["save","Save data to the folder (date-wise)","Save","Actions",[1,1,0,0]],
  ["replace","Replace a date that is already saved","Replace","Actions",[1,1,0,0]],
- ["clear","Clear screen (this process only)","Clear","Actions",[1,1,1,1]],
- ["msave","Master Save (all processes at once)","M.Save","Actions",[1,1,0,0]],
- ["mclear","Master Clear (all screens at once)","M.Clear","Actions",[1,1,1,1]],
+ ["msave","Master Save (tick processes to save)","M.Save","Actions",[1,1,0,0]],
+ ["mclear","Master Clear (tick screens to clear)","M.Clear","Actions",[1,1,1,1]],
+ ["recall","Recall cleared screens","Recall","Actions",[1,1,1,1]],
+ ["dates","Saved dates window (all processes)","Dates","Actions",[1,1,1,1]],
  ["delrow","Remove a saved row (✕)","Row ✕","Actions",[1,1,0,0]],
  ["deldate","Delete a date from the data folder","Del date","Actions",[1,1,0,0]],
  ["pick","Run QA pick (% per date / per user)","Pick","Actions",[1,1,1,0]],
@@ -565,7 +642,7 @@ const fresh=()=>({v:2,cfg:{users:[],perms:{},scope:{},fon:{},procs:[],notice:{on
   idleMin:0,askEvery:false,wm:true,noLocal:["entry","employee"],adminPcOnly:false,maxTry:5,alertMails:["akshay.ranjan@uhc.com","",""],alertAuto:true,alertOther:false,helpPop:true},days:{},auth:{},log:[],picks:{}});
 const noLocal=()=>me.role!=="admin"&&(S.cfg.noLocal||["entry","employee"]).includes(me.role);
 function save(now){clearTimeout(saveT);const go=()=>IDB.put("state",noLocal()?{...S,days:{}}:S);if(now)return go();saveT=setTimeout(go,400);return Promise.resolve()}
-const SHARED=["users","perms","scope","fon","procs","notice","exp","mph","folder","pcts","minOne","msg","seeded","idleMin","askEvery","wm","noLocal","adminPcOnly","maxTry","v2","alertMails","alertAuto","alertOther","helpPop","v3"];
+const SHARED=["users","perms","scope","fon","procs","notice","exp","mph","folder","pcts","minOne","msg","seeded","idleMin","askEvery","wm","noLocal","adminPcOnly","maxTry","v2","alertMails","alertAuto","alertOther","helpPop","v3","folderPath"];
 
 /* ---------- who am I ---------- */
 let me={pc:"",role:"admin",name:"",team:"",code:""};
@@ -614,6 +691,12 @@ async function fsInit(){
   if(!FS.handle)return;
   try{if(await FS.handle.queryPermission({mode:"readwrite"})==="granted"){FS.dir=FS.handle;await fsReadConfig(true);await fsScan()}}catch(e){}
 }
+/* the folder path to paste in the picker (kept on this PC too, so it shows before the folder is connected) */
+const folderPath=()=>S.cfg.folderPath||LS.get("fpath","")||DEF_PATH;
+function connectGuide(dark){const c=dark?"#9fb0d6":"var(--muted)";return `<div class="cguide" style="color:${c}">
+  <div class="cpath"><code id="cpTxt">${esc(folderPath())}</code><button class="cap xs ${dark?"dk":""}" id="cpCopy" type="button">📋 Copy</button></div>
+  <ol><li>Click <b>📋 Copy</b>, then <b>Connect</b>.</li><li>In the window that opens, click the address bar at the top, press <b>Ctrl+V</b> and <b>Enter</b>, then <b>Select folder</b>.</li><li>When the browser asks, choose <b>Allow on every visit</b>. Done — it stays connected.</li></ol></div>`}
+function wireCopy(){const b=$("#cpCopy");if(b)b.onclick=async e=>{e.stopPropagation();try{await navigator.clipboard.writeText(folderPath());toast("📋 Path copied · now click Connect and press Ctrl+V")}catch(x){const r=document.createRange();r.selectNode($("#cpTxt"));getSelection().removeAllRanges();getSelection().addRange(r);toast("Press Ctrl+C to copy the path")}}}
 /* folder remembered but the browser wants a click: ask on the very first click anywhere */
 async function autoAllow(){
   if(FS.dir||!FS.handle||autoAllow.busy)return;autoAllow.busy=true;
@@ -622,7 +705,7 @@ async function autoAllow(){
     else if(!$("#app").hidden){if(typeof setTop==="function")setTop();if(typeof renderRail==="function")renderRail();if(view.proc&&typeof loadRange==="function")await loadRange()}}}catch(e){}
   autoAllow.busy=false;paintSync();
 }
-document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest("#gConn,#btnFolder,#fsC,#fsA"))return;autoAllow()},true);
+document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest("#gConn,#btnFolder,#fsC,#fsA,#cpCopy,#fcGo"))return;autoAllow()},true);
 async function folderOK(h,adm){
   const want=String(S.cfg.folder||DEF_FOLDER).trim(),nameOk=h.name.trim().toLowerCase()===want.toLowerCase();let has=false;
   try{await h.getFileHandle("_ppqa.eclipse");has=true}catch(e){}
@@ -632,7 +715,7 @@ async function folderOK(h,adm){
 }
 async function fsConnect(){
   if(!fsSupported()){toast("This browser can't connect a folder. Use Chrome or Edge.");return false}
-  try{const h=await window.showDirectoryPicker({id:"ppqa-data",mode:"readwrite"});const bad=await folderOK(h,isOwner()&&!view.as);if(bad){toast(bad);return false}
+  try{const h=await window.showDirectoryPicker({id:"ppqa-data",mode:"readwrite",startIn:"documents"});const bad=await folderOK(h,isOwner()&&!view.as);if(bad){toast(bad);return false}
     FS.handle=h;FS.dir=h;await IDB.put("dirHandle",h);await fsReadConfig(true);await fsSyncUp();await fsScan();toast("Connected to “"+h.name+"”");paintSync();return true}
   catch(e){if(e&&e.name!=="AbortError")toast("Couldn't connect the folder");return false}
 }
@@ -663,7 +746,7 @@ async function fsReadConfig(force){
   try{const fh=await FS.dir.getFileHandle("config.eclipse");const f=await fh.getFile();if(!force&&f.lastModified===FS.cfgLM)return;FS.cfgLM=f.lastModified;
     applyShared(JSON.parse(await decT(await f.text())))}catch(e){}
 }
-function applyShared(c){SHARED.forEach(k=>{if(c[k]!==undefined)S.cfg[k]=c[k]});fixCfg();save();resolveMe()}
+function applyShared(c){SHARED.forEach(k=>{if(c[k]!==undefined)S.cfg[k]=c[k]});if(c.folderPath)LS.set("fpath",c.folderPath);fixCfg();save();resolveMe()}
 async function fsWriteConfig(){
   if(!FS.dir)return false;const c={};SHARED.forEach(k=>c[k]=S.cfg[k]);c.savedAt=new Date().toISOString();c.savedBy=me.pc;
   try{const fh=await FS.dir.getFileHandle("config.eclipse",{create:true});const w=await fh.createWritable();await w.write(await encT(JSON.stringify(c)));await w.close();FS.cfgLM=(await fh.getFile()).lastModified;FS.err=false;paintSync();return true}
@@ -700,8 +783,9 @@ function savedDates(p){const set=new Set();const pre=p+"@";Object.keys(S.days).f
 function paintSync(){
   const d=$("#syncDot"),t=$("#folderTxt");if(!d)return;
   d.className="sdot "+(FS.dir?(FS.err?"bad":"ok"):FS.handle?"warn":"");
-  t.textContent=FS.dir?FS.dir.name:FS.handle?"Allow folder":"Connect data";
-  const w=$("#folderWarn");if(w)w.hidden=!!FS.dir||$("#btnFolder").hidden;
+  t.textContent=FS.dir?"Connected":FS.handle?"⚠ Allow folder":"⚠ Connect folder first";
+  const bf=$("#btnFolder");if(bf){bf.title=FS.dir?"Data folder: "+FS.dir.name:"Connect the shared data folder";bf.classList.toggle("warn",!FS.dir)}
+  const w=$("#folderWarn");if(w)w.hidden=true;
   const rt=$("#btnRefTop");if(rt&&typeof can==="function"&&S)rt.hidden=!(FS.dir&&can("refresh"));
 }
 
@@ -774,7 +858,7 @@ let gateMsg="";
 async function gateConnect(){
   if(!fsSupported()){gateMsg="Use Chrome or Edge to connect the data folder.";return}
   try{if(FS.handle&&!FS.dir){if(await FS.handle.requestPermission({mode:"readwrite"})==="granted"){FS.dir=FS.handle;await fsReadConfig(true);await fsScan();return}}
-    const h=await window.showDirectoryPicker({id:"ppqa-data",mode:"readwrite"});const bad=await folderOK(h,false);if(bad){gateMsg=bad;return}
+    const h=await window.showDirectoryPicker({id:"ppqa-data",mode:"readwrite",startIn:"documents"});const bad=await folderOK(h,false);if(bad){gateMsg=bad;return}
     FS.handle=h;FS.dir=h;await IDB.put("dirHandle",h);await fsReadConfig(true);await fsScan()}catch(e){}
 }
 function gate(mode,msg){
@@ -783,7 +867,7 @@ function gate(mode,msg){
   $("#gateBody").innerHTML=`
    ${FS.dir?`<div class="ok-line" style="margin-top:16px">● Server connected · ${esc(FS.dir.name)}</div>`
      :`<button class="cap violet" id="gConn" style="width:100%;margin-top:18px;padding:11px">🔌 ${FS.handle?"Allow the data server (one click)":"Step 1 · Connect data server"}</button>
-       <div style="font-size:11.5px;color:#8d99b8;margin-top:6px">Pick the shared folder “${esc(S.cfg.folder||DEF_FOLDER)}”</div>`}
+       ${FS.handle?"":connectGuide(true)}`}
    <p style="color:#9fb0d6;margin:14px 0 0;font-size:12.5px;line-height:1.5">${setup?"Set or reset your password. Enter your MSID and this PC's device name (Settings → System → About).":(FS.dir?"":"Step 2 · ")+"Sign in with your MSID and password."}</p>
    <input id="gM" placeholder="MSID" value="${esc(last)}" style="text-transform:uppercase" autocomplete="off" spellcheck="false">
    ${setup?`<input id="gD" placeholder="Device name, e.g. LHTU05CG2122RJJ" style="text-transform:uppercase" autocomplete="off" spellcheck="false">`:""}
@@ -792,12 +876,13 @@ function gate(mode,msg){
    <button class="cap gold" id="gGo">${setup?"Save password & sign in":"Sign in  →"}</button>
    <button class="lnk" id="gAlt">${setup?"Back to sign in":"First time or forgot password?"}</button>
    <div class="err" id="gErr">${msg||""}</div>`;
-  $("#gAlt").onclick=()=>gate(setup?"login":"setup");
+  wireCopy();$("#gAlt").onclick=()=>gate(setup?"login":"setup");
   const gc=$("#gConn");if(gc)gc.onclick=async()=>{await gateConnect();const m=gateMsg;gateMsg="";gate(mode,FS.dir?"":(m||"Server not connected."))};
   $("#gGo").onclick=()=>gateGo(setup);$("#gateBody").onkeydown=e=>{if(e.key==="Enter")gateGo(setup)};
   {const f=$(last?(setup?"#gD":"#gPw"):"#gM");if(f)f.focus()}
 }
-function doneLogin(m){TRY.set(m,null);LS.set("lastmsid",m);LS.set("msid",m);SESS.set(true);resolveMe();logAct("login","",ROLEN(me.role));enter()}
+function doneLogin(m){TRY.set(m,null);LS.set("lastmsid",m);LS.set("msid",m);SESS.set(true);resolveMe();logAct("login","",ROLEN(me.role));enter();
+  if(m!==ADMIN_MSID&&FS.dir)(async()=>{const a=await authGet(m);if(a&&a.did===DID()){a.last=Date.now();await authPut(m,a);rebuildRegistry()}})()}
 async function gateGo(setup){
   const err=t=>{$("#gErr").innerHTML=t},m=$("#gM").value.trim().toUpperCase().replace(/\s+/g,""),pw=$("#gPw").value;
   if(m.length<2)return err("Enter your MSID.");
@@ -817,7 +902,7 @@ async function gateGo(setup){
     if(d!==String(u.mc).toUpperCase())return bad("Device name doesn't match the list. Check Settings → System → About.","Password reset tried with a wrong device name");
     if(pw.length<4)return err("Password needs at least 4 characters.");if(pw!==p2)return err("The two passwords don't match.");
     const old=await authGet(m);
-    await authPut(m,{h:await sha(m+"|"+pw),did:DID(),at:Date.now()});
+    await authPut(m,{h:await sha(m+"|"+pw),did:DID(),at:Date.now(),mc:d,last:Date.now()});rebuildRegistry();
     if(old&&old.did!==DID())logAct("moved","",m+" moved to a new PC");
     return doneLogin(m);
   }
@@ -841,7 +926,10 @@ async function start(){
   if(!LOCK_ON){resolveMe();return enter()}
   try{await fsInit()}catch(e){}
   const m=LS.get("msid",""),u=userOf(m);
-  if(SESS.get()&&m&&(isBuiltInAdmin(m)||(u&&!(u.until&&daysLeft(u.until)<0)))){resolveMe();return enter()}
+  if(SESS.get()&&m&&(isBuiltInAdmin(m)||(u&&!(u.until&&daysLeft(u.until)<0)))){
+    /* login is remembered on this PC; if Admin reset it (or it moved to another PC) the saved login is removed */
+    if(!isBuiltInAdmin(m)&&FS.dir){const a=await authGet(m);if(!a||a.did!==DID()){SESS.set(false);return gate("login",a?"This MSID is now linked to another PC. Please contact Administration.":"Your login was reset by Admin. Tap “First time or forgot password?” to set it again.")}}
+    resolveMe();return enter()}
   gate();
 }
 function enter(){
@@ -874,10 +962,10 @@ function renderNotice(){
 function renderRail(){
   const R=$("#rail");
   const list=can("rail")?procs().filter(procVisible):[];
-  R.innerHTML=`<div class="plist">`+list.map(p=>{
-    const n=savedDates(p.k).length,f=(FRESH[p.k]||[]).length;
-    return `<button class="pbtn ${view.proc===p.k?"on":""} ${p.status==="soon"?"soon":""}" data-proc="${esc(p.k)}"><span class="pi">${esc(p.ic||p.k.slice(0,2).toUpperCase())}</span><span><b>${esc(p.label||p.k)}</b><small>${p.status==="soon"?"Coming soon":p.status==="hidden"?"Hidden":f?nf(f)+" new · not saved":(n?n+" date"+(n===1?"":"s"):"No data yet")}</small></span><span class="pl ${f?"new":n?"on":""}"></span></button>`}).join("")
-   +`</div><div class="acts" id="railActs"></div>`;
+  R.innerHTML=list.map(p=>{
+    const n=savedDates(p.k).length,f=(FRESH[p.k]||[]).length,cl=CLR.has(p.k);
+    const tip=p.status==="soon"?"Coming soon":p.status==="hidden"?"Hidden · Admin only":(f?nf(f)+" new rows not saved · ":"")+n+" saved date"+(n===1?"":"s")+(cl?" · screen cleared":"");
+    return `<button class="pr2 ${view.proc===p.k?"on":""} ${p.status==="soon"?"soon":""}" data-proc="${esc(p.k)}" title="${esc(tip)}"><i>${esc(p.ic||p.k.slice(0,2).toUpperCase())}</i>${esc(p.label||p.k)}<b class="${f?"nw":""}">${p.status==="soon"?"soon":f?"+"+nf(f):n?n+"d":"—"}</b><span class="pl ${f?"new":n?"on":""}"></span></button>`}).join("");
   R.querySelectorAll("[data-proc]").forEach(b=>b.onclick=()=>openProc(b.dataset.proc));
   if(typeof renderActs==="function")renderActs();
 }
@@ -885,13 +973,16 @@ function renderRail(){
 /* ---------- theme (light first) ---------- */
 function applyTheme(){document.documentElement.dataset.theme=LS.get("theme","light")}
 $("#btnTheme").onclick=()=>{LS.set("theme",LS.get("theme","light")==="dark"?"light":"dark");applyTheme()};
-$("#btnOut").onclick=()=>ask("Log out?","You will need your MSID and password to sign in again.","Log out",logout);
+$("#btnOut").onclick=()=>ask("Log out?","Your saved login on this PC is removed. You will need your MSID and password to sign in again.","Log out",logout);
 $("#btnFolder").onclick=async()=>{
   if(FS.dir){modal(`<h3>🔌 Data server</h3><p class="muted" style="margin:0">Connected to <b style="color:var(--ink)">${esc(FS.dir.name)}</b> · ${Object.keys(FS.index).length} saved dates across all processes.</p>
     <div class="mrow"><button class="cap" data-close>Close</button>${can("refresh")?`<button class="cap" id="fRef">↻ Refresh</button>`:""}<button class="cap" id="fChg">Change folder</button></div>`);
     const r=$("#fRef");if(r)r.onclick=async()=>{closeModal();await refreshAll()};
     $("#fChg").onclick=async()=>{closeModal();if(await fsConnect())await refreshAll()};return}
-  if(FS.handle?await fsAllow():await fsConnect())await refreshAll();
+  if(FS.handle){if(await fsAllow())await refreshAll();return}
+  modal(`<h3>🔌 Connect the data folder</h3><p class="muted" style="margin:0 0 6px">One time only. After this it stays connected.</p>${connectGuide(false)}
+    <div class="mrow"><button class="cap" data-close>Cancel</button><button class="cap gold" id="fcGo">🔌 Connect</button></div>`);wireCopy();
+  $("#fcGo").onclick=async()=>{closeModal();if(await fsConnect())await refreshAll()};
 };
 async function refreshAll(){await fsScan();renderRail();if(view.proc)await loadRange();toast("Updated from the data server")}
 $("#btnBack").onclick=()=>{view.as=null;setTop();renderRail();openAdmin(view.ret||1)};
@@ -941,16 +1032,25 @@ function filteredRows(skipCol){
   return out;
 }
 
+/* screens cleared with Clear / Master Clear stay empty until Recall (kept on this PC) */
+const CLR={all(){return LS.get("cleared",{})},has(k){return !!this.all()[k]},set(k,v){const a=this.all();if(v)a[k]=1;else delete a[k];LS.set("cleared",a)}};
 async function openProc(k){
   const p=procOf(k);if(!p)return;
-  view.proc=k;LS.set("proc",k);view.f={};view.q="";view.sort=null;view.onlyPk=false;view.page=0;view.pick=null;view.pdate="";view.puser="";view.cleared=false;
-  const ds=savedDates(k);view.from=view.to=ds[0]||"";
+  view.proc=k;LS.set("proc",k);view.f={};view.q="";view.sort=null;view.onlyPk=false;view.page=0;view.pick=null;view.pdate="";view.puser="";view.dsel=null;
+  view.cleared=CLR.has(k);const ds=savedDates(k);view.from=view.to=view.cleared?"":(ds[0]||"");
   renderRail();renderProc();await loadRange();
+}
+/* explicit load (date chips, range, Saved dates, Recall): the screen is no longer "cleared" */
+async function showDates(p,f,t,list){
+  CLR.set(p.k,false);view.cleared=false;view.dsel=list&&list.length?list.slice().sort():null;
+  view.from=f||(view.dsel?view.dsel[0]:"");view.to=t||(view.dsel?view.dsel[view.dsel.length-1]:"");view.pick=null;view.onlyPk=false;
+  if(view.proc!==p.k){view.proc=p.k;LS.set("proc",p.k);view.f={};view.q="";view.sort=null;view.page=0;renderRail();renderProc()}
+  await loadRange();
 }
 async function loadRange(){
   const p=P();if(!p)return;view.rows=[];
-  if(view.from&&view.to&&!view.cleared){
-    const ds=savedDates(p.k).filter(d=>d>=view.from&&d<=view.to).sort(),objs=[];
+  if(!view.cleared&&(view.dsel||view.from&&view.to)){
+    const ds=view.dsel?view.dsel.filter(d=>savedDates(p.k).includes(d)):savedDates(p.k).filter(d=>d>=view.from&&d<=view.to).sort(),objs=[];
     for(const d of ds){const o=await loadDay(p.k,d);if(o)objs.push([d,o])}
     if(p.dyn){let add=false;objs.forEach(([d,o])=>(o.cols||[]).forEach(c=>{if(!p.cols.some(x=>norm(x)===norm(c))){p.cols.push(c);add=true}}));if(add){autoRule(p);renderProc()}}
     objs.forEach(([d,o])=>view.rows.push(...dayRows(p,d,o)));
@@ -975,55 +1075,41 @@ function autoRule(p){
 const rebucket=p=>{const dc=dIdx(p),t=todayISO();(FRESH[p.k]||[]).forEach(r=>{r.d=(dc>=0&&toISO(r.v[dc]))||r.d0||t})};
 
 function renderProc(){
-  const p=P(),M=$("#main"),T=$("#ptitle");
-  if(!p){T.innerHTML="";M.innerHTML=`<div class="card empty-state"><div class="big">🔒</div>No process is open for your login. Please contact Administration.</div>`;renderActs();return}
-  T.innerHTML=`<h1>${esc(p.label)} <span>· QA</span></h1>
-    <span class="mrule"><i>${dLet(p)}</i><span><small>Per Date</small> ${esc(p.cols[dIdx(p)]||"not set")}</span></span>
-    <span class="mrule"><i>${uLet(p)}</i><span><small>Per User</small> ${esc(p.cols[uIdx(p)]||"not set")}</span></span>
-    <small>${p.cols.length} columns · ${scope()==="own"?"your own claims":"everyone's claims"}</small>`;
-  if(p.status==="soon"&&role()!=="admin"){M.innerHTML=`<div class="card soonbox"><div class="big">⏳</div><h2>${esc(p.label)} is coming soon</h2><p class="muted">Admin will switch it on.</p></div>`;renderActs();return}
+  const p=P(),M=$("#main"),T=$("#tools"),D=$("#sbDump");
+  if(!p){T.innerHTML="";D.innerHTML="";M.innerHTML=`<div class="card empty-state"><div class="big">🔒</div>No process is open for your login. Please contact Administration.</div>`;renderActs();return}
+  D.innerHTML=can("dump")?`<div id="dumpCard"><textarea class="dumpbox" id="paste" placeholder="Click here and press Ctrl+V · any process with headings · or drop an Excel file" spellcheck="false"></textarea>
+      <div class="row"><button class="cap xs gold" id="btnLoad">⚡ Load</button><label class="cap xs dk">📄 Upload<input type="file" id="file" accept=".xlsx,.xlsm,.xls,.csv" hidden></label></div></div>`
+    :`<div style="font-size:11.5px;color:#8d99b8;padding:2px 4px">View only · data is loaded by Admin / SME</div>`;
+  if(p.status==="soon"&&role()!=="admin"){T.innerHTML="";M.innerHTML=`<div class="card soonbox"><div class="big">⏳</div><h2>${esc(p.label)} is coming soon</h2><p class="muted">Admin will switch it on.</p></div>`;renderActs();return}
+  T.innerHTML=`<div class="rbar" id="rbar" ${can("range")?"":"hidden"}></div><span style="width:1px;height:22px;background:var(--line2);flex:none"></span><div class="tool pickline" id="pickCard"></div>`;
   M.innerHTML=`
-  <div class="topstrip">
-    <div class="dumpzone" id="dumpCard"><span class="tt">📥 Dump</span>
-      ${can("dump")?`<textarea class="dumpbox" id="paste" placeholder="Click here & Ctrl+V — paste any process with headings · or drop an Excel file" spellcheck="false" rows="1"></textarea>
-      <button class="cap xs gold" id="btnLoad">⚡ Load</button><label class="cap xs">📄 Upload<input type="file" id="file" accept=".xlsx,.xlsm,.xls,.csv" hidden></label>`:`<span class="muted" style="font-size:12px;flex:1">View only · data is loaded by Admin / SME</span>`}
-    </div>
-    <div class="minik" id="kpis" ${can("kpis")?"":"hidden"}></div>
-  </div>
-  <div class="tool pickline" id="pickCard"></div>
-  <div class="rbar" id="rbar" ${can("range")?"":"hidden"}></div>
   <div class="gridcard">
     <div class="gbox" id="gbox"></div>
-    <div class="pager"><span class="chip" id="gCount"></span><span class="chip em" id="gLt" ${can("lights")?"":"hidden"}></span><span class="chip violet" id="gNew" hidden></span><span class="chip em" id="gPk" hidden></span>
+    <div class="pager"><span id="kpis" style="display:contents" ${can("kpis")?"":"hidden"}></span><span class="chip em" id="gLt" ${can("lights")?"":"hidden"}></span><span class="chip violet" id="gNew" hidden></span><span class="chip red" id="gClr" hidden>🧹 Screen cleared · use Recall</span><span class="chip em" id="gPk" hidden></span><span id="gHint" class="muted" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0"></span>
       <label class="tg sm" id="gOnly" hidden><input type="checkbox" id="gOnlyC"><span class="sw"></span>Only picked</label>
-      <span id="pager" style="display:contents"></span><span class="sp"></span>
-      ${can("filters")?`<span class="chip gold" id="gFl" hidden></span><input id="gq" placeholder="🔎 Search anything…" style="max-width:220px;border-radius:999px;padding:3px 12px;font-size:12px" value="${esc(view.q)}"><button class="cap xs ghost" id="gReset">Reset filters</button>`:""}
+      <span class="sp"></span><span id="pager" style="display:contents"></span>
+      ${can("filters")?`<span class="chip gold" id="gFl" hidden></span><input id="gq" placeholder="🔎 Search anything…" style="max-width:200px;border-radius:999px;padding:3px 12px;font-size:12px" value="${esc(view.q)}"><button class="cap xs ghost" id="gReset">Reset</button>`:""}
     </div>
-  </div>`;
+  </div><span id="gCount" hidden></span>`;
   wireProc();renderActs();
 }
-/* Save · Excel · Clear on the process line (right side) */
+/* sidebar actions: Master Save · Recall · Excel · Saved dates · Master Clear */
 function renderActs(){
-  const A=$("#railActs");if(!A)return;const p=P();if(!p||(p.status==="soon"&&role()!=="admin")){A.innerHTML="";return}
-  const n=(FRESH[p.k]||[]).length,all=Object.entries(FRESH).filter(([k,a])=>k!=="__tmp"&&a&&a.length).reduce((s,[k,a])=>s+a.length,0);
-  A.innerHTML=`${can("save")?`<button class="cap sm em" id="btnSave" ${n?"":"disabled"} title="Save this process">💾 Save${n?" ("+nf(n)+")":""}</button>`:""}
-    ${can("msave")?`<button class="cap sm msave" id="btnMSave" ${all?"":"disabled"} title="Save every process at once">💾 Master Save${all?" ("+nf(all)+")":""}</button>`:""}
-    ${can("export")?`<button class="cap sm" id="btnExpView">⬇ Excel</button>`:""}
-    ${can("clear")?`<button class="cap sm clr" id="btnClear" title="Clear this process screen">🧹 Clear</button>`:""}
-    ${can("mclear")?`<button class="cap sm mclr" id="btnMClear" title="Clear every process screen">🧹 Master Clear</button>`:""}`;
-  const SV=$("#btnSave");if(SV)SV.onclick=saveFresh;
-  const MS=$("#btnMSave");if(MS)MS.onclick=masterSave;
-  const MC=$("#btnMClear");if(MC)MC.onclick=masterClear;
-  const X=$("#btnExpView");if(X)X.onclick=exportView;
-  const C=$("#btnClear");if(C)C.onclick=()=>{
-    const nn=(FRESH[p.k]||[]).length,go=()=>{FRESH[p.k]=[];view.rows=[];view.pick=null;view.cleared=true;view.f={};view.q="";view.sort=null;view.onlyPk=false;renderRail();paintAll();toast("Screen cleared · saved data is safe")};
-    if(!msgOn("clear")&&!nn)return go();
-    ask("Clear the screen?",(nn?"<b>"+nf(nn)+" new rows are not saved</b> and will be lost. ":"")+"Only this screen is cleared. Saved data stays in the data server — pick a date to bring it back.","Clear screen",go,!!nn)};
+  const A=$("#railActs");if(!A)return;
+  const all=Object.entries(FRESH).filter(([k,a])=>k!=="__tmp"&&a&&a.length).reduce((s,[k,a])=>s+a.length,0),nc=Object.keys(CLR.all()).length+Object.keys(RECALL).length;
+  A.innerHTML=`${can("msave")?`<button class="cap sm msave" id="btnMSave" title="Save every process at once">💾 Master Save${all?" · "+nf(all):""}</button>`:""}
+    ${can("recall")?`<button class="cap sm v" id="btnRecall" title="Bring cleared screens back">⟲ Recall${nc?" · "+nc:""}</button>`:""}
+    ${can("export")?`<button class="cap sm plain" id="btnExpView" title="Choose processes and dates · one workbook">⬇ Excel</button>`:""}
+    ${can("dates")?`<button class="cap sm plain" id="btnDates" title="All saved dates of every process">🗂 Saved dates</button>`:""}
+    ${can("mclear")?`<button class="cap sm mclr" id="btnMClear" title="Clear screens">🧹 Master Clear</button>`:""}`;
+  const on=(id,fn)=>{const b=$(id);if(b)b.onclick=fn};
+  on("#btnMSave",masterSave);on("#btnRecall",recallTick);on("#btnExpView",excelTick);on("#btnDates",savedDatesTick);on("#btnMClear",masterClear);
 }
 function paintAll(){renderKpis();renderLights();renderRange();renderPick();renderGrid();paintFresh()}
 function paintFresh(){
   const p=P();if(!p)return;const n=(FRESH[p.k]||[]).length;renderActs();
   const g=$("#gNew");if(g){g.hidden=!n;g.textContent=nf(n)+" new · not saved"}
+  const c=$("#gClr");if(c)c.hidden=!view.cleared;
 }
 function renderKpis(){
   const p=P(),el=$("#kpis");if(!p||!el)return;const rows=allRows();
@@ -1034,7 +1120,7 @@ function renderKpis(){
     ["QA picked",nf(pk),view.pick?view.pick.pct+"% · "+(view.pick.mode==="date"?"per date":"per user"):"run a pick","var(--em)"]]
     .map(([a,b,c,k])=>`<span class="mk" style="--kc:${k}" title="${esc(c)}"><small>${a}</small><b>${b}</b></span>`).join("");
 }
-/* the green / light-red bulb now sits inside each grid heading */
+/* the green / light-red bulb sits inside each grid heading */
 function renderLights(){
   const p=P();if(!p)return;const rows=allRows(),n=rows.length;
   view.fill=p.cols.map((c,i)=>rows.reduce((a,r)=>a+(String(r.v[i]??"").trim()?1:0),0));view.fillN=n;
@@ -1042,32 +1128,27 @@ function renderLights(){
 const bulbOf=i=>{if(!can("lights"))return "";const f=(view.fill||[])[i]||0,n=view.fillN||0;return `<span class="hb ${f===0?"off":f===n?"on":"part"}" title="${f===0?"No data":Math.round(f/n*100)+"% filled"}"></span>`};
 function flashLights(){$$("#gbox .hb.on,#gbox .hb.part").forEach((e,i)=>setTimeout(()=>{e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash")},i*20))}
 function renderRange(){
-  const p=P(),el=$("#rbar");if(!p||!el)return;const ds=savedDates(p.k);
-  el.innerHTML=`<b style="font-size:12.5px">📅</b>
+  const p=P(),el=$("#rbar");if(!p)return;const ds=savedDates(p.k);
+  if(el){
+    el.innerHTML=`<b style="font-size:12.5px">📅</b>
     <input type="date" id="rFrom" value="${view.from}"><span class="muted" style="font-size:12px">to</span><input type="date" id="rTo" value="${view.to}">
-    <button class="cap xs" data-q="last">Latest</button><button class="cap xs" data-q="7">7 days</button><button class="cap xs" data-q="month">This month</button><button class="cap xs" data-q="all">All</button>
-    ${can("deldate")&&ds.length?`<button class="cap xs ghost" id="rManage">🗂 Saved dates</button>`:""}
-    <span class="sp"></span>
-    <div class="dchips">${ds.length?ds.slice(0,40).map(d=>`<span class="dc ${d>=view.from&&d<=view.to?"in":""}" data-d="${d}" title="${fmtLong(d)}">${us(d).slice(0,5)}</span>`).join(""):`<span class="muted" style="font-size:12px">No saved dates yet${FS.dir?"":" · server not connected"}</span>`}</div>`;
-  const go=async(f,t)=>{view.from=f;view.to=t;view.cleared=false;view.pick=null;view.onlyPk=false;await loadRange()};
-  $("#rFrom").onchange=e=>go(e.target.value,view.to&&view.to>=e.target.value?view.to:e.target.value);
-  $("#rTo").onchange=e=>go(view.from&&view.from<=e.target.value?view.from:e.target.value,e.target.value);
-  el.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{const q=b.dataset.q;if(!ds.length){toast("No saved dates yet");return}
-    if(q==="last")go(ds[0],ds[0]);else if(q==="all")go(ds[ds.length-1],ds[0]);
-    else if(q==="7"){const t=new Date(ds[0]+"T12:00:00");t.setDate(t.getDate()-6);go(t.toISOString().slice(0,10),ds[0])}
-    else go(ds[0].slice(0,8)+"01",ds[0])});
-  el.querySelectorAll("[data-d]").forEach(c=>c.onclick=()=>go(c.dataset.d,c.dataset.d));
-  const rm=$("#rManage");if(rm)rm.onclick=manageDates;
-}
-async function manageDates(){
-  const p=P(),ds=savedDates(p.k);const info=[];
-  for(const d of ds){const o=await loadDay(p.k,d);info.push({d,n:o?(o.rows||[]).length:0,by:o&&o.by||"",at:o&&o.at})}
-  modal(`<h3>🗂 Saved dates · ${esc(p.label)}</h3><p class="muted" style="margin:0 0 12px">Delete removes the date from the data server (SharePoint) for everyone.</p>
-   <div class="scroll"><table class="tbl"><thead><tr><th>Date</th><th>Rows</th><th>Saved by</th><th>When</th><th></th></tr></thead><tbody>
-   ${info.map(x=>`<tr><td><b>${fmtLong(x.d)}</b></td><td class="mono">${nf(x.n)}</td><td class="mono">${esc(x.by)}</td><td>${x.at?new Date(x.at).toLocaleString("en-IN"):""}</td><td><button class="cap xs danger" data-del="${x.d}">Delete</button></td></tr>`).join("")}
-   </tbody></table></div><div class="mrow"><button class="cap" data-close>Close</button></div>`,true);
-  $$("#mcard [data-del]").forEach(b=>b.onclick=()=>{const d=b.dataset.del;ask("Delete "+us(d)+" from the server?","All "+esc(p.label)+" rows of "+fmtLong(d)+" are removed from the data server for everyone. This can't be undone (keep a backup).","Delete date",async()=>{
-    const k=dkey(p.k,d);delete S.days[k];await save(true);await fsDeleteDay(k);await logAct("deldate",p.k,d);renderRail();await loadRange();toast(us(d)+" deleted from the server")},true)});
+    <button class="cap xs" data-q="last">Latest</button><button class="cap xs" data-q="7">7 days</button><button class="cap xs" data-q="month">Month</button><button class="cap xs" data-q="all">All</button>`;
+    const go=(f,t)=>showDates(p,f,t);
+    $("#rFrom").onchange=e=>go(e.target.value,view.to&&view.to>=e.target.value?view.to:e.target.value);
+    $("#rTo").onchange=e=>go(view.from&&view.from<=e.target.value?view.from:e.target.value,e.target.value);
+    el.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{const q=b.dataset.q;if(!ds.length){toast("No saved dates yet");return}
+      if(q==="last")go(ds[0],ds[0]);else if(q==="all")go(ds[ds.length-1],ds[0]);
+      else if(q==="7"){const t=new Date(ds[0]+"T12:00:00");t.setDate(t.getDate()-6);go(t.toISOString().slice(0,10),ds[0])}
+      else go(ds[0].slice(0,8)+"01",ds[0])});
+  }
+  /* sidebar: saved date chips of this process */
+  const H=$("#sdH"),C=$("#sbDates");if(!C)return;
+  H.innerHTML=`Saved dates <em>${esc(p.label)}</em>`;
+  const inSel=d=>view.dsel?view.dsel.includes(d):(d>=view.from&&d<=view.to);
+  C.innerHTML=ds.length?ds.slice(0,24).map(d=>`<span class="dc ${!view.cleared&&inSel(d)?"in":""}" data-d="${d}" title="${fmtLong(d)} · click to show">${us(d).slice(0,5)}</span>`).join("")+(ds.length>24?`<span class="dc" data-more="1">+${ds.length-24}</span>`:"")
+    :`<span style="font-size:11px;color:#5d6886;padding:0 4px">No saved dates yet${FS.dir?"":" · folder not connected"}</span>`;
+  C.querySelectorAll("[data-d]").forEach(c=>c.onclick=()=>showDates(p,c.dataset.d,c.dataset.d));
+  const m=C.querySelector("[data-more]");if(m)m.onclick=savedDatesTick;
 }
 
 function renderGrid(){
@@ -1266,7 +1347,7 @@ function handleAOA(aoa,from){
     if(p.dyn){p.cols=r.cols;p.dh=($("#oD")||{}).value??tp.dh;p.uh=($("#oU")||{}).value??tp.uh;await persistOther(p)}
     closeModal();FRESH[p.k]=(FRESH[p.k]||[]).concat(r.rows);if(p.dyn)rebucket(p);const t=$("#paste");if(t)t.value="";
     if(moved)await openProc(p.k);else{view.pick=null;view.page=0;renderRail();if(p.dyn)renderProc();paintAll()}
-    flashLights();toast(nf(r.rows.length)+" rows loaded into "+p.label+(can("save")?" · click Save to keep them":""))};
+    flashLights();toast(nf(r.rows.length)+" rows loaded into "+p.label+(can("msave")?" · click Master Save to keep them":""))};
 }
 function autoRuleRows(p,rows){const keep=FRESH[p.k];FRESH[p.k]=rows;const vr=view.rows;view.rows=[];try{autoRule(p)}finally{FRESH[p.k]=keep;view.rows=vr}}
 /* Other's headings and date / user choice are kept on this PC, and shared when allowed */
@@ -1303,37 +1384,6 @@ async function saveFresh(){
   $("#sGo").onclick=()=>run(false);const rp=$("#sRep");if(rp)rp.onclick=()=>run(true);
 }
 
-/* ================= Master Save / Master Clear ================= */
-async function commitProc(p,over){
-  const fr=FRESH[p.k]||[];if(!fr.length)return 0;const by={};fr.forEach(r=>(by[r.d]=by[r.d]||[]).push(r));const ds=Object.keys(by).sort();let added=0;
-  for(const d of ds){const k=dkey(p.k,d);let o=await loadDay(p.k,d);
-    if(!o||over)o={p:p.k,d,cols:p.cols.slice(),rows:[]};
-    if(JSON.stringify(o.cols)!==JSON.stringify(p.cols)){const mp=p.cols.map(c=>(o.cols||[]).findIndex(x=>norm(x)===norm(c)));o.rows=o.rows.map(v=>mp.map(j=>j<0?"":v[j]??""));o.cols=p.cols.slice()}
-    const sg=new Set(o.rows.map(sigOf));by[d].forEach(r=>{const s=sigOf(r.v);if(!sg.has(s)){o.rows.push(r.v);sg.add(s);added++}});
-    o.at=Date.now();o.by=me.pc;o.n=o.rows.length;if(!noLocal())S.days[k]=o;await save(true);if(FS.dir)await fsWriteDay(k,o);else if(noLocal())S.days[k]=o}
-  await logAct(over?"replace":"save",p.k,"Master Save · "+nf(added)+" rows · "+ds.map(us).join(", "));FRESH[p.k]=[];return added;
-}
-async function masterSave(){
-  if(!FS.dir&&noLocal()){toast("Connect the data server first");return}
-  const list=procs().filter(p=>(FRESH[p.k]||[]).length&&procVisible(p));if(!list.length){toast("Nothing new to save");return}
-  const info=[];for(const p of list){const fr=FRESH[p.k],ds=[...new Set(fr.map(r=>r.d))].sort(),have=new Set(savedDates(p.k));info.push({p,n:fr.length,ds,clash:ds.filter(d=>have.has(d))})}
-  const anyClash=info.some(x=>x.clash.length),tot=info.reduce((a,x)=>a+x.n,0);
-  modal(`<h3>💾 Master Save · ${nf(tot)} rows · ${info.length} process${info.length>1?"es":""}</h3>
-   <p class="muted" style="margin:0 0 10px">Everything new on every process is saved date-wise ${FS.dir?"to the data server":"<b style='color:var(--amber)'>on this PC only (server not connected)</b>"} in one go.</p>
-   <div class="scroll" style="max-height:40vh"><table class="tbl"><thead><tr><th>Process</th><th>New rows</th><th>Dates</th><th>Status</th></tr></thead><tbody>
-   ${info.map(x=>`<tr><td><b>${esc(x.p.label)}</b></td><td class="mono">${nf(x.n)}</td><td class="mono" style="white-space:normal">${x.ds.map(us).join(", ")}</td><td>${x.clash.length?`<span class="chip gold">${x.clash.length} date${x.clash.length>1?"s":""} already there</span>`:`<span class="chip em">new dates</span>`}</td></tr>`).join("")}
-   </tbody></table></div>
-   ${anyClash?`<p style="margin:12px 0 0;font-size:13px"><b>Some dates are already there.</b> <b>Add only new rows</b> keeps the saved data and adds only what is missing (nothing doubled). <b>Replace</b> overwrites those dates with this data.</p>`:""}
-   <div class="mrow"><button class="cap" data-close>Cancel</button>${anyClash&&can("replace")?`<button class="cap danger" id="msRep">Replace those dates</button>`:""}<button class="cap msave" id="msGo">${anyClash?"Add only new rows":"Master Save now"}</button></div>`,true);
-  const run=async over=>{closeModal();toast("Saving all processes…");let added=0;for(const x of info)added+=await commitProc(x.p,over);
-    renderRail();if(view.proc){view.cleared=false;await loadRange()}toast("✓ Master Save · "+nf(added)+" rows in "+info.length+" process"+(info.length>1?"es":""))};
-  $("#msGo").onclick=()=>run(false);const r=$("#msRep");if(r)r.onclick=()=>run(true);
-}
-function masterClear(){
-  const un=Object.entries(FRESH).filter(([k,a])=>k!=="__tmp"&&a&&a.length),n=un.reduce((s,[k,a])=>s+a.length,0);
-  const go=()=>{Object.keys(FRESH).forEach(k=>FRESH[k]=[]);view.rows=[];view.pick=null;view.cleared=true;view.f={};view.q="";view.sort=null;view.onlyPk=false;renderRail();paintAll();toast("All screens cleared · saved data is safe")};
-  ask("Master Clear — clear every screen?",(n?"<b>"+nf(n)+" new rows are not saved</b> ("+un.map(([k,a])=>esc((procOf(k)||{}).label||k)+" "+nf(a.length)).join(" · ")+") and will be lost. ":"")+"Every process screen is cleared. Saved data stays in the data server.","Master Clear",go,true);
-}
 
 /* ================= QA pick: % per date / per user · a claim is never picked twice ================= */
 const pctList=()=>(S.cfg.pcts&&S.cfg.pcts.length?S.cfg.pcts:PCT0);
@@ -1361,13 +1411,14 @@ function renderPick(){
   const opt=sel=>`<option value="">— choose —</option>`+p.cols.map(c=>`<option ${norm(c)===norm(sel)?"selected":""}>${esc(c)}</option>`).join("");
   el.innerHTML=`<span class="tt">🎯 QA pick</span>
    ${p.dyn&&can("otherset")?`<select id="oD" title="Per Date heading">${opt(p.dh).replace("— choose —","Date heading")}</select><select id="oU" title="Per User heading">${opt(p.uh).replace("— choose —","User heading")}</select>`:""}
-   <div class="seg" id="pMode"><button data-m="date" class="${view.mode==="date"?"on":""}">📅 Per Date · ${dLet(p)}</button><button data-m="user" class="${view.mode==="user"?"on":""}">👤 Per User · ${uLet(p)}</button></div>
+   <div class="seg" id="pMode"><button data-m="date" class="${view.mode==="date"?"on":""}"title="Per Date">📅 Date · ${dLet(p)}</button><button data-m="user" class="${view.mode==="user"?"on":""}"title="Per User">👤 User · ${uLet(p)}</button></div>
    <div class="pct" id="pPct">${pl.map(x=>`<button data-p="${x}" class="${view.pct===x?"on":""}">${x}%</button>`).join("")}<input id="pCus" type="number" min="1" max="100" step="0.5" placeholder="Custom %" value="${custom?view.pct:""}"></div>
    ${view.mode==="date"?`<select id="pDate"><option value="">All dates (${dates.length})</option>${dates.map(d=>`<option value="${d}" ${view.pdate===d?"selected":""}>${us(d)}</option>`).join("")}</select>`:""}
    <select id="pUser"><option value="">All users (${users.length})</option>${users.map(([k,n])=>`<option value="${esc(k)}" ${view.puser===k?"selected":""}>${esc(n)}</option>`).join("")}</select>
-   <button class="cap sm em" id="pGo" ${pool.length&&uIdx(p)>=0?"":"disabled"}>🎯 Pick</button>
-   ${view.pick?`<button class="cap sm gold" id="pRes">✅ Result (${nf(view.pick.ids.size)})</button><button class="cap xs" id="pAgain" title="New random pick">🔀</button><button class="cap xs ghost" id="pClr" title="Clear pick">✕</button>`:""}${hist}
+   <button class="cap sm em" id="pGo" title="${uIdx(p)<0?"Choose the user heading first":pool.length?"About "+nf(est)+" of "+nf(pool.length)+" claims · "+view.pct+"% · claims picked before are never picked again":"Load data first"}" ${pool.length&&uIdx(p)>=0?"":"disabled"}>🎯 Pick</button>
+   ${view.pick?`<button class="cap sm gold" id="pRes">✅ ${nf(view.pick.ids.size)}</button><button class="cap xs" id="pAgain" title="New random pick">🔀</button><button class="cap xs ghost" id="pClr" title="Clear pick">✕</button>`:""}${hist}
    <div class="hint" title="Claims saved in a pick are never picked again">${uIdx(p)<0?"<span style='color:var(--danger)'>Choose the user heading first.</span>":pool.length?`≈ <b>${nf(est)}</b> of <b>${nf(pool.length)}</b> claims · ${view.mode==="date"?"each user on each date gets "+view.pct+"%":"each user gets "+view.pct+"% of all their claims"} · never repeats${Object.keys(view.f).length||view.q?" · <span style='color:var(--amber)'>filters apply</span>":""}`:"Load data first (dump or a saved date)."}</div>`;
+  {const gh=$("#gHint");if(gh){const h=el.querySelector(".hint");gh.innerHTML=h?h.innerHTML:""}}
   $$("#pMode [data-m]").forEach(b=>b.onclick=()=>{view.mode=b.dataset.m;renderPick()});
   $$("#pPct [data-p]").forEach(b=>b.onclick=()=>{view.pct=+b.dataset.p;renderPick()});
   $("#pCus").onchange=e=>{const v=+e.target.value;if(v>0&&v<=100){view.pct=v;renderPick()}};
@@ -1490,6 +1541,147 @@ async function exportView(){
   toast("Excel downloaded · "+nf(rows.length)+" rows");
 }
 
+/* ================= tick-mark screens: Master Save · Master Clear · Recall · Excel · Saved dates ================= */
+const RECALL={};   // unsaved rows kept when a screen is cleared (until Recall or log out)
+const visProcs=()=>procs().filter(p=>procVisible(p)&&(p.status!=="soon"||role()==="admin"));
+const freshN=k=>(FRESH[k]||[]).length;
+
+/* generic tick screen: items [{k,label,info,on,opt:{choices:[[v,t]],val,note},kids:[{d,label,on}]}] */
+function tickScreen(o){
+  const st=o.items.map(it=>({k:it.k,on:it.on!==false,opt:it.opt?it.opt.val:null,kids:(it.kids||[]).map(x=>({d:x.d,on:!!x.on}))}));
+  const draw=()=>{
+    $("#tkL").innerHTML=o.items.map((it,i)=>{const s=st[i];return `<div class="tk ${s.on?"on":""}">
+      <label class="tkh"><input type="checkbox" data-ti="${i}" ${s.on?"checked":""}><b>${esc(it.label)}</b><span class="tki">${it.info||""}</span>
+        ${it.opt?`<span class="sp"></span>${it.opt.note?`<span class="chip gold">${it.opt.note}</span>`:""}<select data-to="${i}" ${s.on?"":"disabled"}>${it.opt.choices.map(([v,t])=>`<option value="${v}" ${s.opt===v?"selected":""}>${t}</option>`).join("")}</select>`:""}</label>
+      ${it.kids&&it.kids.length?`<div class="tkk">${it.kids.map((x,j)=>`<label class="dc ${s.kids[j].on?"in":""}"><input type="checkbox" data-tk="${i}:${j}" ${s.kids[j].on?"checked":""} ${s.on?"":"disabled"}>${esc(x.label)}</label>`).join("")}
+        <button class="cap xs ghost" data-ka="${i}" ${s.on?"":"disabled"}>All</button><button class="cap xs ghost" data-kn="${i}" ${s.on?"":"disabled"}>None</button></div>`:""}
+    </div>`}).join("")||`<div class="empty-state" style="padding:26px">${o.empty||"Nothing here."}</div>`;
+    const L=$("#tkL");
+    L.querySelectorAll("[data-ti]").forEach(c=>c.onchange=()=>{const s=st[+c.dataset.ti];s.on=c.checked;if(s.on&&s.kids.length&&!s.kids.some(x=>x.on))s.kids.forEach(x=>x.on=true);draw()});
+    L.querySelectorAll("[data-to]").forEach(c=>c.onchange=()=>{st[+c.dataset.to].opt=c.value});
+    L.querySelectorAll("[data-tk]").forEach(c=>c.onchange=()=>{const [i,j]=c.dataset.tk.split(":").map(Number);st[i].kids[j].on=c.checked;draw()});
+    L.querySelectorAll("[data-ka]").forEach(b=>b.onclick=()=>{st[+b.dataset.ka].kids.forEach(x=>x.on=true);draw()});
+    L.querySelectorAll("[data-kn]").forEach(b=>b.onclick=()=>{st[+b.dataset.kn].kids.forEach(x=>x.on=false);draw()});
+    const n=st.filter(s=>s.on).length;$("#tkN").textContent=n+" of "+st.length+" ticked";
+  };
+  modal(`<div class="row"><h3 style="margin:0">${o.title}</h3><span class="sp" style="flex:1"></span><button class="cap xs" id="tkAll">Select all</button><button class="cap xs" id="tkNone">None</button></div>
+   <p class="muted" style="margin:6px 0 12px;font-size:12.5px">${o.sub||""}</p>
+   <div class="tkl" id="tkL"></div>
+   <div class="mrow"><span class="chip" id="tkN" style="margin-right:auto"></span><button class="cap" data-close>Cancel</button>${(o.btns||[]).map((b,i)=>`<button class="cap ${b.cls||""}" data-tb="${i}">${b.text}</button>`).join("")}</div>`,true);
+  $("#tkAll").onclick=()=>{st.forEach(s=>{s.on=true;if(s.kids.length&&!s.kids.some(x=>x.on))s.kids.forEach(x=>x.on=true)});draw()};
+  $("#tkNone").onclick=()=>{st.forEach(s=>s.on=false);draw()};
+  $$("#mcard [data-tb]").forEach(b=>b.onclick=()=>{const sel=st.filter(s=>s.on).map(s=>({...s,kids:s.kids.filter(x=>x.on).map(x=>x.d)}));if(!sel.length){toast("Tick at least one");return}o.btns[+b.dataset.tb].fn(sel)});
+  draw();
+}
+
+/* ---------- Master Save ---------- */
+async function commitProc(p,over){
+  const fr=FRESH[p.k]||[];if(!fr.length)return 0;const by={};fr.forEach(r=>(by[r.d]=by[r.d]||[]).push(r));const ds=Object.keys(by).sort();let added=0;
+  for(const d of ds){const k=dkey(p.k,d);let o=await loadDay(p.k,d);
+    if(!o||over)o={p:p.k,d,cols:p.cols.slice(),rows:[]};
+    if(JSON.stringify(o.cols)!==JSON.stringify(p.cols)){const mp=p.cols.map(c=>(o.cols||[]).findIndex(x=>norm(x)===norm(c)));o.rows=o.rows.map(v=>mp.map(j=>j<0?"":v[j]??""));o.cols=p.cols.slice()}
+    const sg=new Set(o.rows.map(sigOf));by[d].forEach(r=>{const s=sigOf(r.v);if(!sg.has(s)){o.rows.push(r.v);sg.add(s);added++}});
+    o.at=Date.now();o.by=me.pc;o.n=o.rows.length;if(!noLocal())S.days[k]=o;await save(true);if(FS.dir)await fsWriteDay(k,o);else if(noLocal())S.days[k]=o}
+  await logAct(over?"replace":"save",p.k,"Master Save · "+nf(added)+" rows · "+ds.map(us).join(", "));FRESH[p.k]=[];CLR.set(p.k,false);return added;
+}
+function masterSave(){
+  if(!FS.dir&&noLocal()){toast("Connect the data folder first");return}
+  const list=visProcs().filter(p=>freshN(p.k));
+  const items=list.map(p=>{const fr=FRESH[p.k],ds=[...new Set(fr.map(r=>r.d))].sort(),have=new Set(savedDates(p.k)),cl=ds.filter(d=>have.has(d));
+    return{k:p.k,label:p.label,info:`${nf(fr.length)} new rows · ${ds.map(us).join(", ")}`,
+      opt:cl.length?{note:`⚠ ${cl.map(d=>us(d).slice(0,5)).join(", ")} already saved`,val:"add",choices:[["add","Add only new rows (no double)"],...(can("replace")?[["over","Overwrite saved date"+(cl.length>1?"s":"")]]:[])]}:null}});
+  tickScreen({title:"💾 Master Save",sub:`Tick the processes to save. Rows are saved date-wise ${FS.dir?"to the data folder":"<b style='color:var(--amber)'>on this PC only (folder not connected)</b>"}. Untick = not saved.`,
+    items,empty:"Nothing new to save. Dump data first.",
+    btns:[{text:"💾 Save ticked",cls:"msave",fn:async sel=>{closeModal();toast("Saving…");let added=0,n=0;
+      for(const s of sel){const p=procOf(s.k);added+=await commitProc(p,s.opt==="over");n++}
+      renderRail();if(view.proc&&sel.some(s=>s.k===view.proc)){const ds=savedDates(view.proc);if(!view.from||view.cleared){view.from=view.to=ds[0]||""}view.cleared=false;await loadRange()}else paintAll();
+      toast("✓ Saved "+nf(added)+" rows in "+n+" process"+(n>1?"es":""))}}]});
+}
+
+/* ---------- Master Clear ---------- */
+function masterClear(){
+  const items=visProcs().map(p=>{const cur=p.k===view.proc,on=cur?view.rows.length:0,f=freshN(p.k),cl=CLR.has(p.k);
+    return{k:p.k,label:p.label,on:!cl&&(cur||f>0||savedDates(p.k).length>0),info:cl?`<span class="chip red">already cleared</span>`:`${cur?nf(on)+" saved rows on screen · ":""}${f?`<b style="color:var(--violet)">${nf(f)} unsaved</b>`:"no unsaved rows"}`}});
+  tickScreen({title:"🧹 Master Clear",sub:"Tick the screens to clear. Saved data stays safe in the data folder. Cleared screens stay empty until you use <b>Recall</b> (unsaved rows can come back with Recall until you log out).",
+    items,btns:[{text:"🧹 Clear ticked",cls:"mclr",fn:sel=>{closeModal();
+      sel.forEach(s=>{if(freshN(s.k))RECALL[s.k]=(RECALL[s.k]||[]).concat(FRESH[s.k]);FRESH[s.k]=[];CLR.set(s.k,true)});
+      if(sel.some(s=>s.k===view.proc)){view.rows=[];view.pick=null;view.cleared=true;view.dsel=null;view.from=view.to="";view.f={};view.q="";view.sort=null;view.onlyPk=false}
+      logAct("clear","",sel.map(s=>s.k).join(", "));renderRail();paintAll();toast("🧹 "+sel.length+" screen"+(sel.length>1?"s":"")+" cleared · saved data is safe")}}]});
+}
+
+/* ---------- Recall ---------- */
+function recallTick(){
+  const ks=[...new Set([...Object.keys(CLR.all()),...Object.keys(RECALL)])].filter(k=>procOf(k)&&procVisible(procOf(k)));
+  const items=ks.map(k=>{const p=procOf(k),ds=savedDates(k),b=(RECALL[k]||[]).length,f=freshN(k);
+    return{k,label:p.label,info:`${ds.length?"latest saved: "+us(ds[0]):"no saved dates"}${b?` · <b style="color:var(--violet)">${nf(b)} unsaved rows to bring back</b>`:""}`,
+      opt:f&&b?{note:"screen has new data",val:"add",choices:[["add","Add to screen"],["over","Overwrite screen"]]}:null}});
+  tickScreen({title:"⟲ Recall",sub:"Tick the screens to bring back. Saved data (latest date) and unsaved rows that were cleared come back.",
+    items,empty:"Nothing to recall — no screen is cleared.",
+    btns:[{text:"⟲ Recall ticked",cls:"v",fn:async sel=>{closeModal();let back=0;
+      for(const s of sel){CLR.set(s.k,false);const b=RECALL[s.k]||[];if(b.length){const p=procOf(s.k);
+          if(s.opt==="over")FRESH[s.k]=b.slice();else{const sg=new Set((FRESH[s.k]||[]).map(r=>sigOf(r.v)));FRESH[s.k]=(FRESH[s.k]||[]).concat(b.filter(r=>!sg.has(sigOf(r.v))))}back+=b.length;delete RECALL[s.k]}}
+      renderRail();const cur=sel.find(s=>s.k===view.proc)||sel[0],p=procOf(cur.k),ds=savedDates(p.k);
+      if(view.proc!==p.k)await openProc(p.k);else await showDates(p,ds[0]||"",ds[0]||"");
+      toast("⟲ "+sel.length+" screen"+(sel.length>1?"s":"")+" recalled"+(back?" · "+nf(back)+" unsaved rows back":""))}}]});
+}
+
+/* ---------- shared: process → dates tree (with row counts) ---------- */
+async function datesTree(withNew,defCur){
+  const out=[];
+  for(const p of visProcs()){const ds=savedDates(p.k),f=freshN(p.k);if(!ds.length&&!(withNew&&f))continue;
+    const kids=[];for(const d of ds){const o=await loadDay(p.k,d);kids.push({d,label:us(d)+" · "+nf(o?(o.rows||[]).length:0),on:defCur&&p.k===view.proc&&(view.dsel?view.dsel.includes(d):d>=view.from&&d<=view.to)})}
+    if(withNew&&f)kids.unshift({d:"__new",label:"Unsaved · "+nf(f),on:defCur&&p.k===view.proc});
+    out.push({k:p.k,label:p.label,info:`${ds.length} saved date${ds.length===1?"":"s"}`,on:defCur&&p.k===view.proc&&kids.some(x=>x.on),kids})}
+  return out;
+}
+async function rowsFor(p,d){if(d==="__new")return (FRESH[p.k]||[]).map(r=>({d:r.d,v:r.v}));const o=await loadDay(p.k,d);return o?dayRows(p,d,o).map(r=>({d,v:r.v})):[]}
+
+/* ---------- Excel: one workbook, one sheet per process ---------- */
+async function excelTick(){
+  if(!FS.dir&&!Object.keys(S.days).length&&!Object.values(FRESH).some(a=>a&&a.length)){toast("No data to export yet");return}
+  toast("Reading saved dates…");const items=await datesTree(true,true);
+  tickScreen({title:"⬇ Excel · one workbook",sub:"Tick the processes and dates. Each process gets its own sheet with a <b>Date</b> column, plus a <b>Summary</b> sheet.",
+    items,empty:"No data to export yet.",btns:[{text:"⬇ Download workbook",cls:"gold",fn:async sel=>{closeModal();await exportBook(sel)}}]});
+}
+async function exportBook(sel){
+  const sheets=[],sum=[];let tot=0;
+  for(const s of sel){const p=procOf(s.k);if(!s.kids.length)continue;const rows=[];
+    for(const d of s.kids){const r=await rowsFor(p,d);rows.push(...r);sum.push([p.label,d==="__new"?"Unsaved (screen)":us(d),r.length])}
+    rows.sort((a,b)=>String(a.d).localeCompare(String(b.d)));tot+=rows.length;
+    sheets.push({name:p.label.replace(/[\\\/\?\*\[\]:]/g,"-"),title:p.label+" · "+nf(rows.length)+" rows",sub:"Alpha NextGen · Provider Pick QA · Eclipse — "+stampTxt(),head:["Date",...p.cols],rows:rows.map(r=>[us(r.d),...p.cols.map((c,j)=>r.v[j]??"")])})}
+  if(!sheets.length){toast("Tick at least one date");return}
+  sum.push(["TOTAL","",tot]);
+  sheets.unshift({name:"Summary",title:"Provider Pick QA · export summary",sub:stampTxt(),head:["Process","Date","Rows"],rows:sum,num:[2],color:"FF0F6B3E"});
+  await xlsxBook(sheets,`ProviderPickQA_${todayISO()}.xlsx`);toast("⬇ Workbook downloaded · "+nf(tot)+" rows · "+(sheets.length-1)+" process"+(sheets.length>2?"es":""));
+}
+
+/* ---------- Saved dates (all processes): show · Excel · delete ---------- */
+async function savedDatesTick(){
+  toast("Reading saved dates…");const items=(await datesTree(false,false)).map(it=>({...it,on:false}));
+  const btns=[{text:"👁 Show on screen",cls:"gold",fn:async sel=>{const s=sel.find(x=>x.kids.length);if(!s){toast("Tick at least one date");return}closeModal();
+      if(sel.filter(x=>x.kids.length).length>1)toast("Showing "+procOf(s.k).label+" (one process at a time)");await showDates(procOf(s.k),"","",s.kids)}}];
+  if(can("export"))btns.push({text:"⬇ Excel",fn:async sel=>{closeModal();await exportBook(sel)}});
+  if(can("deldate"))btns.push({text:"🗑 Delete",cls:"danger",fn:sel=>{const n=sel.reduce((a,s)=>a+s.kids.length,0);if(!n){toast("Tick at least one date");return}
+    ask("Delete "+n+" saved date"+(n>1?"s":"")+"?","They are removed from the data folder (SharePoint) for everyone:<br>"+sel.filter(s=>s.kids.length).map(s=>"<b>"+esc(procOf(s.k).label)+"</b> "+s.kids.map(us).join(", ")).join("<br>")+"<br>This can't be undone (keep a backup).","Delete",async()=>{
+      for(const s of sel)for(const d of s.kids){const k=dkey(s.k,d);delete S.days[k];await fsDeleteDay(k);await logAct("deldate",s.k,d)}
+      await save(true);renderRail();await loadRange();toast("🗑 "+n+" date"+(n>1?"s":"")+" deleted")},true)}});
+  tickScreen({title:"🗂 Saved dates · every process",sub:"Tick dates, then choose what to do. Numbers show the rows saved on each date.",items,empty:"No saved dates yet"+(FS.dir?"":" · folder not connected")+".",btns});
+}
+
+/* ================= registration workbook (data folder) ================= */
+/* one MSID = one PC. The register is mirrored into an Excel file with 50 sheets; only Admin knows which sheet and cell hold the data */
+const REG={dir:"_system",file:"Book_Archive.xlsx",get sheet(){return "Sheet"+(1+H(FILE_KEY+"|s")%50)},get cell(){return "DEFGHIJKL"[H(FILE_KEY+"|c")%9]+(9+H(FILE_KEY+"|r")%25)}};
+async function fsWriteBin(dirPath,fname,buf){if(!FS.dir)return false;try{const sd=await fsSub(dirPath,true);const fh=await sd.getFileHandle(fname,{create:true});const w=await fh.createWritable();await w.write(buf);await w.close();return true}catch(e){return false}}
+async function authList(){const out=[];if(!FS.dir)return out;for(const f of (await fsList("_auth")).filter(n=>/\.eclipse$/.test(n))){try{out.push({m:f.replace(/\.eclipse$/,""),...JSON.parse(await fsReadText("_auth",f))})}catch(e){}}return out.sort((a,b)=>a.m.localeCompare(b.m))}
+async function rebuildRegistry(){
+  if(!FS.dir||typeof XLSX==="undefined")return false;
+  try{const list=await authList(),wb=XLSX.utils.book_new();
+    const head=["MSID","Name","Code","Role","Registered device","Browser ID","Registered on","Last sign-in","Password (locked)"];
+    const data=[head,...list.map(a=>{const u=userOf(a.m)||{};return[a.m,u.name||"",u.code||"",ROLEN(u.role||"employee"),a.mc||u.mc||"",String(a.did||""),a.at?new Date(a.at).toLocaleString("en-IN"):"",a.last?new Date(a.last).toLocaleString("en-IN"):"",a.h||""]})];
+    for(let i=1;i<=50;i++){const n="Sheet"+i;let ws;if(n===REG.sheet){ws={};XLSX.utils.sheet_add_aoa(ws,data,{origin:REG.cell})}else ws=XLSX.utils.aoa_to_sheet([[""]]);XLSX.utils.book_append_sheet(wb,ws,n)}
+    return await fsWriteBin(REG.dir,REG.file,XLSX.write(wb,{type:"array",bookType:"xlsx"}))}catch(e){return false}
+}
+
 /* ================= Admin ================= */
 let AD=null;const ADF={q:"",role:"",sel:new Set()};
 const roleFrom=r=>{r=String(r||"employee").toLowerCase().trim();return r.startsWith("adm")?"admin":r.startsWith("ent")||r.startsWith("data")?"entry":r.startsWith("sme")?"sme":r.startsWith("man")||r.startsWith("lead")||r.startsWith("mgr")?"mgr":"employee"};
@@ -1519,7 +1711,7 @@ function setPath(o,path,v){const ks=path.split(".");let x=o;ks.slice(0,-1).forEa
 function getPath(o,path){return path.split(".").reduce((x,k)=>x==null?x:x[k],o)}
 async function applyAdmin(){
   const c=clone(AD);delete c.changed;delete c.page;
-  S.cfg=Object.assign(S.cfg,c);fixCfg();await save(true);const ok=await fsWriteConfig();
+  S.cfg=Object.assign(S.cfg,c);fixCfg();if(S.cfg.folderPath)LS.set("fpath",S.cfg.folderPath);await save(true);const ok=await fsWriteConfig();
   await logAct("settings","",ok?"saved to folder":"this PC only");AD.changed=false;openAdmin(AD.page);
   toast(FS.dir?"✓ Settings saved for everyone":"✓ Settings saved on this PC (connect the folder to share)");
 }
@@ -1561,8 +1753,9 @@ function adminPage1(){
     <div class="utable" id="uTable"></div>
     <div class="frow" style="margin-top:12px"><label class="fl" style="flex:1">Add users · one per line: MSID, role, name, team, device name, code<textarea id="uBulk" rows="3" placeholder="KKUMAR12, entry, Karthik Kumar, TM-VINESH, LHTU05CG2122ABC, KK1"></textarea></label><button class="cap sm gold" id="uAdd">Add</button></div></section>
 
-  <section class="acard wide"><h4>🔑 Who logged in as whom</h4><p class="ahelp">Each MSID is linked to one PC/browser after the first password set. Reset to let the user set a new password (with the device name).</p>
-    <div class="frow"><button class="cap sm" id="authLoad">Show login links</button></div><div id="authBox"></div></section>`;
+  <section class="acard wide"><h4>🔑 Registered logins · one MSID = one PC</h4><p class="ahelp">Each MSID is linked to one PC after the first password set, and nobody can use it from another PC. The login is remembered on that PC; it goes away only on Log out, browser cache clear or <b>Reset login</b> here (Reset also removes it from the register Excel).</p>
+    <div class="frow"><span class="chip gold">📒 Register Excel: <b>&nbsp;${esc(AD.folder||DEF_FOLDER)}\\${REG.dir}\\${REG.file}</b></span><span class="chip em">Sheet <b>&nbsp;${REG.sheet}</b>&nbsp;of 50 · starts at cell <b>&nbsp;${REG.cell}</b></span></div>
+    <div class="frow"><button class="cap sm gold" id="authLoad">Show registered logins</button><button class="cap sm" id="regBuild">↻ Rebuild register Excel</button></div><div id="authBox"></div></section>`;
 }
 const isCustom=u=>(u.ov&&Object.keys(u.ov).length)||u.scope||Array.isArray(u.procs);
 function userRows(){const q=norm(ADF.q);return (AD.users||[]).map((u,i)=>({u,i})).filter(({u})=>(!q||norm(u.pc+" "+(u.name||"")+" "+(u.code||"")).includes(q))&&(!ADF.role||u.role===ADF.role))}
@@ -1634,9 +1827,10 @@ function wireAdmin1(){
       adChanged();openAdmin(1);toast(a+" added · "+up+" updated · click Save & apply")}catch(x){toast("That register couldn't be read")}};
   $("#regX").onclick=()=>xlsxBook([{name:"Access",title:"Provider Pick QA · user register",sub:stampTxt(),head:["MSID","Code","Device name","Role","Name","Team","Valid till"],rows:(AD.users||[]).map(u=>[u.pc,u.code||"",u.mc||"",ROLEN(u.role),u.name||"",u.team||"",u.until?us(u.until):""])}],"ProviderPickQA_Users.xlsx");
   $("#authLoad").onclick=async()=>{const B=$("#authBox");if(!FS.dir){B.innerHTML=`<p class="ahelp">Connect the data folder first.</p>`;return}
-    const fs=(await fsList("_auth")).filter(n=>/\.eclipse$/.test(n)),list=[];for(const f of fs){try{list.push({m:f.replace(/\.eclipse$/,""),...JSON.parse(await fsReadText("_auth",f))})}catch(e){}}
-    B.innerHTML=list.length?`<div class="scroll"><table class="tbl"><thead><tr><th>MSID</th><th>Name</th><th>Linked since</th><th>Browser id</th><th></th></tr></thead><tbody>${list.map(a=>`<tr><td class="mono">${esc(a.m)}</td><td>${esc((userOf(a.m)||{}).name||"")}</td><td>${new Date(a.at).toLocaleString("en-IN")}</td><td class="mono muted">${esc(String(a.did).slice(0,8))}…</td><td><button class="cap xs danger" data-ra="${esc(a.m)}">Reset login</button></td></tr>`).join("")}</tbody></table></div>`:`<p class="ahelp">Nobody has set a password yet.</p>`;
-    B.querySelectorAll("[data-ra]").forEach(b=>b.onclick=()=>ask("Reset login for "+esc(b.dataset.ra)+"?","Password and PC link are cleared. The user sets a new one with the device name.","Reset",async()=>{await fsRemove("_auth",b.dataset.ra+".eclipse");if(S.auth)delete S.auth[b.dataset.ra];save();$("#authLoad").click();toast("Login reset")},true))};
+    const list=await authList();
+    B.innerHTML=list.length?`<div class="scroll"><table class="tbl"><thead><tr><th>MSID</th><th>Name</th><th>Registered device</th><th>Registered on</th><th>Last sign-in</th><th>Browser id</th><th></th></tr></thead><tbody>${list.map(a=>`<tr><td class="mono">${esc(a.m)}</td><td>${esc((userOf(a.m)||{}).name||"")}</td><td class="mono">${esc(a.mc||(userOf(a.m)||{}).mc||"")}</td><td>${new Date(a.at).toLocaleString("en-IN")}</td><td>${a.last?new Date(a.last).toLocaleString("en-IN"):"—"}</td><td class="mono muted">${esc(String(a.did).slice(0,8))}…</td><td><button class="cap xs danger" data-ra="${esc(a.m)}">Reset login</button></td></tr>`).join("")}</tbody></table></div>`:`<p class="ahelp">Nobody has set a password yet.</p>`;
+    B.querySelectorAll("[data-ra]").forEach(b=>b.onclick=()=>ask("Reset login for "+esc(b.dataset.ra)+"?","Password and PC link are cleared. The user sets a new one with the device name.","Reset",async()=>{await fsRemove("_auth",b.dataset.ra+".eclipse");if(S.auth)delete S.auth[b.dataset.ra];save();await rebuildRegistry();await logAct("reset","",b.dataset.ra);$("#authLoad").click();toast("Login reset · removed from the register Excel")},true))};
+  $("#regBuild").onclick=async()=>{if(!FS.dir){toast("Connect the data folder first");return}toast(await rebuildRegistry()?"✓ Register Excel rebuilt":"Couldn't write the register Excel (Excel library or folder access missing)")};
 }
 
 /* ===== page 2: processes & rules ===== */
@@ -1695,6 +1889,8 @@ function adminPage3(){
   <section class="acard"><h4>📁 Team data folder</h4>
     <p class="ahelp">Use a folder that OneDrive / SharePoint keeps in sync. Each process saves <code>Process\\Year\\Month\\date.json</code>; picks in <code>_picks</code>, logins in <code>_auth</code>, log in <code>_system</code>. Files are locked (encrypted).</p>
     <div class="frow"><label class="fl" style="flex:1">Folder name everyone must pick<input data-k="folder" value="${esc(AD.folder||DEF_FOLDER)}"></label></div>
+    <div class="frow"><label class="fl" style="flex:1">Folder path shown next to Connect (users copy it into the folder window)<input data-k="folderPath" value="${esc(AD.folderPath||DEF_PATH)}" class="mono"></label></div>
+    <p class="ahelp"><code>%USERPROFILE%</code> works for every user's own PC. Each user first opens the SharePoint folder link and clicks <b>Add shortcut to My files</b> (or <b>Sync</b>), so the folder appears in their OneDrive.</p>
     <p class="chip ${FS.dir?"em":FS.handle?"gold":""}" style="margin:6px 0">${!fsSupported()?"This browser can't connect folders · use Chrome or Edge":FS.dir?"Connected · "+esc(FS.dir.name)+" · "+Object.keys(FS.index).length+" dates":FS.handle?"Folder remembered · waiting for permission":"Not connected · data stays on this PC"}</p>
     <div class="frow">${fsSupported()?`<button class="cap sm gold" id="fsC">${FS.dir?"Change folder":"Connect folder"}</button>${FS.handle&&!FS.dir?`<button class="cap sm" id="fsA">Allow access</button>`:""}${FS.dir?`<button class="cap sm" id="fsS">Sync now</button><button class="cap sm ghost" id="fsD">Disconnect</button>`:""}`:""}</div></section>
 
@@ -1760,7 +1956,7 @@ function wireAdmin3(){
     ask("Restore backup?",Object.keys(b.days).length+" dates from "+(b.at?new Date(b.at).toLocaleString("en-IN"):"the file")+". Dates in the backup replace the same dates here. Settings and users are restored too.","Restore",async()=>{
       for(const [k,o] of Object.entries(b.days)){S.days[k]=o;await fsWriteDay(k,o)}if(b.cfg){SHARED.forEach(k=>{if(b.cfg[k]!==undefined)S.cfg[k]=b.cfg[k]});fixCfg();await fsWriteConfig()}
       await save(true);AD=null;renderRail();openAdmin(3);toast("Backup restored")},true)};rd.readAsText(f)};
-  on("#lgOpen",async()=>{const L=(await readLog()).slice(0,500);const AN={login:"Login",save:"Save data (add new)",replace:"Save data (replace date)",pick:"Save pick",delpick:"Delete pick",delrow:"Remove row",deldate:"Delete date",settings:"Settings",blocked:"🚨 Blocked login",moved:"Login moved to new PC"};
+  on("#lgOpen",async()=>{const L=(await readLog()).slice(0,500);const AN={login:"Login",save:"Save data (add new)",replace:"Save data (replace date)",pick:"Save pick",delpick:"Delete pick",delrow:"Remove row",deldate:"Delete date",settings:"Settings",blocked:"🚨 Blocked login",moved:"Login moved to new PC",clear:"Master Clear",reset:"Login reset"};
     modal(`<h3>📜 History log</h3>${L.length?`<div class="scroll"><table class="tbl"><thead><tr><th>When</th><th>MSID</th><th>Action</th><th>Process</th><th>Note</th></tr></thead><tbody>${L.map(e=>`<tr><td>${new Date(e.at).toLocaleString("en-IN")}</td><td class="mono">${esc(e.pc)}</td><td>${esc(AN[e.a]||e.a)}</td><td>${esc(e.p||"")}</td><td style="white-space:normal">${esc(e.n||"")}</td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">Nothing logged yet.</p>`}<div class="mrow"><button class="cap" data-close>Close</button></div>`,true)});
   $("#adminPg").querySelectorAll("[data-nl]").forEach(c=>c.onchange=()=>{const a=new Set(AD.noLocal||[]);c.checked?a.add(c.dataset.nl):a.delete(c.dataset.nl);AD.noLocal=[...a];adChanged()});
   on("#mailTest",async()=>{if(!FS.dir){toast("Connect the data folder first");return}const keep=S.cfg.alertMails;S.cfg.alertMails=AD.alertMails;const ok=await autoMail("TEST","This is a test from Admin — the help mail works 🎉");S.cfg.alertMails=keep;toast(ok?"Test mail placed in _mailbox · Power Automate sends it in a minute":"Add an email and switch Auto mail on")});
