@@ -543,7 +543,7 @@ table.g thead th .thw{padding-left:8px}
 /* ======================= ADMIN SETTINGS (edit here) ======================= */
 const APP_NAME    = "Provider Pick QA";
 const APP_VER     = "V11.0.7";
-const BUILD       = "7";                       // goes up with every new build
+const BUILD       = "8";                       // goes up with every new build
 const APP_EXPIRY  = "2027-03-31";              // tool stops after this date (master password can extend)
 const ADMIN_MSID  = "ARANJA14";                // built-in Admin (logs in with the master password)
 const ADMIN_MC    = "LHTU05CG2122RJJ";         // Admin PC (2RJJ)
@@ -594,6 +594,7 @@ const FEAT=[ // key, name, short, group, [Manager, SME, Data Entry, Employee]
  ["delrow","Remove a saved row (✕)","Row ✕","Actions",[1,1,0,0]],
  ["deldate","Delete a date from the data folder","Del date","Actions",[1,1,0,0]],
  ["pick","Run QA pick (% per date / per user)","Pick","Actions",[1,1,1,0]],
+ ["pickcnt","Fixed claims mode (e.g. 50 claims to each user)","Fixed #","Actions",[1,1,1,0]],
  ["savepick","Save / lock a QA pick","Save pick","Actions",[1,1,1,0]],
  ["export","Excel export","Excel","Actions",[1,1,1,1]],
  ["copy","Copy pick result","Copy","Actions",[1,1,1,1]],
@@ -667,7 +668,7 @@ const fresh=()=>({v:2,cfg:{users:[],perms:{},scope:{},fon:{},procs:[],notice:{on
   idleMin:0,askEvery:false,wm:true,noLocal:["entry","employee"],adminPcOnly:false,maxTry:5,alertMails:["akshay.ranjan@uhc.com","",""],alertAuto:true,alertOther:false,helpPop:true},days:{},auth:{},log:[],picks:{}});
 const noLocal=()=>me.role!=="admin"&&(S.cfg.noLocal||["entry","employee"]).includes(me.role);
 function save(now){clearTimeout(saveT);const go=()=>IDB.put("state",noLocal()?{...S,days:{}}:S);if(now)return go();saveT=setTimeout(go,400);return Promise.resolve()}
-const SHARED=["users","perms","scope","fon","procs","notice","exp","mph","folder","pcts","minOne","msg","seeded","idleMin","askEvery","wm","noLocal","adminPcOnly","maxTry","v2","alertMails","alertAuto","alertOther","helpPop","v3","folderPath","pickDays"];
+const SHARED=["users","perms","scope","fon","procs","notice","exp","mph","folder","pcts","minOne","msg","seeded","idleMin","askEvery","wm","noLocal","adminPcOnly","maxTry","v2","alertMails","alertAuto","alertOther","helpPop","v3","folderPath","pickDays","cntDef","cntOn"];
 
 /* ---------- who am I ---------- */
 let me={pc:"",role:"admin",name:"",team:"",code:""};
@@ -1139,7 +1140,7 @@ function renderKpis(){
   const pk=view.pick?view.pick.ids.size:0;
   el.innerHTML=[["Rows",nf(rows.length),view.from?(view.from===view.to?us(view.from):us(view.from)+" → "+us(view.to)):"no date loaded","var(--gold)"],
     ["Dates",nf(dates.size),"by "+(p.cols[dIdx(p)]||"—"),"var(--violet)"],["Users",nf(users.size),"by "+(p.cols[uIdx(p)]||"—"),"var(--teal)"],
-    ["QA picked",nf(pk),view.pick?view.pick.pct+"% · "+(view.pick.mode==="date"?"per date":"per user"):"run a pick","var(--em)"]]
+    ["QA picked",nf(pk),view.pick?fmtPct(view.pick.pct)+" · "+(view.pick.mode==="date"?"per date":"per user"):"run a pick","var(--em)"]]
     .map(([a,b,c,k])=>`<div style="--kc:${k}" title="${esc(c)}"><small>${a}</small><b>${b}</b></div>`).join("");
   el.hidden=!can("kpis");
   const lt=$("#sbGreen");if(lt&&view.fill&&p.cols.length){const on=view.fill.filter(x=>x>0).length;lt.hidden=!can("lights");lt.innerHTML=`💡 <b>${on}/${p.cols.length}</b> columns green`;lt.className="sbline "+(on===p.cols.length?"em":on?"gold":"red")}else if(lt)lt.hidden=true;
@@ -1311,7 +1312,7 @@ function matchHeads(src,cols){
   src.forEach((h,i)=>{const a=norm(h);if(!a)return;const aw=String(h).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
     cols.forEach((c,j)=>{const b=norm(c);let s=0;
       if(a===b)s=100;else if(a.length>=3&&b.length>=3&&(a.startsWith(b)||b.startsWith(a)))s=72-Math.min(20,Math.abs(a.length-b.length));
-      else{const bw=String(c).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);const inter=aw.filter(w=>bw.includes(w)).length,uni=new Set([...aw,...bw]).size;if(inter&&uni)s=Math.round(55*inter/uni)}
+      else{const bw=String(c).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);const inter=aw.filter(w=>bw.includes(w)).length,uni=new Set([...aw,...bw]).size;if(inter&&uni)s=Math.round(55*inter/uni);if(bw.length===1&&aw.includes(bw[0])&&bw[0].length>=3)s=Math.max(s,45)}
       if(s>=40)pairs.push({i,j,s,d:Math.abs(i-j)})})});
   pairs.sort((x,y)=>y.s-x.s||x.d-y.d);
   const m={},usedJ=new Set();pairs.forEach(x=>{if(m[x.i]==null&&!usedJ.has(x.j)){m[x.i]=x.j;usedJ.add(x.j)}});
@@ -1327,7 +1328,9 @@ function routeAOA(aoa){
   if(other)return other;
   return cur&&!cur.dyn?cur:cand[0];
 }
-function buildRows(p,aoa){
+/* headings the user re-mapped once are remembered per process (on this PC) */
+const LEARN={get(k){return LS.get("map_"+k,{})},set(k,o){LS.set("map_"+k,o)}};
+function buildRows(p,aoa,ov){
   if(!aoa.length)return{ok:false,why:"Nothing to load"};
   let cols=p.cols.slice(),hi,map,pos=false,added=[];
   if(p.dyn){ /* Other: the headings come from the data itself */
@@ -1336,6 +1339,8 @@ function buildRows(p,aoa){
   }else{
     const h=headRow(p,aoa);hi=h.hi;map=h.map;
     if(h.n<2){hi=-1;pos=true;map={};const w=Math.max(...aoa.map(r=>r.length));for(let i=0;i<Math.min(w,cols.length);i++)map[i]=i}
+    if(hi>=0){const L=LEARN.get(p.k);aoa[hi].forEach((hd,i)=>{const j=L[norm(hd)];if(j!=null&&j<cols.length){Object.keys(map).forEach(x=>{if(map[x]===j)delete map[x]});map[i]=j}})}
+    if(ov){map={};Object.entries(ov).forEach(([j,i])=>{if(i!==""&&i!=null)map[+i]=+j})}
   }
   const body=aoa.slice(hi+1),seen=new Set((FRESH[p.k]||[]).concat(p.k===view.proc?view.rows:[]).map(r=>sigOf(r.v.concat(Array(Math.max(0,cols.length-r.v.length)).fill("")))));
   const rows=[];let dup=0,nodate=0,dupIn=0;const inSet=new Set(),tmp={...p,cols},dc=dIdx(tmp)>=0?dIdx(tmp):-1,today=todayISO();
@@ -1344,10 +1349,10 @@ function buildRows(p,aoa){
     let d=dc>=0?toISO(v[dc]):"";if(!d){d=today;nodate++}rows.push({id:++RID,v,d,d0:today,s:"new"})});
   return{ok:true,rows,map,hi,pos,dup,dupIn,nodate,cols,added,src:hi>=0?aoa[hi]:null,skipped:!p.dyn&&hi>=0?aoa[hi].map((h,i)=>map[i]==null&&String(h).trim()?h:null).filter(Boolean):[]};
 }
-function handleAOA(aoa,from){
+function handleAOA(aoa,from,ov,forceP){
   if(!can("dump")){toast("Dump is not allowed for your login");return}
-  const cur=P(),p=routeAOA(aoa);if(!p){toast("No process open for your login");return}
-  const r=buildRows(p,aoa);if(!r.ok){toast(r.why);return}
+  const cur=P(),p=forceP||routeAOA(aoa);if(!p){toast("No process open for your login");return}
+  const r=buildRows(p,aoa,ov);if(!r.ok){toast(r.why);return}
   /* Other: guess date / user headings on a temp copy for the preview */
   const tp={...p,cols:r.cols};if(p.dyn)autoRuleRows(tp,r.rows);
   const ui=uIdx(tp),filled=new Set(Object.values(r.map)),users=new Set(r.rows.map(x=>userKey(x.v[ui]??"")).filter(Boolean)),dI=dIdx(tp);
@@ -1365,12 +1370,19 @@ function handleAOA(aoa,from){
      <div class="s" style="--kc:var(--teal)"><small>Users</small><b>${users.size}</b><em>${esc(r.cols[ui]||"—")}</em></div>
    </div>
    ${p.dyn?`<div class="frow"><label class="fl">Per Date heading<select id="oD">${opt(tp.dh)}</select></label><label class="fl">Per User heading<select id="oU">${opt(tp.uh)}</select></label><span class="muted" style="font-size:12px">QA % is taken by these two headings</span></div>`:""}
+   ${!p.dyn&&ui>=0&&!users.size&&r.rows.length?`<p class="chip red" style="margin:0 0 10px;font-size:12.5px;padding:6px 12px">⚠ <b>&nbsp;${esc(r.cols[ui])}&nbsp;</b> (Per User column) is empty — QA pick needs it. Choose the right column from your data below.</p>`:""}
+   ${!p.dyn&&dI>=0&&r.nodate===r.rows.length&&r.rows.length?`<p class="chip red" style="margin:0 0 10px;font-size:12.5px;padding:6px 12px">⚠ <b>&nbsp;${esc(r.cols[dI])}&nbsp;</b> (Per Date column) has no dates — choose the right column below.</p>`:""}
    ${r.nodate?`<p class="chip red" style="margin:0 0 10px">${nf(r.nodate)} rows have no valid date → kept under today (${us(todayISO())})</p>`:""}
    <div class="scroll" style="max-height:34vh"><table class="map"><thead><tr><th>#</th><th>Heading in the tool</th><th></th><th>From your data</th><th>Sample</th></tr></thead><tbody>
-   ${r.cols.map((c,j)=>{const si=Object.keys(r.map).find(i=>r.map[i]===j);return `<tr><td class="mono muted">${colL(j)}</td><td><b>${esc(c)}</b></td><td class="arrow">${si!=null?"←":""}</td><td>${si!=null?(r.src?esc(r.src[si]):"column "+colL(+si)):`<span class="chip red">empty</span>`}</td><td class="mono" style="max-width:240px;overflow:hidden;text-overflow:ellipsis">${esc(sample(j))}</td></tr>`}).join("")}
+   ${r.cols.map((c,j)=>{const si=Object.keys(r.map).find(i=>r.map[i]===j),key=!p.dyn&&(j===ui||j===dI);
+     const pickSel=r.src&&!p.dyn?`<select data-mp="${j}" style="padding:3px 8px;border-radius:8px;font-size:12px;max-width:230px"><option value="">— empty —</option>${r.src.map((h,i)=>String(h).trim()?`<option value="${i}" ${String(si)===String(i)?"selected":""}>${colL(i)} · ${esc(h)}</option>`:"").join("")}</select>`:(si!=null?(r.src?esc(r.src[si]):"column "+colL(+si)):`<span class="chip red">empty</span>`);
+     return `<tr ${key&&!sample(j)?'style="background:var(--danger-soft)"':""}><td class="mono muted">${colL(j)}</td><td><b>${esc(c)}</b>${j===ui&&!p.dyn?' <span class="chip gold" style="font-size:9.5px;padding:0 6px">Per User</span>':j===dI&&!p.dyn?' <span class="chip gold" style="font-size:9.5px;padding:0 6px">Per Date</span>':""}</td><td class="arrow">${si!=null?"←":""}</td><td>${pickSel}</td><td class="mono" style="max-width:240px;overflow:hidden;text-overflow:ellipsis">${esc(sample(j))}</td></tr>`}).join("")}
    </tbody></table></div>
    ${r.skipped.length?`<p class="muted" style="font-size:12px;margin:10px 0 0">Ignored columns: ${r.skipped.map(esc).join(", ")}</p>`:""}
+   ${r.src&&!p.dyn?`<p class="muted" style="font-size:11.5px;margin:8px 0 0">Change any “From your data” box to fix a column. The tool remembers your choice for the next dump on this PC.</p>`:""}
    <div class="mrow"><button class="cap" data-close>Cancel</button><button class="cap gold" id="dGo" ${r.rows.length?"":"disabled"}>Load ${nf(r.rows.length)} rows${moved?" into "+esc(p.label):""}</button></div>`,true);
+  $$("#mcard [data-mp]").forEach(s=>s.onchange=()=>{const o={};$$("#mcard [data-mp]").forEach(x=>o[x.dataset.mp]=x.value);
+    const L=LEARN.get(p.k);Object.entries(o).forEach(([j,i])=>{if(i!=="")L[norm(r.src[+i])]=+j});LEARN.set(p.k,L);handleAOA(aoa,from,o,p)});
   $("#dGo").onclick=async()=>{
     if(p.dyn){p.cols=r.cols;p.dh=($("#oD")||{}).value??tp.dh;p.uh=($("#oU")||{}).value??tp.uh;await persistOther(p)}
     closeModal();FRESH[p.k]=(FRESH[p.k]||[]).concat(r.rows);if(p.dyn)rebucket(p);const t=$("#paste");if(t)t.value="";
@@ -1412,10 +1424,12 @@ async function saveFresh(){
   $("#sGo").onclick=()=>run(false);const rp=$("#sRep");if(rp)rp.onclick=()=>run(true);
 }
 
+const fmtPct=v=>String(v).startsWith("#")?String(v).slice(1)+" each":v+"%";
 
 /* ================= QA pick: % per date / per user · a claim is never picked twice ================= */
 const pctList=()=>(S.cfg.pcts&&S.cfg.pcts.length?S.cfg.pcts:PCT0);
-const qaCount=(c,base)=>{if(!c)return 0;const b=base==null?c:base;const n=Math.round(b*view.pct/100);return Math.max(S.cfg.minOne!==false&&b>0?1:0,n)};
+const fixedOn=()=>S.cfg.cntOn!==false&&can("pickcnt");
+const qaCount=(c,base)=>{if(!c)return 0;if(view.qm==="cnt"&&fixedOn())return Math.max(0,+view.cnt||0);const b=base==null?c:base;const n=Math.round(b*view.pct/100);return Math.max(S.cfg.minOne!==false&&b>0?1:0,n)};
 /* saved pick rounds of this process (Pick 1, Pick 2, …) — every pick file is deleted after S.cfg.pickDays days */
 let ROUNDS={k:"",list:[],at:0};
 async function loadRounds(p,force){
@@ -1453,7 +1467,7 @@ async function renderPick(){
   const pool=pickPool(p),old=new Set();R.forEach(x=>(x.o.rows||[]).forEach(r=>old.add(r.sig)));
   const left=pool.filter(r=>!old.has(sigOf(r.v))).length;
   const sel=view.round||"";
-  const rinfo=`<span class="muted">Today:</span>${R.length?R.map(x=>`<span class="chip ${String(x.n)===sel?"em":""}" data-rd="${x.n}" style="cursor:pointer" title="${new Date(x.o.at).toLocaleTimeString("en-IN")} · ${x.o.pct}% ${x.o.mode==="date"?"per date":"per user"} · by ${esc(x.o.by)}">Pick ${x.n} · ${nf((x.o.rows||[]).length)}</span>`).join(""):`<span class="muted">no saved picks yet</span>`}
+  const rinfo=`<span class="muted">Today:</span>${R.length?R.map(x=>`<span class="chip ${String(x.n)===sel?"em":""}" data-rd="${x.n}" style="cursor:pointer" title="${new Date(x.o.at).toLocaleTimeString("en-IN")} · ${fmtPct(x.o.pct)} ${x.o.mode==="date"?"per date":"per user"} · by ${esc(x.o.by)}">Pick ${x.n} · ${nf((x.o.rows||[]).length)}</span>`).join(""):`<span class="muted">no saved picks yet</span>`}
     <span class="chip gold">Left · ${nf(left)} of ${nf(pool.length)}</span>${view.pick&&!view.pick.saved?`<span class="chip violet">New pick · ${nf(view.pick.ids.size)} (not saved)</span>`:""}
     <label class="tg sm" ${view.pick?"":"hidden"}><input type="checkbox" id="gOnlyC" ${view.onlyPk?"checked":""}><span class="sw"></span>Only picked</label>`;
   if(!can("pick")){el.innerHTML=`<div class="prow"><b style="font-size:12.5px">🎯 QA pick</b><span class="muted" style="font-size:12px">Picks are made by Admin / SME / Data Entry.</span>
@@ -1464,17 +1478,21 @@ async function renderPick(){
   let est=0;g.forEach(x=>est+=Math.min(x.f,qaCount(x.t,view.base==="rem"?x.f:x.t)));
   el.innerHTML=`<div class="prow"><b style="font-size:12.5px">🎯 QA pick</b>
    <div class="seg" id="pMode"><button data-m="date" class="${view.mode==="date"?"on":""}" title="Per Date">📅 Per Date · ${dLet(p)}</button><button data-m="user" class="${view.mode==="user"?"on":""}" title="Per User">👤 Per User · ${uLet(p)}</button></div>
-   <div class="pct" id="pPct">${pl.map(x=>`<button data-p="${x}" class="${view.pct===x?"on":""}">${x}%</button>`).join("")}<input id="pCus" type="number" min="1" max="100" step="0.5" placeholder="Custom %" value="${custom?view.pct:""}"></div>
-   <div class="seg" id="pBase" title="What the % is taken of"><button data-b="tot" class="${view.base!=="rem"?"on":""}">% of total</button><button data-b="rem" class="${view.base==="rem"?"on":""}">% of remaining</button></div>
+   ${fixedOn()?`<select id="pQm" title="Percent or a fixed number of claims"><option value="pct" ${view.qm!=="cnt"?"selected":""}>% Percent</option><option value="cnt" ${view.qm==="cnt"?"selected":""}># Fixed claims</option></select>`:""}
+   ${view.qm==="cnt"&&fixedOn()?`<div class="pct"><input id="pCnt" type="number" min="1" step="1" value="${+view.cnt||+S.cfg.cntDef||50}" title="Claims to each user ${view.mode==="date"?"on each date":"in total"}"><span class="muted" style="font-size:12px;white-space:nowrap">claims to each user ${view.mode==="date"?"per date":"(all dates)"}</span></div>`
+   :`<div class="pct" id="pPct">${pl.map(x=>`<button data-p="${x}" class="${view.pct===x?"on":""}">${x}%</button>`).join("")}<input id="pCus" type="number" min="1" max="100" step="0.5" placeholder="Custom %" value="${custom?view.pct:""}"></div>
+   <div class="seg" id="pBase" title="What the % is taken of"><button data-b="tot" class="${view.base!=="rem"?"on":""}">% of total</button><button data-b="rem" class="${view.base==="rem"?"on":""}">% of remaining</button></div>`}
    <button class="cap sm em" id="pGo" ${left&&uIdx(p)>=0?"":"disabled"} title="${uIdx(p)<0?"Choose the user heading first":"About "+nf(est)+" new claims"}">🎯 Pick${left?" · ≈"+nf(est):""}</button>
    ${view.pick?`<button class="cap sm gold" id="pRes">✅ Result · ${nf(view.pick.ids.size)}</button>${!view.pick.saved?`<button class="cap xs" id="pAgain" title="New random pick">🔀</button>`:""}<button class="cap xs ghost" id="pClr" title="Clear from screen">✕</button>`:""}
    <span class="sp" style="flex:1"></span>
-   <select id="pRound" title="Show a saved pick"><option value="">Saved picks…</option>${R.map(x=>`<option value="${x.n}" ${String(x.n)===sel?"selected":""}>Pick ${x.n} · ${nf((x.o.rows||[]).length)} claims · ${x.o.pct}%</option>`).join("")}</select>${hist}</div>
-   <div class="rinfo">${uIdx(p)<0?"<span style='color:var(--danger)'>Choose the user heading (top line) first.</span>":rinfo}</div>`;
+   <select id="pRound" title="Show a saved pick"><option value="">Saved picks…</option>${R.map(x=>`<option value="${x.n}" ${String(x.n)===sel?"selected":""}>Pick ${x.n} · ${nf((x.o.rows||[]).length)} claims · ${fmtPct(x.o.pct)}</option>`).join("")}</select>${hist}</div>
+   <div class="rinfo">${uIdx(p)<0?"<span style='color:var(--danger)'>Choose the user heading (top line) first.</span>":!pool.length&&filteredRows().length?`<span style='color:var(--danger)'>⚠ The <b>${esc(p.cols[uIdx(p)])}</b> column (Per User) is empty, so nothing can be picked. Dump again and choose the right column in “From your data”.</span>`:rinfo}</div>`;
   $$("#pMode [data-m]").forEach(b=>b.onclick=()=>{view.mode=b.dataset.m;renderPick()});
   $$("#pBase [data-b]").forEach(b=>b.onclick=()=>{view.base=b.dataset.b;renderPick()});
   $$("#pPct [data-p]").forEach(b=>b.onclick=()=>{view.pct=+b.dataset.p;renderPick()});
-  $("#pCus").onchange=e=>{const v=+e.target.value;if(v>0&&v<=100){view.pct=v;renderPick()}};
+  const pc=$("#pCus");if(pc)pc.onchange=e=>{const v=+e.target.value;if(v>0&&v<=100){view.pct=v;renderPick()}};
+  const qm=$("#pQm");if(qm)qm.onchange=e=>{view.qm=e.target.value;if(view.qm==="cnt"&&!view.cnt)view.cnt=+S.cfg.cntDef||50;renderPick()};
+  const pn=$("#pCnt");if(pn)pn.onchange=e=>{const v=Math.floor(+e.target.value);if(v>0){view.cnt=v;renderPick()}};
   $("#pGo").onclick=()=>runPick();const a=$("#pAgain");if(a)a.onclick=()=>runPick();
   wirePick(p,R);
 }
@@ -1510,7 +1528,7 @@ async function runPick(){
     const want=qaCount(g.rows.length,view.base==="rem"?fresh.length:g.rows.length),n=Math.min(fresh.length,want);
     const pk=shuffle(fresh.slice()).slice(0,n);pk.forEach(r=>ids.add(r.id));out.push({d:g.d,u:g.u,total:g.rows.length,n:pk.length,done,want,rows:pk});
   });
-  view.round="";view.pick={mode:view.mode,pct:view.pct,base:view.base||"tot",date:view.pdate,user:view.puser,at:Date.now(),by:me.pc,groups:out,ids,from:view.from,to:view.to,skipped,saved:false};
+  view.round="";view.pick={mode:view.mode,pct:view.qm==="cnt"&&fixedOn()?"#"+view.cnt:view.pct,base:view.base||"tot",date:view.pdate,user:view.puser,at:Date.now(),by:me.pc,groups:out,ids,from:view.from,to:view.to,skipped,saved:false};
   renderPick();renderGrid();
   if(!ids.size){toast(skipped?"Every claim is already picked today — nothing new to pick":"Nothing picked");return}
   toast("🎯 "+nf(ids.size)+" claims picked for QA");openResult();
@@ -1521,7 +1539,7 @@ function openResult(){
   const byU=new Map();pk.groups.forEach(g=>{const k=userKey(g.u),x=byU.get(k)||{u:g.u,t:0,n:0,done:0,dates:0};x.t+=g.total;x.n+=g.n;x.done+=g.done;x.dates++;byU.set(k,x)});
   const list=pickRows(),U=[...byU.values()].sort((a,b)=>b.n-a.n||a.u.localeCompare(b.u));
   modal(`<div class="row"><h3 style="margin:0">✅ ${pk.round?"Pick "+pk.round:"New pick"} · ${esc(p.label)}</h3>
-      <span class="chip em">${nf(list.length)} claims</span><span class="chip gold">${pk.pct}% · ${pk.mode==="date"?"Per Date":"Per User"}</span>
+      <span class="chip em">${nf(list.length)} claims</span><span class="chip gold">${fmtPct(pk.pct)} · ${pk.mode==="date"?"Per Date":"Per User"}</span>
       <span class="chip">${pk.mode==="date"?(pk.date?us(pk.date):"all dates"):"all loaded dates"}${pk.user?" · 1 user":""}</span>
       ${pk.skipped?`<span class="chip violet">${nf(pk.skipped)} picked before · not repeated</span>`:""}${pk.saved?`<span class="chip em">🔒 saved</span>`:""}</div>
     <div class="rsum">${U.map(x=>`<div class="ucard"><b>${esc(x.u)}</b><div class="bar"><i style="width:${x.t?Math.max(4,(x.n+x.done)/x.t*100):0}%"></i></div><div class="nums"><span>${nf(x.t)} claims${pk.mode==="date"?" · "+x.dates+" date"+(x.dates>1?"s":""):""}${x.done?" · "+x.done+" before":""}</span><em>${nf(x.n)} new</em></div></div>`).join("")}</div>
@@ -1545,7 +1563,7 @@ async function savePick(){
   if(FS.dir)ok=await fsWriteText("_picks/"+p.k+"/"+todayISO().slice(0,7),todayISO()+"_"+id+".json",JSON.stringify(o));
   else if(!noLocal()){S.picks=S.picks||{};(S.picks[p.k]=S.picks[p.k]||[]).push(o);await save(true);ok=true}
   if(!ok){toast(FS.dir?"Couldn't save the pick":"Connect the data server to save picks");return}
-  pk.saved=true;ROUNDS.at=0;await loadRounds(P(),true);view.round=String(ROUNDS.list.length);pk.round=ROUNDS.list.length;renderPick();await logAct("pick",p.k,o.rows.length+" claims · "+pk.pct+"% "+pk.mode);closeModal();openResult();toast("🔒 Pick saved · these claims won't be picked again")
+  pk.saved=true;ROUNDS.at=0;await loadRounds(P(),true);view.round=String(ROUNDS.list.length);pk.round=ROUNDS.list.length;renderPick();await logAct("pick",p.k,o.rows.length+" claims · "+fmtPct(pk.pct)+" "+pk.mode);closeModal();openResult();toast("🔒 Pick saved · these claims won't be picked again")
 }
 async function pickHistory(){
   const p=P(),items=[];
@@ -1555,7 +1573,7 @@ async function pickHistory(){
   items.sort((a,b)=>b.o.at-a.o.at);
   modal(`<h3>📜 Saved picks · ${esc(p.label)}</h3><p class="muted" style="margin:0 0 12px">${items.length} saved pick${items.length===1?"":"s"} · claims in these are never picked again.</p>
    ${items.length?`<div class="scroll"><table class="tbl"><thead><tr><th>When</th><th>By</th><th>Mode</th><th>%</th><th>Dates</th><th>Claims</th><th></th></tr></thead><tbody>
-   ${items.map((x,i)=>`<tr><td>${new Date(x.o.at).toLocaleString("en-IN")}</td><td class="mono">${esc(x.o.by)}</td><td>${x.o.mode==="date"?"Per Date":"Per User"}</td><td class="mono">${x.o.pct}%</td><td class="mono">${x.o.date?us(x.o.date):(x.o.from?us(x.o.from)+(x.o.to!==x.o.from?" → "+us(x.o.to):""):"")}</td><td class="mono">${nf((x.o.rows||[]).length)}</td>
+   ${items.map((x,i)=>`<tr><td>${new Date(x.o.at).toLocaleString("en-IN")}</td><td class="mono">${esc(x.o.by)}</td><td>${x.o.mode==="date"?"Per Date":"Per User"}</td><td class="mono">${fmtPct(x.o.pct)}</td><td class="mono">${x.o.date?us(x.o.date):(x.o.from?us(x.o.from)+(x.o.to!==x.o.from?" → "+us(x.o.to):""):"")}</td><td class="mono">${nf((x.o.rows||[]).length)}</td>
      <td>${can("export")?`<button class="cap xs" data-hx="${i}">⬇ Excel</button>`:""} ${isOwner()||can("deldate")?`<button class="cap xs danger" data-hd="${i}" title="Delete: these claims can be picked again">✕</button>`:""}</td></tr>`).join("")}
    </tbody></table></div>`:`<div class="empty-state" style="padding:30px">No saved picks yet.</div>`}
    <div class="mrow"><button class="cap" data-close>Close</button></div>`,true);
@@ -1592,7 +1610,7 @@ async function exportPick(pk,p){
   const sumH=pk.mode==="date"?["Date","User","Total claims","Picked","% picked"]:["User","Total claims","Picked","% picked"];
   const sumR=pk.groups.map(g=>pk.mode==="date"?[us(g.d),g.u,g.total,g.n,g.total?Math.round(g.n/g.total*1000)/10+"%":""]:[g.u,g.total,g.n,g.total?Math.round(g.n/g.total*1000)/10+"%":""]);
   const tt=sumR.reduce((a,r)=>a+(+r[pk.mode==="date"?2:1]||0),0),tp=list.length;sumR.push(pk.mode==="date"?["","TOTAL",tt,tp,""]:["TOTAL",tt,tp,""]);
-  const title=`${p.label} · QA pick · ${pk.pct}% ${pk.mode==="date"?"per date":"per user"}`;
+  const title=`${p.label} · QA pick · ${fmtPct(pk.pct)} ${pk.mode==="date"?"per date":"per user"}`;
   await xlsxBook([
     {name:"QA Pick",title,sub:"Alpha NextGen · Provider Pick QA · Eclipse — "+stampTxt(),head,rows,num:[0],color:"FF0F6B3E"},
     {name:"Summary",title:title+" · summary",sub:"Picked "+new Date(pk.at).toLocaleString("en-IN")+" by "+pk.by,head:sumH,rows:sumR,num:pk.mode==="date"?[2,3]:[1,2]}
@@ -1768,7 +1786,7 @@ async function finalTick(){
   toast("Reading saved picks…");const items=[];
   for(const p of visProcs()){const R=await loadRounds(p,true);if(!R.length)continue;
     items.push({k:p.k,label:p.label,info:`${R.length} pick${R.length>1?"s":""} · ${nf(R.reduce((a,x)=>a+(x.o.rows||[]).length,0))} claims`,
-      kids:R.map(x=>({d:String(x.n),label:`Pick ${x.n} · ${nf((x.o.rows||[]).length)} · ${x.o.pct}%`,on:true}))})}
+      kids:R.map(x=>({d:String(x.n),label:`Pick ${x.n} · ${nf((x.o.rows||[]).length)} · ${fmtPct(x.o.pct)}`,on:true}))})}
   tickScreen({title:"📋 Download all assign claims",sub:"Tick the processes and picks. Everything goes into <b>one Excel</b>: a Summary sheet (who got how many) and one sheet per process. Saved picks are deleted the next day, so download before the day ends.",
     items,empty:"No saved picks today. Run a pick and click <b>Save pick</b> first.",
     btns:[{text:"⬇ Download Excel",cls:"gold",fn:async sel=>{closeModal();await exportFinal(sel)}}]});
@@ -1978,6 +1996,8 @@ function adminPage2(){
   <section class="acard"><h4>🎯 QA pick rules</h4>
     <label class="fl">Percent buttons (comma separated)<input id="pcts" value="${esc((AD.pcts||PCT0).join(", "))}"></label>
     <div style="margin-top:10px">${tgl("minOne",AD.minOne!==false,"Every user gets at least 1 claim (when they have claims)")}</div>
+    <div style="margin-top:6px">${tgl("cntOn",AD.cntOn!==false,"Show “# Fixed claims” mode (e.g. 50 claims to each user)")}</div>
+    <div class="frow"><label class="fl">Default fixed claims per user<input type="number" data-k="cntDef" value="${+AD.cntDef||50}" min="1" style="width:120px"></label></div>
     <p class="ahelp">Count = percent × user's claims, rounded (2.5 → 3). Per Date: per user per date. Per User: per user over all loaded dates.</p></section>
 
   <section class="acard"><h4>📢 Notice strip</h4>
@@ -2099,7 +2119,7 @@ function fixCfg(){
   if(!c.procs.some(p=>p.dyn))c.procs.push(clone(PROC0.find(p=>p.dyn)));
   c.procs.forEach(p=>{const d=PROC0.find(x=>x.k===p.k)||{};p.roles=Object.assign({mgr:1,sme:1,entry:1,employee:1},p.roles||{});p.label=p.label||d.label||p.k;p.status=p.status||"live";
     if(d.dyn){p.dyn=true;p.cols=Array.isArray(p.cols)?p.cols:[];p.dh=p.dh||"";p.uh=p.uh||""}else{p.cols=Array.isArray(p.cols)&&p.cols.length?p.cols:(d.cols||[]);p.dc=p.dc||d.dc||"A";p.uc=p.uc||d.uc||"B"}p.ic=p.ic||d.ic||p.k.slice(0,2).toUpperCase()});
-  if(c.idleMin===undefined)c.idleMin=15;if(c.askEvery===undefined)c.askEvery=true;if(c.wm===undefined)c.wm=true;if(!Array.isArray(c.noLocal))c.noLocal=["entry","employee"];if(!c.maxTry)c.maxTry=5;if(!Array.isArray(c.alertMails))c.alertMails=["akshay.ranjan@uhc.com","",""];while(c.alertMails.length<3)c.alertMails.push("");if(c.alertAuto===undefined)c.alertAuto=true;if(c.pickDays==null)c.pickDays=1;if(!c.v3){c.idleMin=0;c.askEvery=false;c.pcts=[5];c.v3=1}if(c.helpPop===undefined)c.helpPop=true;
+  if(c.idleMin===undefined)c.idleMin=15;if(c.askEvery===undefined)c.askEvery=true;if(c.wm===undefined)c.wm=true;if(!Array.isArray(c.noLocal))c.noLocal=["entry","employee"];if(!c.maxTry)c.maxTry=5;if(!Array.isArray(c.alertMails))c.alertMails=["akshay.ranjan@uhc.com","",""];while(c.alertMails.length<3)c.alertMails.push("");if(c.alertAuto===undefined)c.alertAuto=true;if(c.pickDays==null)c.pickDays=1;if(!c.cntDef)c.cntDef=50;if(c.cntOn===undefined)c.cntOn=true;if(!c.v3){c.idleMin=0;c.askEvery=false;c.pcts=[5];c.v3=1}if(c.helpPop===undefined)c.helpPop=true;
   c.notice=c.notice||{on:false,text:"",type:"info",speed:25};c.folder=c.folder||DEF_FOLDER;
   c.pcts=Array.isArray(c.pcts)&&c.pcts.length?c.pcts:PCT0.slice();if(c.minOne===undefined)c.minOne=true;
   if(!c.seeded){ROSTER.forEach(([m,code,mc])=>{if(!c.users.some(u=>u.pc===m))c.users.push({pc:m,role:"employee",name:"",team:"",code,mc})});c.seeded=1}
